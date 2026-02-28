@@ -2,6 +2,19 @@ import prisma from '@lib/prisma';
 import { geminiService } from './geminiService';
 import { PortfolioAnalysisRequest } from '@shared-types/ai';
 import { AppError } from '@middleware/errorHandler';
+import env from '@config/env';
+
+// GitHub API headers (with optional token for higher rate limits)
+const getGitHubHeaders = () => {
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github.v3+json',
+    'User-Agent': 'LakshPath-Career-Platform',
+  };
+  if (env.GITHUB_TOKEN) {
+    headers['Authorization'] = `Bearer ${env.GITHUB_TOKEN}`;
+  }
+  return headers;
+};
 
 // Badge assets for GitHub achievements
 const BADGE_SLUGS = [
@@ -30,24 +43,53 @@ export const portfolioService = {
     targetRole?: string
   ) {
     try {
-      // Fetch comprehensive GitHub data
-      const [repos, userData, badges] = await Promise.all([
-        this.fetchGitHubRepos(githubUsername),
-        this.fetchGitHubUser(githubUsername),
-        this.validateBadges(githubUsername),
-      ]);
+      // Fetch comprehensive GitHub data (graceful failures for badges/forks)
+      let repos: any[] = [];
+      let userData: any = {};
+      let badges: any[] = [];
+
+      try {
+        [repos, userData] = await Promise.all([
+          this.fetchGitHubRepos(githubUsername),
+          this.fetchGitHubUser(githubUsername),
+        ]);
+      } catch (fetchError: any) {
+        // If the original error is a 404 (user not found), pass it through
+        if (fetchError instanceof AppError && fetchError.statusCode === 404) {
+          throw fetchError;
+        }
+        throw new AppError(
+          `Cannot reach GitHub API for "${githubUsername}". You may be rate-limited (60 req/hr without token). Add GITHUB_TOKEN to .env for 5000 req/hr.`,
+          502,
+          fetchError
+        );
+      }
+
+      // Badge and fork checks are optional - don't fail the whole analysis
+      try {
+        badges = await this.validateBadges(githubUsername);
+      } catch {
+        badges = [];
+      }
 
       // Separate original repos and forks
       const originalRepos = repos.filter((r: any) => !r.fork);
       const forkRepos = repos.filter((r: any) => r.fork);
 
-      // Check authored forks (with actual commits by user)
-      const authoredForks = await this.checkAuthoredForks(githubUsername, forkRepos);
+      // Check authored forks (gracefully skip if rate-limited)
+      let authoredForks: any[] = [];
+      try {
+        authoredForks = await this.checkAuthoredForks(githubUsername, forkRepos);
+      } catch {
+        authoredForks = [];
+      }
+
+      const allRepos = [...originalRepos, ...authoredForks];
 
       // Prepare enhanced analysis request
       const analysisRequest: PortfolioAnalysisRequest = {
         githubUsername,
-        repositories: [...originalRepos, ...authoredForks].map((repo: any) => ({
+        repositories: allRepos.map((repo: any) => ({
           name: repo.name,
           description: repo.description || '',
           language: repo.language || '',
@@ -62,9 +104,85 @@ export const portfolioService = {
         targetRole,
       };
 
-      // Get AI analysis
-      const analysisResult = await geminiService.analyzePortfolio(analysisRequest);
-      const analysis = analysisResult.parsed;
+      // Get AI analysis (with fallback)
+      let analysis: any;
+      try {
+        const analysisResult = await geminiService.analyzePortfolio(analysisRequest);
+        analysis = analysisResult.parsed;
+      } catch (aiError: any) {
+        console.warn('[PortfolioService] AI analysis failed, using generated fallback:', aiError.message?.slice(0, 120));
+        const languages = [...new Set(allRepos.map((r: any) => r.language).filter(Boolean))];
+
+        // Calculate real scores based on actual data
+        const totalStars = allRepos.reduce((sum: number, r: any) => sum + (r.stargazers_count || 0), 0);
+        const hasDescriptions = allRepos.filter((r: any) => r.description).length;
+        const recentRepos = allRepos.filter((r: any) => {
+          const pushed = new Date(r.pushed_at || 0);
+          const sixMonthsAgo = new Date();
+          sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+          return pushed > sixMonthsAgo;
+        }).length;
+
+        const diversityScore = Math.min(100, 30 + languages.length * 8);
+        const contributionScore = Math.min(100, 20 + allRepos.length * 1.5 + recentRepos * 3);
+        const codeQualityScore = Math.min(100, 40 + (hasDescriptions / Math.max(allRepos.length, 1)) * 30 + Math.min(totalStars, 20) * 1.5);
+        const overallScore = Math.round((diversityScore + contributionScore + codeQualityScore) / 3);
+
+        analysis = {
+          overallScore,
+          codeQualityScore: Math.round(codeQualityScore),
+          diversityScore: Math.round(diversityScore),
+          contributionScore: Math.round(contributionScore),
+          summary: `GitHub portfolio for ${githubUsername}: ${originalRepos.length} original repos across ${languages.length} languages${totalStars > 0 ? ` with ${totalStars} total stars` : ''}. ${recentRepos > 3 ? 'Active developer with recent contributions.' : 'Room for more frequent contributions.'}`,
+          strengths: [
+            `Active GitHub presence with ${originalRepos.length} original repositories`,
+            languages.length > 0 ? `Multi-language proficiency: ${languages.slice(0, 5).join(', ')}` : 'Getting started with coding projects',
+            recentRepos > 0 ? `${recentRepos} repositories updated in the last 6 months` : 'Consistent commit history',
+            totalStars > 0 ? `${totalStars} stars across repositories` : 'Building portfolio visibility',
+          ].filter(Boolean),
+          weaknesses: [
+            hasDescriptions < allRepos.length * 0.5 ? 'Add descriptions to repositories for discoverability' : null,
+            'Include unit tests and CI/CD pipelines',
+            'Add comprehensive README files with screenshots',
+            authoredForks.length === 0 ? 'Contribute to open-source projects' : null,
+          ].filter(Boolean),
+          missingProjectTypes: ['Full-stack web application', 'API/Backend service', 'Open-source contribution'],
+          recommendations: [
+            'Add detailed README with screenshots to your top projects',
+            'Set up GitHub Actions for automated testing',
+            'Pin your 6 best repositories on your profile',
+            'Build a portfolio website showcasing your best work',
+            'Contribute to beginner-friendly open-source projects',
+          ],
+          // Generate insights for ALL repos (sorted by stars then recency)
+          repositoryInsights: allRepos
+            .sort((a: any, b: any) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
+            .map((r: any) => {
+              const hasDesc = !!r.description;
+              const isPushedRecently = new Date(r.pushed_at || 0) > new Date(Date.now() - 180 * 24 * 60 * 60 * 1000);
+              const stars = r.stargazers_count || 0;
+              const repoScore = Math.min(100, 40 + (hasDesc ? 15 : 0) + (isPushedRecently ? 15 : 0) + Math.min(stars * 5, 20) + (r.language ? 10 : 0));
+              return {
+                repoName: r.name,
+                codeQualityScore: repoScore,
+                complexity: stars > 5 || (r.size || 0) > 5000 ? 'high' : (r.size || 0) > 1000 ? 'moderate' : 'low',
+                readmeQuality: hasDesc ? 'good' : 'needs improvement',
+                improvements: [
+                  !hasDesc ? 'Add repository description' : null,
+                  'Add comprehensive README',
+                  !isPushedRecently ? 'Update with recent commits' : null,
+                  'Add unit tests',
+                ].filter(Boolean),
+                highlights: [
+                  r.language ? `Built with ${r.language}` : null,
+                  stars > 0 ? `${stars} star${stars > 1 ? 's' : ''}` : null,
+                  isPushedRecently ? 'Recently updated' : null,
+                  (r.forks_count || 0) > 0 ? `${r.forks_count} fork${r.forks_count > 1 ? 's' : ''}` : null,
+                ].filter(Boolean),
+              };
+            }),
+        };
+      }
 
       // Enhance analysis with user data and badges
       const enhancedAnalysis = {
@@ -106,8 +224,8 @@ export const portfolioService = {
       // Save repository insights
       if (analysis.repositoryInsights && analysis.repositoryInsights.length > 0) {
         await Promise.all(
-          analysis.repositoryInsights.map((insight) => {
-            const repo = [...originalRepos, ...authoredForks].find(
+          analysis.repositoryInsights.map((insight: any) => {
+            const repo = allRepos.find(
               (r: any) => r.name === insight.repoName
             );
             return prisma.repositoryAnalysis.create({
@@ -142,6 +260,7 @@ export const portfolioService = {
         ...enhancedAnalysis,
       };
     } catch (error: any) {
+      if (error instanceof AppError) throw error;
       throw new AppError(
         `Failed to analyze GitHub portfolio: ${error.message}`,
         500,
@@ -156,10 +275,7 @@ export const portfolioService = {
   async fetchGitHubUser(username: string) {
     try {
       const response = await fetch(`https://api.github.com/users/${username}`, {
-        headers: {
-          Accept: 'application/vnd.github.v3+json',
-          'User-Agent': 'LakshPath-Career-Platform',
-        },
+        headers: getGitHubHeaders(),
       });
 
       if (!response.ok) {
@@ -183,12 +299,7 @@ export const portfolioService = {
     try {
       const response = await fetch(
         `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
-        {
-          headers: {
-            Accept: 'application/vnd.github.v3+json',
-            'User-Agent': 'LakshPath-Career-Platform',
-          },
-        }
+        { headers: getGitHubHeaders() }
       );
 
       if (!response.ok) {
@@ -234,12 +345,7 @@ export const portfolioService = {
     try {
       const response = await fetch(
         `https://api.github.com/repos/${username}/${repoName}/commits?author=${username}&per_page=1`,
-        {
-          headers: {
-            Accept: 'application/vnd.github.v3+json',
-            'User-Agent': 'LakshPath-Career-Platform',
-          },
-        }
+        { headers: getGitHubHeaders() }
       );
 
       if (!response.ok) return false;
@@ -324,15 +430,7 @@ export const portfolioService = {
     const analyses = await prisma.portfolioAnalysis.findMany({
       where: { userId },
       include: {
-        repositories: {
-          select: {
-            id: true,
-            repoName: true,
-            language: true,
-            stars: true,
-            codeQualityScore: true,
-          },
-        },
+        repositories: true,
       },
       orderBy: { createdAt: 'desc' },
       take: limit,
@@ -343,6 +441,14 @@ export const portfolioService = {
       strengths: JSON.parse(analysis.strengths),
       weaknesses: JSON.parse(analysis.weaknesses),
       recommendations: JSON.parse(analysis.recommendations),
+      missingProjectTypes: analysis.missingProjectTypes
+        ? JSON.parse(analysis.missingProjectTypes)
+        : [],
+      repositories: analysis.repositories.map((repo) => ({
+        ...repo,
+        improvements: repo.improvements ? JSON.parse(repo.improvements) : [],
+        highlights: repo.highlights ? JSON.parse(repo.highlights) : [],
+      })),
     }));
   },
 

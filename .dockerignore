@@ -1,0 +1,17 @@
+node_modules
+dist
+*.log
+.env
+.env.local
+.git
+.gitignore
+*.md
+docs
+scripts
+test-*.sh
+backend/node_modules
+backend/dist
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
+frontend/node_modules
+frontend/dist

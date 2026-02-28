@@ -8,17 +8,27 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String?  @unique
-  googleId     String?  @unique
-  name         String?
-  passwordHash String?
-  role         String   @default("USER")
-  avatarUrl    String?
-  lastLoginAt  DateTime?
-  loginCount   Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  email                 String?  @unique
+  googleId              String?  @unique
+  name                  String?
+  passwordHash          String?
+  role                  String   @default("USER")
+  avatarUrl             String?
+  age                   Int?
+  phone                 String?
+  bio                   String?
+  college               String?
+  degree                String?
+  branch                String?
+  graduationYear        Int?
+  githubUsername         String?
+  linkedinUrl           String?
+  profileSetupCompleted Boolean  @default(false)
+  lastLoginAt           DateTime?
+  loginCount            Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   quizResults           QuizResult[]
   insights              Insight[]
@@ -31,6 +41,70 @@ model User {
   interviewSessions     InterviewSession[]
   portfolioAnalyses     PortfolioAnalysis[]
   linkedinOptimizations LinkedInOptimization[]
+  profileAnalyses       ProfileAnalysis[]
+  badges                Badge[]
+  placementPrepSessions PlacementPrepSession[]
+}
+
+// ============================================
+// PROFILE ANALYSIS ENGINE
+// ============================================
+
+model ProfileAnalysis {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Core analysis data (all stored as JSON strings)
+  techStack         String?  // JSON: languages, frameworks, tools
+  skillLevels       String?  // JSON: { dsa: 4, systemDesign: 3, ... }
+  careerProfile     String?  // JSON: target role, domains, strengths
+  githubAnalysis    String?  // JSON: repos, languages, contributions
+  assessmentSummary String?  // JSON: derived from quiz answers
+  overallScore      Float?   // 0-100 composite score
+  level             String   @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
+  // AI-generated analysis
+  aiInsights        String?  // JSON: full AI analysis of the profile
+  careerMatches     String?  // JSON: top matched roles with scores
+  strengthAreas     String?  // JSON array
+  improvementAreas  String?  // JSON array
+  recommendations   String?  // JSON array
+  // Metadata
+  version           Int      @default(1)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String   // e.g. "Profile Complete", "GitHub Connected", "DSA Warrior"
+  icon        String   // material icon name
+  description String
+  category    String   // "PROFILE", "SKILL", "ACHIEVEMENT", "STREAK"
+  rarity      String   @default("COMMON") // COMMON, RARE, EPIC, LEGENDARY
+  earnedAt    DateTime @default(now())
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model PlacementPrepSession {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company       String?
+  targetRole    String?
+  setupAnswers  String?  // JSON: initial setup question answers
+  questionsData String?  // JSON: generated questions and answers
+  score         Float?
+  status        String   @default("SETUP") // SETUP, IN_PROGRESS, COMPLETED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId, createdAt])
 }
 
 model QuizResult {

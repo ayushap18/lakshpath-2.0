@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors, { CorsOptions } from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import path from 'path';
 
 import env from '@config/env';
 import apiRouter from '@routes/index';
@@ -9,7 +10,10 @@ import { errorHandler } from '@middleware/errorHandler';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 const allowedOrigins = env.CLIENT_ORIGIN
   ?.split(',')
   .map((origin) => origin.trim())
@@ -35,10 +39,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), env: env.NODE_ENV });
 });
 
 app.use('/api', apiRouter);
+
+// Serve frontend static files in all environments
+const publicPath = path.join(__dirname, '..', 'public');
+app.use(express.static(publicPath));
+app.get('*', (_req: Request, res: Response) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
 
 app.use(errorHandler);
 

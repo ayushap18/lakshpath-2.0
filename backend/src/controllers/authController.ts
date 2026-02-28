@@ -18,6 +18,7 @@ export const authController = {
           name: result.user.name,
           email: result.user.email,
           avatarUrl: result.user.avatarUrl,
+          profileSetupCompleted: (result.user as any).profileSetupCompleted ?? false,
         },
         isNewUser: result.isNewUser,
       });

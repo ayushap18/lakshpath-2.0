@@ -14,8 +14,11 @@ import userRouter from './user.routes';
 import interviewRouter from './interview.routes';
 import interviewEnhancedRouter from './interviewEnhanced.routes';
 import portfolioRouter from './portfolio.routes';
+import linkedinRouter from './linkedin.routes';
 import learningEnhancedRouter from './learningEnhanced.routes';
 import nsqfRouter from './nsqf.routes';
+import featuresRouter from './features.routes';
+import profileRouter from './profile.routes';
 
 const router = Router();
 
@@ -33,7 +36,10 @@ router.use('/user', userRouter);
 router.use('/interview', interviewRouter);
 router.use('/interview-enhanced', interviewEnhancedRouter);
 router.use('/portfolio', portfolioRouter);
+router.use('/linkedin', linkedinRouter);
 router.use('/learning-enhanced', learningEnhancedRouter);
 router.use('/nsqf', nsqfRouter);
+router.use('/features', featuresRouter);
+router.use('/profile', profileRouter);
 
 export default router;

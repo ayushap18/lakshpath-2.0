@@ -129,3 +129,52 @@ export interface ApiError {
   message: string;
   errors?: Record<string, string[]>;
 }
+
+// Chat Types
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+  actionPlan?: { title: string; detail: string; impact?: string; priority?: string }[];
+  followUps?: { question: string; why: string }[];
+}
+
+// Market & Job Types
+export interface MarketBrief {
+  topSkills: { name: string; demand: number; growth: string }[];
+  emergingRoles: { title: string; avgSalary: string; growth: string }[];
+  industryTrends: string[];
+}
+
+export interface JobListing {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  salary?: string;
+  matchScore: number;
+  skills: string[];
+  type: 'full-time' | 'part-time' | 'internship' | 'contract';
+  postedDate: string;
+}
+
+// Micro-Coach Types
+export interface MicroCoachTask {
+  id: string;
+  title: string;
+  description: string;
+  type: 'quiz' | 'practice' | 'reading' | 'project';
+  difficulty: 'easy' | 'medium' | 'hard';
+  estimatedMinutes: number;
+  completed: boolean;
+  skill: string;
+}
+
+// Navigation Types
+export interface NavItem {
+  id: string;
+  label: string;
+  icon: string;
+  path: string;
+}

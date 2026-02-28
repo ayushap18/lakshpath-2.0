@@ -82,8 +82,8 @@ export interface UserProgressResponse {
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://192.168.1.5:5001/api',
-  timeout: 10000,
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -172,11 +172,23 @@ export const roadmapAPI = {
 // User API calls
 export const userAPI = {
   getProfile: () => api.get<UserProfileResponse>('/user/profile'),
-  
+
   updateProfile: (data: { name?: string; avatarUrl?: string }) =>
     api.patch<{ profile: UserProfileSummary }>('/user/profile', data),
-  
+
   getProgress: () => api.get<UserProgressResponse>('/user/progress'),
+
+  getStreak: () => api.get('/user/streak'),
+
+  getNotifications: () => api.get('/user/notifications'),
+
+  getSettings: () => api.get('/user/settings'),
+
+  updateSettings: (data: {
+    name?: string; githubUsername?: string; linkedinUrl?: string;
+    bio?: string; phone?: string; college?: string; degree?: string;
+    branch?: string; graduationYear?: string;
+  }) => api.patch('/user/settings', data),
 };
 
 // Market intelligence API
@@ -245,6 +257,42 @@ export const portfolioAPI = {
   
   deleteAnalysis: (analysisId: string) =>
     api.delete(`/portfolio/${analysisId}`),
+};
+
+// LinkedIn Optimization API
+export const linkedinAPI = {
+  optimizeProfile: (data: {
+    targetRole?: string;
+    targetIndustry?: string;
+    currentHeadline?: string;
+    currentAbout?: string;
+    currentExperience?: Array<{
+      title: string;
+      company: string;
+      duration: string;
+      description: string;
+    }>;
+    skills?: string[];
+  }) =>
+    api.post('/linkedin/optimize', data),
+
+  getOptimization: (optimizationId: string) =>
+    api.get(`/linkedin/${optimizationId}`),
+
+  getOptimizations: (limit?: number) =>
+    api.get('/linkedin/optimizations', { params: { limit } }),
+
+  getStats: () =>
+    api.get('/linkedin/stats'),
+
+  updateStatus: (optimizationId: string, status: 'DRAFT' | 'APPLIED' | 'ARCHIVED') =>
+    api.patch(`/linkedin/${optimizationId}/status`, { status }),
+
+  deleteOptimization: (optimizationId: string) =>
+    api.delete(`/linkedin/${optimizationId}`),
+
+  compareVersions: (optimizationIds: string[]) =>
+    api.post('/linkedin/compare', { optimizationIds }),
 };
 
 // Enhanced Interview Practice API
@@ -455,6 +503,65 @@ export const nsqfAPI = {
   // Get NSQF level information (1-10)
   getLevelInfo: (level: number) =>
     api.get(`/nsqf/level/${level}`),
+};
+
+// ============================================================
+//  NEW FEATURES API (Career DNA, Resume Builder, Skill Simulator, Placement Prep)
+// ============================================================
+
+export const featuresAPI = {
+  // Career DNA
+  generateCareerDNA: (data: { profile?: any; assessmentData?: any }) =>
+    api.post('/features/career-dna/generate', data),
+  getCareerDNA: () =>
+    api.get('/features/career-dna'),
+
+  // Resume Builder
+  generateResumeSummary: (data: { personalInfo: any; experience: any; education: any; skills: any; targetRole?: string }) =>
+    api.post('/features/resume/generate-summary', data),
+  enhanceResumeSection: (data: { section: string; content: any; targetRole?: string }) =>
+    api.post('/features/resume/enhance', data),
+  checkResumeATS: (data: { resumeData: any; targetRole?: string }) =>
+    api.post('/features/resume/ats-check', data),
+
+  // Skill Gap Simulator
+  analyzeSkillGap: (data: { targetRole: string; currentSkills?: any; profile?: any }) =>
+    api.post('/features/skill-simulator/analyze', data),
+  compareRoles: (data: { roleA: string; roleB: string; currentSkills?: any }) =>
+    api.post('/features/skill-simulator/compare', data),
+
+  // Placement Prep
+  generateQuestion: (data: { category: string; subCategory?: string; difficulty?: string; company?: string }) =>
+    api.post('/features/placement/generate-question', data),
+  generateMockTest: (data: { company?: string; questionCount?: number; categories?: string[] }) =>
+    api.post('/features/placement/generate-mock-test', data),
+  evaluateAnswer: (data: { question: string; userAnswer: string; correctAnswer: string; category: string }) =>
+    api.post('/features/placement/evaluate-answer', data),
+  getCompanyPrep: (data: { company: string; profile?: any }) =>
+    api.post('/features/placement/company-prep', data),
+};
+
+// ============================================================
+//  PROFILE & ANALYSIS API
+// ============================================================
+
+export const profileAPI = {
+  getFullProfile: () =>
+    api.get('/profile/full'),
+  setupProfile: (data: {
+    name?: string; age?: number; college?: string; degree?: string;
+    branch?: string; graduationYear?: number; githubUsername?: string;
+    linkedinUrl?: string; bio?: string; phone?: string;
+  }) =>
+    api.post('/profile/setup', data),
+  runAnalysis: () =>
+    api.post('/profile/analyze'),
+  getBadges: () =>
+    api.get('/profile/badges'),
+  getAnalysis: () =>
+    api.get('/profile/analysis'),
+  previewGitHub: (username: string) =>
+    api.get(`/profile/github-preview/${username}`),
 };
 
 
