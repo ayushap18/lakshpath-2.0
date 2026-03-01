@@ -11,6 +11,11 @@ router.use(attachUserIfPresent);
 router.get('/sessions', interviewController.getUserSessions);
 router.get('/stats', interviewController.getUserStats);
 
+// Coding interview endpoints
+router.post('/coding-question', interviewController.generateCodingQuestion);
+router.post('/analyze-code', interviewController.analyzeCode);
+router.post('/tts', interviewController.textToSpeech);
+
 // Interview session routes
 router.post('/start', interviewController.startSession);
 router.post('/answer', interviewController.submitAnswer);

@@ -25,6 +25,10 @@ import {
   PortfolioAnalysisResponse,
   LinkedInOptimizationRequest,
   LinkedInOptimizationResponse,
+  CodingQuestionGenerationRequest,
+  CodingQuestionGenerationResponse,
+  CodeAnalysisRequest,
+  CodeAnalysisResponse,
 } from '@shared-types/ai';
 import { AppError } from '@middleware/errorHandler';
 
@@ -1422,5 +1426,110 @@ Return JSON:
     const raw = await callGemini(prompt, { responseMimeType: 'application/json', temperature: 0.6 });
     const parsed = parseJson<any>(raw);
     return { prompt, raw, parsed };
+  },
+
+  async generateCodingQuestion(
+    payload: CodingQuestionGenerationRequest
+  ): Promise<GeminiResult<CodingQuestionGenerationResponse>> {
+    const companyPatterns: Record<string, string> = {
+      TCS: 'Aptitude-style + basic DSA (arrays, strings, sorting). Focus on clean implementation over algorithmic complexity.',
+      INFOSYS: 'Moderate DSA problems with emphasis on string manipulation, basic recursion, and simple data structures.',
+      WIPRO: 'Basic programming problems focusing on arrays, loops, conditionals, and simple math operations.',
+      GOOGLE: 'Hard algorithmic problems: graph algorithms, dynamic programming, advanced data structures. Expect optimal Big-O.',
+      AMAZON: 'Medium-hard problems emphasizing hash maps, trees, BFS/DFS, and system-level thinking.',
+      MICROSOFT: 'Medium algorithmic problems: trees, graphs, dynamic programming, and design patterns.',
+      META: 'Hard problems focusing on graph traversal, interval scheduling, and string manipulation at scale.',
+      FLIPKART: 'Medium DSA with focus on arrays, sorting, searching, and basic graph problems.',
+      DEFAULT: 'Standard DSA problems appropriate to the difficulty level selected.',
+    };
+
+    const pattern = companyPatterns[payload.company.toUpperCase()] || companyPatterns.DEFAULT;
+    const count = payload.count || 1;
+
+    const prompt = `You are an expert coding interviewer at ${payload.company}. Generate ${count} coding ${payload.difficulty} problem(s).
+
+COMPANY PATTERN: ${pattern}
+PROGRAMMING LANGUAGE: ${payload.language}
+QUESTION INDEX: ${payload.questionIndex} of 5 (vary topics across questions)
+
+Return JSON:
+{
+  "questions": [
+    {
+      "problemStatement": "Clear problem description with constraints",
+      "constraints": ["1 <= n <= 10^5"],
+      "examples": [
+        { "input": "...", "output": "...", "explanation": "..." }
+      ],
+      "testCases": [
+        { "input": "...", "expectedOutput": "...", "isHidden": false },
+        { "input": "...", "expectedOutput": "...", "isHidden": true }
+      ],
+      "expectedTimeComplexity": "O(n)",
+      "expectedSpaceComplexity": "O(1)",
+      "difficulty": "${payload.difficulty}",
+      "tags": ["Arrays", "Two Pointers"],
+      "starterCode": {
+        "${payload.language}": "function solve(input) {\\n  // Your code here\\n}"
+      }
+    }
+  ]
+}
+
+RULES:
+- Include 2-3 visible examples and 3-5 test cases (mix of visible and hidden)
+- Test cases must have exact string inputs/outputs matching stdin/stdout format
+- Starter code should include function signature and input parsing boilerplate for ${payload.language}
+- Ensure test case inputs are newline-separated if multiple values
+- Make problems realistic for ${payload.company} interviews at ${payload.difficulty} level`;
+
+    const raw = await callGemini(prompt, { responseMimeType: 'application/json', temperature: 0.8 });
+    return { prompt, raw, parsed: parseJson<CodingQuestionGenerationResponse>(raw) };
+  },
+
+  async analyzeCode(
+    payload: CodeAnalysisRequest
+  ): Promise<GeminiResult<CodeAnalysisResponse>> {
+    const passedCount = payload.testResults.filter(t => t.passed).length;
+    const totalTests = payload.testResults.length;
+
+    const prompt = `You are a senior coding interviewer evaluating submitted code.
+
+PROBLEM: ${payload.problemStatement}
+LANGUAGE: ${payload.language}
+TIME TAKEN: ${payload.timeTaken} seconds
+
+CODE:
+\`\`\`${payload.language}
+${payload.code}
+\`\`\`
+
+TEST RESULTS: ${passedCount}/${totalTests} passed
+${payload.testResults.map((t, i) => `Test ${i + 1}: Input="${t.input}" Expected="${t.expectedOutput}" Got="${t.actualOutput}" ${t.passed ? 'PASS' : 'FAIL'}`).join('\n')}
+
+Return JSON:
+{
+  "score": 0,
+  "feedback": "Comprehensive 2-3 sentence feedback",
+  "correctness": 0,
+  "timeComplexity": "O(...)",
+  "spaceComplexity": "O(...)",
+  "codeQuality": 0,
+  "edgeCaseHandling": 0,
+  "namingConventions": 0,
+  "strengths": ["strength1", "strength2"],
+  "improvements": ["improvement1", "improvement2"],
+  "optimalApproach": "Brief description if user approach is suboptimal"
+}
+
+SCORING (all 0-100):
+- Correctness: ${passedCount}/${totalTests} test cases passed (weight ~40%)
+- Time/Space complexity vs expected optimal (weight ~20%)
+- Code quality: readability, structure, no redundancy (weight ~20%)
+- Edge cases + naming conventions (weight ~20%)
+- Time taken: penalize slightly if > 20 minutes for EASY, > 30 for MEDIUM, > 45 for HARD`;
+
+    const raw = await callGemini(prompt, { responseMimeType: 'application/json', temperature: 0.6 });
+    return { prompt, raw, parsed: parseJson<CodeAnalysisResponse>(raw) };
   }
 };

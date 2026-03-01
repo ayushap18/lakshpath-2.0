@@ -310,3 +310,66 @@ export interface LinkedInOptimizationResponse {
   atsOptimizationTips: string[];
 }
 
+// ============================================
+// CODING INTERVIEW AI TYPES
+// ============================================
+
+export interface CodingQuestionGenerationRequest {
+  company: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  language: string;
+  questionIndex: number;
+  count?: number;
+}
+
+export interface CodingQuestion {
+  problemStatement: string;
+  constraints: string[];
+  examples: Array<{
+    input: string;
+    output: string;
+    explanation?: string;
+  }>;
+  testCases: Array<{
+    input: string;
+    expectedOutput: string;
+    isHidden: boolean;
+  }>;
+  expectedTimeComplexity: string;
+  expectedSpaceComplexity: string;
+  difficulty: string;
+  tags: string[];
+  starterCode?: Record<string, string>;
+}
+
+export interface CodingQuestionGenerationResponse {
+  questions: CodingQuestion[];
+}
+
+export interface CodeAnalysisRequest {
+  problemStatement: string;
+  code: string;
+  language: string;
+  testResults: Array<{
+    input: string;
+    expectedOutput: string;
+    actualOutput: string;
+    passed: boolean;
+  }>;
+  timeTaken: number;
+}
+
+export interface CodeAnalysisResponse {
+  score: number;
+  feedback: string;
+  correctness: number;
+  timeComplexity: string;
+  spaceComplexity: string;
+  codeQuality: number;
+  edgeCaseHandling: number;
+  namingConventions: number;
+  strengths: string[];
+  improvements: string[];
+  optimalApproach?: string;
+}
+
