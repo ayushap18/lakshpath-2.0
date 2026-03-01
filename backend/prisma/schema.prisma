@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -44,6 +44,73 @@ model User {
   profileAnalyses       ProfileAnalysis[]
   badges                Badge[]
   placementPrepSessions PlacementPrepSession[]
+  subscription          Subscription?
+  payments              Payment[]
+  usageLogs             UsageLog[]
+}
+
+// ============================================
+// BILLING & SUBSCRIPTION
+// ============================================
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum SubStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  TRIALING
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+model Subscription {
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan               Plan      @default(FREE)
+  status             SubStatus @default(ACTIVE)
+  razorpaySubId      String?   @unique
+  razorpayCustomerId String?
+  currentPeriodStart DateTime  @default(now())
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  razorpayPaymentId String        @unique
+  razorpayOrderId   String?
+  razorpaySignature String?
+  amount            Int
+  currency          String        @default("INR")
+  status            PaymentStatus @default(PENDING)
+  plan              Plan
+  createdAt         DateTime      @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model UsageLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feature   String
+  createdAt DateTime @default(now())
+
+  @@index([userId, feature, createdAt])
 }
 
 // ============================================

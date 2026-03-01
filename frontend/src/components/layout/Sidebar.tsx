@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Icon from '../ui/Icon';
 import Avatar from '../ui/Avatar';
 import { userAPI } from '../../services/api';
+import { useSubscription } from '../../contexts/SubscriptionContext';
+import { PRO_SIDEBAR_ROUTES } from '../../hooks/useFeatureGate';
+import UpgradePrompt from '../UpgradePrompt';
 
 /* ────────────────────── Navigation Structure ────────────────────── */
 
@@ -51,6 +54,9 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [streakData, setStreakData] = useState<any>(null);
+  const { isProUser } = useSubscription();
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState('');
 
   const userName = localStorage.getItem('userName') || 'Student';
   const userEmail = localStorage.getItem('userEmail') || '';
@@ -210,11 +216,27 @@ const Sidebar = () => {
               {group.items.map((item) => {
                 const isActive = location.pathname === item.path;
                 const isHovered = hoveredId === item.id;
+                const isLocked = !isProUser && PRO_SIDEBAR_ROUTES.includes(item.path);
+
+                const handleClick = () => {
+                  if (isLocked) {
+                    const featureMap: Record<string, string> = {
+                      '/ai-live': 'ai_code_interviewer',
+                      '/resume-builder': 'resume_builder',
+                      '/skill-simulator': 'skill_simulator',
+                      '/placement-prep': 'placement_prep',
+                    };
+                    setUpgradeFeature(featureMap[item.path] || 'default');
+                    setShowUpgrade(true);
+                    return;
+                  }
+                  navigate(item.path);
+                };
 
                 return (
                   <div key={item.id} className="relative">
                     <motion.button
-                      onClick={() => navigate(item.path)}
+                      onClick={handleClick}
                       onMouseEnter={() => setHoveredId(item.id)}
                       onMouseLeave={() => setHoveredId(null)}
                       whileTap={{ scale: 0.97 }}
@@ -269,8 +291,18 @@ const Sidebar = () => {
                         )}
                       </AnimatePresence>
 
-                      {/* Badge */}
-                      {!collapsed && (item as any).badge && (
+                      {/* Badge or Lock */}
+                      {!collapsed && isLocked && (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-400 flex-shrink-0"
+                        >
+                          PRO
+                        </motion.span>
+                      )}
+                      {!collapsed && !isLocked && (item as any).badge && (
                         <motion.span
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
@@ -315,6 +347,30 @@ const Sidebar = () => {
 
       {/* ─── Bottom Section: Quick Action + User ─── */}
       <div className="flex-shrink-0 border-t border-white/[0.04] px-2 py-3 space-y-2">
+        {/* Upgrade Button (for free users) */}
+        {!isProUser && !collapsed && (
+          <motion.button
+            onClick={() => navigate('/pricing')}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full px-3 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/20 transition-shadow"
+          >
+            Upgrade to Pro
+          </motion.button>
+        )}
+        {!isProUser && collapsed && (
+          <motion.button
+            onClick={() => navigate('/pricing')}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full flex justify-center py-2"
+            title="Upgrade to Pro"
+          >
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <Icon name="star" size={16} className="text-white" />
+            </div>
+          </motion.button>
+        )}
         {/* Profile button */}
         <motion.button
           onClick={() => navigate('/profile')}
@@ -410,6 +466,12 @@ const Sidebar = () => {
           </AnimatePresence>
         </div>
       </div>
+      {/* ─── Upgrade Prompt Modal ─── */}
+      <UpgradePrompt
+        isOpen={showUpgrade}
+        onClose={() => setShowUpgrade(false)}
+        feature={upgradeFeature}
+      />
     </motion.aside>
   );
 };

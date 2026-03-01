@@ -189,7 +189,7 @@ function PricingCard3D({ p, onNavigate }: { p: typeof PRICING[0]; onNavigate: (p
       <motion.button
         whileHover={{ scale: 1.04, boxShadow: p.highlighted ? '0 0 30px rgba(13,162,231,0.3)' : undefined }}
         whileTap={{ scale: 0.97 }}
-        onClick={() => onNavigate('/register')}
+        onClick={() => p.cta.startsWith('mailto:') ? window.location.href = p.cta : onNavigate(p.cta)}
         className={`w-full py-3.5 rounded-[10px] text-[15px] font-semibold transition-all duration-300 relative overflow-hidden ${
           p.highlighted
             ? 'bg-gradient-to-r from-[#0da2e7] to-[#0b8ecc] text-white glow-accent-sm'
@@ -266,6 +266,7 @@ const PRICING = [
     features: ['Basic career assessment', '3 career path suggestions', 'Limited micro-learning tasks', 'Community access'],
     btnText: 'Get Started Free',
     highlighted: false,
+    cta: '/register',
   },
   {
     label: 'Pro',
@@ -277,6 +278,7 @@ const PRICING = [
     btnText: 'Start Pro Trial',
     highlighted: true,
     badge: 'Most Popular',
+    cta: '/register?plan=pro',
   },
   {
     label: 'Institution',
@@ -287,6 +289,7 @@ const PRICING = [
     features: ['Everything in Pro', 'Bulk student management', 'Institutional analytics', 'SSO & LMS integration', 'Dedicated success manager'],
     btnText: 'Contact Sales',
     highlighted: false,
+    cta: 'mailto:contact@lakshpath.com?subject=Institution%20Plan%20Inquiry',
   },
 ];
 

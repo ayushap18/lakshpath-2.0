@@ -20,9 +20,13 @@ import ResumeBuilder from './pages/ResumeBuilder'
 import SkillSimulator from './pages/SkillSimulator'
 import PlacementPrep from './pages/PlacementPrep'
 import AILive from './pages/AILive'
+import Pricing from './pages/Pricing'
+import Admin from './pages/Admin'
 import AppShell from './components/layout/AppShell'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 import { ToastProvider } from './contexts/ToastContext'
+import { SubscriptionProvider } from './contexts/SubscriptionContext'
 import './App.css'
 
 // Redirect logged-in users away from auth pages
@@ -53,10 +57,12 @@ function App() {
 
   return (
     <ToastProvider>
+    <SubscriptionProvider>
     <Router>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/pricing" element={<Pricing />} />
 
         {/* Auth Routes */}
         <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
@@ -66,6 +72,11 @@ function App() {
         <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
         <Route path="/quiz-intro" element={<ProtectedRoute><QuizIntro /></ProtectedRoute>} />
         <Route path="/assessment" element={<ProtectedRoute><Assessment /></ProtectedRoute>} />
+
+        {/* Admin route */}
+        <Route path="/admin" element={<ProtectedRoute><AdminRoute><AppShell /></AdminRoute></ProtectedRoute>}>
+          <Route index element={<Admin />} />
+        </Route>
 
         {/* Protected routes inside AppShell */}
         <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
@@ -90,6 +101,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
+    </SubscriptionProvider>
     </ToastProvider>
   )
 }

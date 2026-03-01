@@ -20,10 +20,14 @@ import learningEnhancedRouter from './learningEnhanced.routes';
 import nsqfRouter from './nsqf.routes';
 import featuresRouter from './features.routes';
 import profileRouter from './profile.routes';
+import billingRouter from './billing.routes';
+import adminRouter from './admin.routes';
 
 const router = Router();
 
 router.use('/auth', authLimiter, authRouter);
+router.use('/billing', billingRouter);
+router.use('/admin', adminRouter);
 router.use('/assessment', assessmentRouter);
 router.use('/careers', careersRouter);
 router.use('/roadmap', roadmapRouter);

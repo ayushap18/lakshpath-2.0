@@ -127,18 +127,24 @@ api.interceptors.response.use(
 export const authAPI = {
   login: (email: string, password: string) =>
     api.post('/auth/login', { email, password }),
-  
+
   register: (name: string, email: string, password: string) =>
     api.post('/auth/register', { name, email, password }),
-  
+
   logout: () => api.post('/auth/logout'),
-  
+
   getCurrentUser: () => api.get('/auth/me'),
 
   googleLogin: (credential: string) =>
     api.post('/auth/google', { credential }),
 
   demoLogin: () => api.post('/auth/demo'),
+
+  forgotPassword: (email: string) =>
+    api.post('/auth/forgot-password', { email }),
+
+  resetPassword: (token: string, newPassword: string) =>
+    api.post('/auth/reset-password', { token, newPassword }),
 };
 
 // Assessment API calls
@@ -597,5 +603,37 @@ export const profileAPI = {
     api.get(`/profile/github-preview/${username}`),
 };
 
+
+// ============================================================
+//  BILLING & SUBSCRIPTION API
+// ============================================================
+
+export const billingAPI = {
+  getPlans: () => api.get('/billing/plans'),
+  subscribe: () => api.post('/billing/subscribe'),
+  verifyPayment: (data: {
+    razorpay_payment_id: string;
+    razorpay_subscription_id: string;
+    razorpay_signature: string;
+  }) => api.post('/billing/verify', data),
+  getSubscription: () => api.get('/billing/subscription'),
+  cancelSubscription: () => api.post('/billing/cancel'),
+};
+
+// ============================================================
+//  ADMIN API
+// ============================================================
+
+export const adminAPI = {
+  getStats: () => api.get('/admin/stats'),
+  getUsers: (params?: { page?: number; limit?: number; search?: string; plan?: string }) =>
+    api.get('/admin/users', { params }),
+  getUserDetail: (id: string) => api.get(`/admin/users/${id}`),
+  updateUser: (id: string, data: { role?: string; plan?: string }) =>
+    api.patch(`/admin/users/${id}`, data),
+  getRevenue: (params?: { page?: number; limit?: number }) =>
+    api.get('/admin/revenue', { params }),
+  getUsageStats: () => api.get('/admin/usage'),
+};
 
 export default api;

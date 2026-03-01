@@ -1,3 +1,12 @@
+-- CreateEnum
+CREATE TYPE "Plan" AS ENUM ('FREE', 'PRO');
+
+-- CreateEnum
+CREATE TYPE "SubStatus" AS ENUM ('ACTIVE', 'CANCELLED', 'PAST_DUE', 'TRIALING');
+
+-- CreateEnum
+CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'SUCCESS', 'FAILED', 'REFUNDED');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -7,12 +16,118 @@ CREATE TABLE "User" (
     "passwordHash" TEXT,
     "role" TEXT NOT NULL DEFAULT 'USER',
     "avatarUrl" TEXT,
+    "age" INTEGER,
+    "phone" TEXT,
+    "bio" TEXT,
+    "college" TEXT,
+    "degree" TEXT,
+    "branch" TEXT,
+    "graduationYear" INTEGER,
+    "githubUsername" TEXT,
+    "linkedinUrl" TEXT,
+    "profileSetupCompleted" BOOLEAN NOT NULL DEFAULT false,
     "lastLoginAt" TIMESTAMP(3),
     "loginCount" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Subscription" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "plan" "Plan" NOT NULL DEFAULT 'FREE',
+    "status" "SubStatus" NOT NULL DEFAULT 'ACTIVE',
+    "razorpaySubId" TEXT,
+    "razorpayCustomerId" TEXT,
+    "currentPeriodStart" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "currentPeriodEnd" TIMESTAMP(3),
+    "cancelAtPeriodEnd" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Subscription_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "razorpayPaymentId" TEXT NOT NULL,
+    "razorpayOrderId" TEXT,
+    "razorpaySignature" TEXT,
+    "amount" INTEGER NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'INR',
+    "status" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
+    "plan" "Plan" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UsageLog" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "feature" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UsageLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProfileAnalysis" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "techStack" TEXT,
+    "skillLevels" TEXT,
+    "careerProfile" TEXT,
+    "githubAnalysis" TEXT,
+    "assessmentSummary" TEXT,
+    "overallScore" DOUBLE PRECISION,
+    "level" TEXT NOT NULL DEFAULT 'BEGINNER',
+    "aiInsights" TEXT,
+    "careerMatches" TEXT,
+    "strengthAreas" TEXT,
+    "improvementAreas" TEXT,
+    "recommendations" TEXT,
+    "version" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ProfileAnalysis_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Badge" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "icon" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "rarity" TEXT NOT NULL DEFAULT 'COMMON',
+    "earnedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Badge_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PlacementPrepSession" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "company" TEXT,
+    "targetRole" TEXT,
+    "setupAnswers" TEXT,
+    "questionsData" TEXT,
+    "score" DOUBLE PRECISION,
+    "status" TEXT NOT NULL DEFAULT 'SETUP',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "PlacementPrepSession_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -323,6 +438,15 @@ CREATE TABLE "LinkedInOptimization" (
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "User_googleId_key" ON "User"("googleId");
+CREATE UNIQUE INDEX "Subscription_userId_key" ON "Subscription"("userId");
+CREATE UNIQUE INDEX "Subscription_razorpaySubId_key" ON "Subscription"("razorpaySubId");
+CREATE UNIQUE INDEX "Payment_razorpayPaymentId_key" ON "Payment"("razorpayPaymentId");
+CREATE INDEX "Payment_userId_createdAt_idx" ON "Payment"("userId", "createdAt");
+CREATE INDEX "UsageLog_userId_feature_createdAt_idx" ON "UsageLog"("userId", "feature", "createdAt");
+CREATE INDEX "ProfileAnalysis_userId_createdAt_idx" ON "ProfileAnalysis"("userId", "createdAt");
+CREATE INDEX "Badge_userId_idx" ON "Badge"("userId");
+CREATE UNIQUE INDEX "Badge_userId_name_key" ON "Badge"("userId", "name");
+CREATE INDEX "PlacementPrepSession_userId_createdAt_idx" ON "PlacementPrepSession"("userId", "createdAt");
 CREATE UNIQUE INDEX "LearningRoadmap_quizResultId_key" ON "LearningRoadmap"("quizResultId");
 CREATE UNIQUE INDEX "GoalContract_milestoneId_key" ON "GoalContract"("milestoneId");
 CREATE UNIQUE INDEX "SkillSnapshot_userId_skillName_key" ON "SkillSnapshot"("userId", "skillName");
@@ -334,6 +458,12 @@ CREATE INDEX "RepositoryAnalysis_portfolioId_idx" ON "RepositoryAnalysis"("portf
 CREATE INDEX "LinkedInOptimization_userId_createdAt_idx" ON "LinkedInOptimization"("userId", "createdAt");
 
 -- AddForeignKey
+ALTER TABLE "Subscription" ADD CONSTRAINT "Subscription_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "UsageLog" ADD CONSTRAINT "UsageLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ProfileAnalysis" ADD CONSTRAINT "ProfileAnalysis_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Badge" ADD CONSTRAINT "Badge_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PlacementPrepSession" ADD CONSTRAINT "PlacementPrepSession_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "QuizResult" ADD CONSTRAINT "QuizResult_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "CareerMatch" ADD CONSTRAINT "CareerMatch_quizResultId_fkey" FOREIGN KEY ("quizResultId") REFERENCES "QuizResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "LearningRoadmap" ADD CONSTRAINT "LearningRoadmap_quizResultId_fkey" FOREIGN KEY ("quizResultId") REFERENCES "QuizResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;

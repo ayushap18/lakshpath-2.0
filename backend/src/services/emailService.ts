@@ -206,6 +206,59 @@ export const emailService = {
     });
   },
 
+  async sendPasswordResetEmail(userName: string, userEmail: string, resetUrl: string) {
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #ff9800; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+          .button { display: inline-block; background: #ff9800; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+          .footer { text-align: center; margin-top: 30px; color: #888; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2>🔑 Password Reset Request</h2>
+          </div>
+          <div class="content">
+            <p>Hi ${userName},</p>
+            <p>We received a request to reset your LakshPath password. Click the button below to set a new password:</p>
+            <a href="${resetUrl}" class="button">Reset Password</a>
+            <p style="margin-top: 20px; font-size: 14px; color: #666;">This link expires in 15 minutes. If you didn't request a password reset, please ignore this email.</p>
+          </div>
+          <div class="footer">
+            <p>© 2025 LakshPath. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+      Password Reset Request
+
+      Hi ${userName},
+
+      We received a request to reset your LakshPath password.
+      Click here to reset: ${resetUrl}
+
+      This link expires in 15 minutes.
+      If you didn't request this, please ignore this email.
+    `;
+
+    return this.sendEmail({
+      to: userEmail,
+      subject: '🔑 Reset Your LakshPath Password',
+      text,
+      html,
+    });
+  },
+
   async sendProgressUpdate(userName: string, userEmail: string, milestone: string) {
     const html = `
       <!DOCTYPE html>

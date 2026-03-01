@@ -1,16 +1,20 @@
 import { Router, Request, Response } from 'express';
 import { authenticate } from '@middleware/authenticate';
+import { requirePlan } from '@middleware/requirePlan';
 import { interviewEnhancedService, QUESTION_CATEGORIES } from '@services/interviewEnhancedService';
 
 const router = Router();
 
+// All enhanced interview routes require Pro subscription
+router.use(authenticate, requirePlan('PRO'));
+
 // Get question categories
-router.get('/categories', authenticate, async (req: Request, res: Response) => {
+router.get('/categories', async (req: Request, res: Response) => {
   res.json(QUESTION_CATEGORIES);
 });
 
 // Get code review
-router.post('/code-review', authenticate, async (req: Request, res: Response) => {
+router.post('/code-review', async (req: Request, res: Response) => {
   try {
     const { sessionId, questionId, code, language } = req.body;
 
@@ -30,7 +34,7 @@ router.post('/code-review', authenticate, async (req: Request, res: Response) =>
 });
 
 // Get hint
-router.post('/hint', authenticate, async (req: Request, res: Response) => {
+router.post('/hint', async (req: Request, res: Response) => {
   try {
     const { questionId, hintLevel, currentCode } = req.body;
 
@@ -56,7 +60,7 @@ router.post('/hint', authenticate, async (req: Request, res: Response) => {
 });
 
 // Get follow-up questions
-router.post('/follow-up-questions', authenticate, async (req: Request, res: Response) => {
+router.post('/follow-up-questions', async (req: Request, res: Response) => {
   try {
     const { sessionId, questionId, code, userAnswer } = req.body;
 
@@ -76,7 +80,7 @@ router.post('/follow-up-questions', authenticate, async (req: Request, res: Resp
 });
 
 // Get questions by category
-router.get('/questions/category/:category', authenticate, async (req: Request, res: Response) => {
+router.get('/questions/category/:category', async (req: Request, res: Response) => {
   try {
     const { category } = req.params;
     const { difficulty = 'MEDIUM', limit = 10 } = req.query;
@@ -104,7 +108,7 @@ router.get('/questions/category/:category', authenticate, async (req: Request, r
 });
 
 // Get performance analytics
-router.get('/analytics', authenticate, async (req: Request, res: Response) => {
+router.get('/analytics', async (req: Request, res: Response) => {
   try {
     const analytics = await interviewEnhancedService.getPerformanceAnalytics(
       req.user!.id

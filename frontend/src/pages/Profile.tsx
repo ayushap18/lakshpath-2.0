@@ -11,6 +11,7 @@ import ProgressBar from '../components/ui/ProgressBar';
 import { useProfile } from '../hooks/useProfile';
 import { userAPI, profileAPI, authAPI } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
+import { useSubscription } from '../contexts/SubscriptionContext';
 
 const BADGE_COLORS: Record<string, string> = {
   COMMON: '#94A3B8',
@@ -34,6 +35,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { profile, stats, loading, error } = useProfile();
   const { addToast } = useToast();
+  const { plan, status, currentPeriodEnd, cancelAtPeriodEnd, isProUser, subscribe, cancelSubscription } = useSubscription();
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState('');
@@ -46,6 +48,7 @@ const Profile = () => {
   });
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [settingsMsg, setSettingsMsg] = useState('');
+  const [cancellingPlan, setCancellingPlan] = useState(false);
 
   // Streak/XP state
   const [streakData, setStreakData] = useState<any>(null);
@@ -104,6 +107,28 @@ const Profile = () => {
       addToast('error', 'Save failed', 'Could not update your settings.');
     }
     setSettingsSaving(false);
+  };
+
+  const handleUpgrade = async () => {
+    try {
+      await subscribe();
+      addToast('success', 'Welcome to Pro!', 'Your subscription is now active.');
+    } catch (err: any) {
+      if (err.message !== 'Payment cancelled') {
+        addToast('error', 'Payment failed', 'Could not complete the payment.');
+      }
+    }
+  };
+
+  const handleCancelPlan = async () => {
+    setCancellingPlan(true);
+    try {
+      await cancelSubscription();
+      addToast('info', 'Subscription cancelled', 'You will retain Pro access until the end of your billing period.');
+    } catch {
+      addToast('error', 'Cancel failed', 'Could not cancel your subscription.');
+    }
+    setCancellingPlan(false);
   };
 
   const handleLogout = async () => {
@@ -474,6 +499,65 @@ const Profile = () => {
                     <input value={settings.linkedinUrl} onChange={e => setSettings(s => ({ ...s, linkedinUrl: e.target.value }))} placeholder="https://linkedin.com/in/your-profile" className={inputClass} />
                   </div>
                 </div>
+              </div>
+            </Card>
+
+            {/* Subscription Management */}
+            <Card glass>
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}><Icon name="workspace_premium" size={16} style={{ color: '#8B5CF6' }} /></div>
+                <h3 className="text-[15px] font-bold text-white">Subscription</h3>
+              </div>
+
+              <div className="p-4 rounded-xl" style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: isProUser ? 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(99,102,241,0.15))' : 'rgba(255,255,255,0.05)' }}>
+                      <Icon name={isProUser ? 'diamond' : 'person'} size={20} style={{ color: isProUser ? '#8B5CF6' : '#94A3B8' }} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">{plan} Plan</p>
+                      <p className="text-[11px] text-muted">
+                        {isProUser && currentPeriodEnd
+                          ? `${cancelAtPeriodEnd ? 'Cancels' : 'Renews'} ${new Date(currentPeriodEnd).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                          : status === 'CANCELLED' ? 'Subscription cancelled' : 'Free tier'}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge variant={isProUser ? 'gradient' : 'default'} size="sm">
+                    {isProUser ? 'Active' : 'Free'}
+                  </Badge>
+                </div>
+
+                {isProUser ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted">Monthly price</span>
+                      <span className="text-white font-medium">{'\u20B9'}499/month</span>
+                    </div>
+                    {currentPeriodEnd && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted">Next billing date</span>
+                        <span className="text-white font-medium">{new Date(currentPeriodEnd).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      </div>
+                    )}
+                    {!cancelAtPeriodEnd && (
+                      <button onClick={handleCancelPlan} disabled={cancellingPlan} className="w-full mt-2 py-2.5 rounded-xl border border-white/10 text-white/60 hover:bg-white/5 text-sm font-medium transition-colors disabled:opacity-50">
+                        {cancellingPlan ? 'Cancelling...' : 'Cancel Subscription'}
+                      </button>
+                    )}
+                    {cancelAtPeriodEnd && (
+                      <p className="text-xs text-warning text-center mt-2">Your Pro access continues until the end of the current billing period.</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted">Upgrade to Pro for unlimited AI features, code interviewer, resume builder, and more.</p>
+                    <button onClick={handleUpgrade} className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all">
+                      Upgrade to Pro — {'\u20B9'}499/mo
+                    </button>
+                  </div>
+                )}
               </div>
             </Card>
 

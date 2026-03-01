@@ -1,31 +1,28 @@
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
 WORKDIR /app
-
-# Copy package files and install
 COPY package*.json ./
-RUN npm ci --production=false
-
-# Copy source
+RUN npm ci
 COPY . .
-
-# Generate Prisma client
 RUN npx prisma generate
-
-# Build TypeScript
 RUN npm run build
 
-# Create data directory for SQLite
-RUN mkdir -p /app/data
+FROM node:20-alpine
+WORKDIR /app
 
-# Cleanup dev dependencies
-RUN npm prune --production
+RUN apk add --no-cache dumb-init
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./
+COPY --from=build /app/prisma ./prisma
 
 ENV NODE_ENV=production
 ENV PORT=8080
-ENV DATABASE_URL="file:/app/data/lakshpath.db"
-
 EXPOSE 8080
 
-# Push schema to create DB tables, then start
-CMD ["sh", "-c", "npx prisma db push --skip-generate 2>/dev/null; node dist/server.js"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -qO- http://localhost:8080/health || exit 1
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["sh", "-c", "npx prisma migrate deploy 2>/dev/null || npx prisma db push --skip-generate 2>/dev/null || true && node dist/server.js"]

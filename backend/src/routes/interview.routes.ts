@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { interviewController } from '@controllers/interviewController';
-import { attachUserIfPresent } from '@middleware/authenticate';
+import { authenticate, attachUserIfPresent } from '@middleware/authenticate';
+import { usageLimit } from '@middleware/usageLimit';
 
 const router = Router();
 
@@ -16,8 +17,8 @@ router.post('/coding-question', interviewController.generateCodingQuestion);
 router.post('/analyze-code', interviewController.analyzeCode);
 router.post('/tts', interviewController.textToSpeech);
 
-// Interview session routes
-router.post('/start', interviewController.startSession);
+// Interview session routes — starting a session is usage-limited for free users (2/month)
+router.post('/start', authenticate, usageLimit('mock_interview', 2, 'month'), interviewController.startSession);
 router.post('/answer', interviewController.submitAnswer);
 router.post('/:sessionId/complete', interviewController.completeSession);
 router.get('/:sessionId', interviewController.getSession);

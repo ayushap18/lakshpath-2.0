@@ -13,6 +13,9 @@ const Login = () => {
   const [demoLoading, setDemoLoading] = useState(false);
   const [error, setError] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
 
   const handleSuccess = (data: any) => {
     const { token, user, isNewUser } = data;
@@ -76,6 +79,21 @@ const Login = () => {
       handleSuccess(res.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) return;
+    try {
+      setLoading(true);
+      setError('');
+      await authAPI.forgotPassword(forgotEmail);
+      setForgotSent(true);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to send reset email');
     } finally {
       setLoading(false);
     }
@@ -357,7 +375,11 @@ const Login = () => {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-sm text-[#94A3B8]">Password</label>
-                    <button type="button" className="text-xs text-accent hover:text-accent-light transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => { setForgotMode(true); setForgotEmail(email); setError(''); }}
+                      className="text-xs text-accent hover:text-accent-light transition-colors"
+                    >
                       Forgot?
                     </button>
                   </div>
@@ -414,6 +436,78 @@ const Login = () => {
             </div>
           </motion.div>
         </motion.div>
+
+        {/* Forgot Password Modal */}
+        {forgotMode && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setForgotMode(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-[#1a1a2e] rounded-2xl p-8 max-w-md mx-4 border border-white/10 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {forgotSent ? (
+                <div className="text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center mx-auto mb-4">
+                    <Icon name="mark_email_read" className="text-success text-3xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Check your email</h3>
+                  <p className="text-white/60 text-sm mb-6">
+                    We've sent a password reset link to <strong className="text-white">{forgotEmail}</strong>. The link expires in 15 minutes.
+                  </p>
+                  <button
+                    onClick={() => { setForgotMode(false); setForgotSent(false); }}
+                    className="px-6 py-2.5 rounded-xl bg-accent text-white font-semibold text-sm"
+                  >
+                    Back to Login
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleForgotPassword}>
+                  <h3 className="text-xl font-bold text-white mb-2">Reset your password</h3>
+                  <p className="text-white/60 text-sm mb-6">
+                    Enter your email and we'll send you a link to reset your password.
+                  </p>
+                  {error && (
+                    <div className="rounded-lg p-3 mb-4 flex items-center gap-2 bg-error/10 border border-error/20">
+                      <Icon name="error" size={16} className="text-error" />
+                      <span className="text-sm text-error">{error}</span>
+                    </div>
+                  )}
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    className="field-input mb-4"
+                    autoFocus
+                  />
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => { setForgotMode(false); setError(''); }}
+                      className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 text-white/60 hover:bg-white/5 text-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading || !forgotEmail}
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-accent text-white font-semibold text-sm disabled:opacity-50"
+                    >
+                      {loading ? 'Sending...' : 'Send Reset Link'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

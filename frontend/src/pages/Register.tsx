@@ -1,23 +1,39 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
 import Icon from '../components/ui/Icon';
 import { authAPI } from '../services/api';
+import { useSubscription } from '../contexts/SubscriptionContext';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { subscribe } = useSubscription();
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSuccess = (data: any) => {
+  const handleSuccess = async (data: any) => {
     const { token, user } = data;
     localStorage.setItem('token', token);
     localStorage.setItem('userId', user.id);
     localStorage.setItem('userName', user.name || '');
     localStorage.setItem('userEmail', user.email || '');
     if (user.avatarUrl) localStorage.setItem('userAvatar', user.avatarUrl);
+
+    // Notify subscription context to re-fetch
+    window.dispatchEvent(new Event('subscription-refresh'));
+
+    // If ?plan=pro, open Razorpay checkout before navigating
+    if (searchParams.get('plan') === 'pro') {
+      try {
+        await subscribe();
+      } catch {
+        // If payment cancelled or failed, continue to profile setup anyway
+      }
+    }
+
     navigate('/profile-setup', { replace: true });
   };
 
@@ -250,6 +266,20 @@ const Register = () => {
             <h1 className="text-[28px] font-bold text-white">Create your account</h1>
             <p className="text-[15px] text-[#94A3B8] mt-2">Get started in under 2 minutes</p>
           </motion.div>
+
+          {searchParams.get('plan') === 'pro' && (
+            <motion.div
+              variants={itemVariants}
+              className="rounded-xl p-3 mb-5 flex items-center gap-2"
+              style={{
+                background: 'linear-gradient(145deg, rgba(139,92,246,0.08), rgba(99,102,241,0.04))',
+                border: '1px solid rgba(139,92,246,0.2)',
+              }}
+            >
+              <Icon name="workspace_premium" size={18} style={{ color: '#8B5CF6' }} />
+              <span className="text-sm text-[#A78BFA]">Pro checkout will open after signup</span>
+            </motion.div>
+          )}
 
           {error && (
             <motion.div

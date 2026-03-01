@@ -11,16 +11,41 @@ import { globalLimiter } from '@middleware/rateLimiter';
 
 const app = express();
 
+// Trust proxy in production (Cloud Run, Railway, etc.)
+if (env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+// Security headers — full CSP in production, relaxed in dev
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: env.NODE_ENV === 'production' ? {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://checkout.razorpay.com", "https://accounts.google.com", "https://apis.google.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://accounts.google.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:", "https://*.googleusercontent.com"],
+      connectSrc: ["'self'", "https://lumberjack.razorpay.com", "https://api.razorpay.com", "https://generativelanguage.googleapis.com", "https://accounts.google.com"],
+      frameSrc: ["https://api.razorpay.com", "https://accounts.google.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  } : false,
   crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: env.NODE_ENV === 'production' ? { policy: 'same-origin-allow-popups' as const } : false,
+  hsts: env.NODE_ENV === 'production' ? { maxAge: 31536000, includeSubDomains: true } : false,
 }));
+
 const allowedOrigins = env.CLIENT_ORIGIN
   ?.split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
 const allowAllOrigins = !allowedOrigins || allowedOrigins.length === 0 || allowedOrigins.includes('*');
+
+if (env.NODE_ENV === 'production' && allowAllOrigins) {
+  console.warn('WARNING: CORS allows all origins in production. Set CLIENT_ORIGIN to your frontend domain.');
+}
 
 const corsOptions: CorsOptions = allowAllOrigins
   ? { origin: true, credentials: true }
@@ -52,7 +77,10 @@ app.use(errorHandler);
 
 // Serve frontend static files in all environments
 const publicPath = path.join(__dirname, '..', 'public');
-app.use(express.static(publicPath));
+app.use(express.static(publicPath, {
+  maxAge: env.NODE_ENV === 'production' ? '1y' : 0,
+  etag: true,
+}));
 app.get('*', (_req: Request, res: Response) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });

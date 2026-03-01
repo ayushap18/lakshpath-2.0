@@ -4,6 +4,26 @@ export const googleAuthSchema = z.object({
   credential: z.string().min(1, 'Google credential is required'),
 });
 
+export const emailRegisterSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+export const emailLoginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, 'Token is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
 export const profileSetupSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   age: z.union([z.number().int().min(13).max(100), z.string()]).optional(),

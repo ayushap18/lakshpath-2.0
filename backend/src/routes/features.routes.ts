@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { authenticate, attachUserIfPresent } from '@middleware/authenticate';
+import { requirePlan } from '@middleware/requirePlan';
+import { usageLimit } from '@middleware/usageLimit';
 import prisma from '@lib/prisma';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import env from '@config/env';
@@ -205,7 +207,7 @@ const DEMO = {
 //  CAREER DNA - Generate AI-powered career identity card
 // ============================================================
 
-router.post('/career-dna/generate', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/career-dna/generate', authenticate, usageLimit('career_dna', 1, 'month'), async (req: Request, res: Response) => {
   try {
     const { profile, assessmentData } = req.body;
     const userId = req.user?.id;
@@ -289,7 +291,7 @@ router.get('/career-dna', authenticate, async (req: Request, res: Response) => {
 //  RESUME BUILDER - AI-powered resume generation & enhancement
 // ============================================================
 
-router.post('/resume/generate-summary', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/resume/generate-summary', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { personalInfo, experience, education, skills, targetRole } = req.body;
 
@@ -323,7 +325,7 @@ Make the summary:
   }
 });
 
-router.post('/resume/enhance', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/resume/enhance', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { section, content, targetRole } = req.body;
 
@@ -357,7 +359,7 @@ Enhancement rules:
   }
 });
 
-router.post('/resume/ats-check', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/resume/ats-check', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { resumeData, targetRole } = req.body;
 
@@ -389,7 +391,7 @@ Return JSON:
 //  SKILL GAP SIMULATOR - AI-powered role analysis
 // ============================================================
 
-router.post('/skill-simulator/analyze', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/skill-simulator/analyze', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { targetRole, currentSkills, profile } = req.body;
 
@@ -446,7 +448,7 @@ Provide 10-12 skills. Salary in Indian LPA. Real platforms for resources.`;
   }
 });
 
-router.post('/skill-simulator/compare', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/skill-simulator/compare', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { roleA, roleB, currentSkills } = req.body;
 
@@ -483,7 +485,7 @@ Return JSON:
 //  PLACEMENT PREP - AI-powered placement preparation
 // ============================================================
 
-router.post('/placement/generate-question', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/placement/generate-question', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { category, subCategory, difficulty, company } = req.body;
 
@@ -515,7 +517,7 @@ Make it realistic - similar to actual Indian IT placement exam patterns.`;
   }
 });
 
-router.post('/placement/generate-mock-test', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/placement/generate-mock-test', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { company, questionCount, categories } = req.body;
     const count = questionCount || 10;
@@ -547,7 +549,7 @@ Make questions realistic and similar to actual placement patterns.`;
   }
 });
 
-router.post('/placement/evaluate-answer', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/placement/evaluate-answer', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { question, userAnswer, correctAnswer, category } = req.body;
 
@@ -639,7 +641,7 @@ router.post('/placement/submit-test', authenticate, async (req: Request, res: Re
   }
 });
 
-router.post('/placement/company-prep', attachUserIfPresent, async (req: Request, res: Response) => {
+router.post('/placement/company-prep', authenticate, requirePlan('PRO'), async (req: Request, res: Response) => {
   try {
     const { company, profile } = req.body;
 

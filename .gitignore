@@ -62,6 +62,9 @@ frontend-dev.pid
 # PDFs (keep source .md, not generated PDFs)
 *.pdf
 
+# Credentials master file
+.allapi
+
 # Temporary
 .cache/
 .temp/
