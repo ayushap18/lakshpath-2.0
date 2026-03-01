@@ -546,6 +546,12 @@ export const featuresAPI = {
     api.post('/features/placement/evaluate-answer', data),
   getCompanyPrep: (data: { company: string; profile?: any }) =>
     api.post('/features/placement/company-prep', data),
+  savePlacementSession: (data: { sessionId?: string; company: string; targetRole?: string; questionsData: any; score?: number; status: string }) =>
+    api.post('/features/placement/save-session', data),
+  getPlacementSessions: () =>
+    api.get('/features/placement/sessions'),
+  submitTest: (data: { testId: string; company: string; questionsData: any; score: number; totalQuestions: number; timeTaken: number }) =>
+    api.post('/features/placement/submit-test', data),
 };
 
 // ============================================================

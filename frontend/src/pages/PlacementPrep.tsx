@@ -665,6 +665,22 @@ const PlacementPrep = () => {
   const [timerRunning, setTimerRunning] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Company Prep state
+  const [activeCompanyPrep, setActiveCompanyPrep] = useState<any>(null);
+  const [loadingCompanyPrep, setLoadingCompanyPrep] = useState(false);
+  const [companyPrepQuestion, setCompanyPrepQuestion] = useState<any>(null);
+  const [companyPrepAnswer, setCompanyPrepAnswer] = useState<number | null>(null);
+  const [companyPrepRevealed, setCompanyPrepRevealed] = useState(false);
+  const [expandedRound, setExpandedRound] = useState<number | null>(null);
+
+  // Mock Test state
+  const [activeMockTest, setActiveMockTest] = useState<any>(null);
+  const [mockTestIndex, setMockTestIndex] = useState(0);
+  const [mockTestAnswers, setMockTestAnswers] = useState<Record<string, number>>({});
+  const [mockTestTimeLeft, setMockTestTimeLeft] = useState(0);
+  const [mockTestResult, setMockTestResult] = useState<any>(null);
+  const [loadingMockTest, setLoadingMockTest] = useState(false);
+
   /* Countdown ------------------------------------------------------ */
   const daysRemaining = useMemo(() => getDaysRemaining(PLACEMENT_DATE), []);
 
@@ -726,12 +742,98 @@ const PlacementPrep = () => {
     }
   };
 
+  /* Company Prep handlers ----------------------------------------- */
+  const handleStartCompanyPrep = async (companyName: string) => {
+    setLoadingCompanyPrep(true);
+    try {
+      const res = await featuresAPI.getCompanyPrep({ company: companyName });
+      if (res.data?.data) {
+        setActiveCompanyPrep(res.data.data);
+        setCompanyPrepQuestion(null);
+        setCompanyPrepAnswer(null);
+        setCompanyPrepRevealed(false);
+        setExpandedRound(null);
+      }
+    } catch {
+      setToastMessage('Failed to load prep guide. Try again.');
+    } finally {
+      setLoadingCompanyPrep(false);
+    }
+  };
+
+  const handlePracticeQuestion = async (company: string, category: string, subCategory?: string) => {
+    setCompanyPrepQuestion(null);
+    setCompanyPrepAnswer(null);
+    setCompanyPrepRevealed(false);
+    try {
+      const res = await featuresAPI.generateQuestion({ company, category, subCategory, difficulty: 'medium' });
+      if (res.data?.data) setCompanyPrepQuestion(res.data.data);
+    } catch {
+      setToastMessage('Failed to generate question.');
+    }
+  };
+
+  /* Mock Test handlers -------------------------------------------- */
+  const handleStartMockTest = async (test: MockTest) => {
+    setLoadingMockTest(true);
+    try {
+      const res = await featuresAPI.generateMockTest({ company: test.company, questionCount: Math.min(test.questions, 10), categories: ['Aptitude', 'Technical', 'Verbal'] });
+      if (res.data?.data) {
+        setActiveMockTest(res.data.data);
+        setMockTestIndex(0);
+        setMockTestAnswers({});
+        setMockTestResult(null);
+        const durationMins = parseInt(res.data.data.duration) || 20;
+        setMockTestTimeLeft(durationMins * 60);
+      }
+    } catch {
+      setToastMessage('Failed to generate test. Try again.');
+    } finally {
+      setLoadingMockTest(false);
+    }
+  };
+
+  const handleSubmitMockTest = useCallback(() => {
+    if (!activeMockTest) return;
+    const questions = activeMockTest.questions || [];
+    let correct = 0;
+    let wrong = 0;
+    const breakdown = questions.map((q: any) => {
+      const userAnswer = mockTestAnswers[q.id];
+      const isCorrect = userAnswer === q.correctAnswer;
+      if (userAnswer !== undefined) { if (isCorrect) correct++; else wrong++; }
+      return { ...q, userAnswer, isCorrect };
+    });
+    const score = questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0;
+    setMockTestResult({ score, correct, wrong, unanswered: questions.length - correct - wrong, breakdown });
+    featuresAPI.submitTest({
+      testId: activeMockTest.testId || 'mock',
+      company: activeMockTest.company || 'General',
+      questionsData: breakdown,
+      score,
+      totalQuestions: questions.length,
+      timeTaken: (parseInt(activeMockTest.duration) || 20) * 60 - mockTestTimeLeft,
+    }).catch(() => {});
+  }, [activeMockTest, mockTestAnswers, mockTestTimeLeft]);
+
   /* Toast ---------------------------------------------------------- */
   useEffect(() => {
     if (!toastMessage) return;
     const t = setTimeout(() => setToastMessage(null), 3000);
     return () => clearTimeout(t);
   }, [toastMessage]);
+
+  /* Mock Test Timer ----------------------------------------------- */
+  useEffect(() => {
+    if (!activeMockTest || mockTestResult || mockTestTimeLeft <= 0) return;
+    const id = setInterval(() => {
+      setMockTestTimeLeft((t) => {
+        if (t <= 1) { handleSubmitMockTest(); return 0; }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [activeMockTest, mockTestResult, mockTestTimeLeft, handleSubmitMockTest]);
 
   /* Computed values ------------------------------------------------ */
   const readinessScore = 52;
@@ -837,6 +939,250 @@ const PlacementPrep = () => {
         </div>
       </motion.div>
 
+      {/* ─── COMPANY PREP OVERLAY ─── */}
+      <AnimatePresence>
+        {activeCompanyPrep && (
+          <motion.div variants={fadeScale} initial="hidden" animate="visible" exit="exit" className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" onClick={() => setActiveCompanyPrep(null)}>
+                <Icon name="arrow_back" size={18} /> Back
+              </Button>
+              <h2 className="text-lg font-bold text-white">{activeCompanyPrep.company} Prep Guide</h2>
+            </div>
+
+            {/* Overview */}
+            <Card glass>
+              <p className="text-sm text-secondary mb-3">{activeCompanyPrep.overview?.description}</p>
+              <div className="flex flex-wrap gap-3 text-xs text-secondary">
+                <span className="flex items-center gap-1"><Icon name="currency_rupee" size={14} className="text-accent" /> {activeCompanyPrep.overview?.averagePackage}</span>
+                <span className="flex items-center gap-1"><Icon name="work" size={14} className="text-accent" /> {activeCompanyPrep.overview?.roles?.join(', ')}</span>
+                <span className="flex items-center gap-1"><Icon name="location_on" size={14} className="text-accent" /> {activeCompanyPrep.overview?.locations?.join(', ')}</span>
+              </div>
+            </Card>
+
+            {/* Rounds Accordion */}
+            {activeCompanyPrep.rounds?.map((round: any, ri: number) => (
+              <Card key={ri} glass>
+                <button className="w-full flex items-center justify-between" onClick={() => setExpandedRound(expandedRound === ri ? null : ri)}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(13,162,231,0.1)' }}>
+                      <span className="text-xs font-bold text-accent">{ri + 1}</span>
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-sm font-bold text-white">{round.name}</h4>
+                      <p className="text-[11px] text-muted">{round.duration} &middot; {round.description?.slice(0, 60)}</p>
+                    </div>
+                  </div>
+                  <Icon name={expandedRound === ri ? 'expand_less' : 'expand_more'} size={20} className="text-muted" />
+                </button>
+                <AnimatePresence>
+                  {expandedRound === ri && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="mt-4 space-y-3">
+                        {round.sections?.map((sec: any, si: number) => (
+                          <div key={si} className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                            <div className="flex items-center justify-between mb-2">
+                              <h5 className="text-xs font-semibold text-white">{sec.name}</h5>
+                              <Button variant="ghost" size="sm" onClick={() => handlePracticeQuestion(activeCompanyPrep.company, round.name, sec.name)}>
+                                <Icon name="quiz" size={14} /> Practice
+                              </Button>
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              {sec.topics?.map((topic: string) => (
+                                <span key={topic} className="text-[10px] px-1.5 py-0.5 rounded-md text-muted" style={{ background: 'rgba(255,255,255,0.04)' }}>{topic}</span>
+                              ))}
+                            </div>
+                            {sec.tips?.length > 0 && (
+                              <div className="mt-2 space-y-1">
+                                {sec.tips.map((tip: string, ti: number) => (
+                                  <p key={ti} className="text-[10px] text-secondary flex items-start gap-1"><Icon name="lightbulb" size={12} className="text-warning flex-shrink-0 mt-0.5" /> {tip}</p>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Card>
+            ))}
+
+            {/* Practice Question Card */}
+            {companyPrepQuestion && (
+              <Card glass>
+                <Badge variant="accent" size="sm" className="mb-3">{companyPrepQuestion.category} &middot; {companyPrepQuestion.difficulty}</Badge>
+                <p className="text-sm text-white font-medium mb-4">{companyPrepQuestion.question}</p>
+                <div className="space-y-2 mb-4">
+                  {companyPrepQuestion.options?.map((opt: string, oi: number) => (
+                    <motion.button
+                      key={oi}
+                      className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all border ${
+                        companyPrepRevealed
+                          ? oi === companyPrepQuestion.correctAnswer ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : oi === companyPrepAnswer ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-white/5 border-white/5 text-muted'
+                          : companyPrepAnswer === oi ? 'bg-[#0da2e7]/15 border-[#0da2e7]/40 text-white' : 'bg-white/5 border-white/5 text-secondary hover:bg-white/8'
+                      }`}
+                      onClick={() => { if (!companyPrepRevealed) setCompanyPrepAnswer(oi); }}
+                      whileTap={!companyPrepRevealed ? { scale: 0.98 } : {}}
+                    >
+                      <span className="font-semibold mr-2">{String.fromCharCode(65 + oi)}.</span> {opt}
+                    </motion.button>
+                  ))}
+                </div>
+                {!companyPrepRevealed ? (
+                  <Button variant="primary" size="sm" className="w-full" disabled={companyPrepAnswer === null} onClick={() => setCompanyPrepRevealed(true)}>
+                    Check Answer
+                  </Button>
+                ) : (
+                  <div className="p-3 rounded-xl mt-2" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
+                    <p className="text-xs text-secondary">{companyPrepQuestion.explanation}</p>
+                    {companyPrepQuestion.tip && <p className="text-[11px] text-muted mt-2 flex items-start gap-1"><Icon name="lightbulb" size={12} className="text-warning" /> {companyPrepQuestion.tip}</p>}
+                  </div>
+                )}
+              </Card>
+            )}
+
+            {/* Tips */}
+            {activeCompanyPrep.tips?.length > 0 && (
+              <Card glass>
+                <h3 className="text-sm font-bold text-white mb-3">Pro Tips</h3>
+                <div className="space-y-2">
+                  {activeCompanyPrep.tips.map((tip: string, i: number) => (
+                    <p key={i} className="text-xs text-secondary flex items-start gap-2"><Icon name="check_circle" size={14} className="text-accent flex-shrink-0 mt-0.5" /> {tip}</p>
+                  ))}
+                </div>
+              </Card>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── MOCK TEST OVERLAY ─── */}
+      <AnimatePresence>
+        {activeMockTest && !mockTestResult && (
+          <motion.div variants={fadeScale} initial="hidden" animate="visible" exit="exit" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" size="sm" onClick={() => { setActiveMockTest(null); setMockTestAnswers({}); setMockTestTimeLeft(0); }}>
+                  <Icon name="close" size={18} /> Exit
+                </Button>
+                <h2 className="text-lg font-bold text-white truncate">{activeMockTest.title}</h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge variant="accent">Q{mockTestIndex + 1}/{activeMockTest.questions?.length || 0}</Badge>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: mockTestTimeLeft < 60 ? 'rgba(239,68,68,0.1)' : 'rgba(13,162,231,0.1)', border: `1px solid ${mockTestTimeLeft < 60 ? 'rgba(239,68,68,0.2)' : 'rgba(13,162,231,0.2)'}` }}>
+                  <Icon name="timer" size={16} className={mockTestTimeLeft < 60 ? 'text-error' : 'text-accent'} />
+                  <span className={`text-sm font-mono font-bold ${mockTestTimeLeft < 60 ? 'text-error' : 'text-white'}`}>{formatTimer(mockTestTimeLeft)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Question dots */}
+            <div className="flex flex-wrap gap-1.5">
+              {(activeMockTest.questions || []).map((_: any, i: number) => (
+                <button key={i} onClick={() => setMockTestIndex(i)} className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${i === mockTestIndex ? 'bg-[#0da2e7] text-white' : mockTestAnswers[(activeMockTest.questions[i] as any).id] !== undefined ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-white/5 text-muted border border-white/5'}`}>
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+
+            {/* Current question */}
+            {(() => {
+              const q = activeMockTest.questions?.[mockTestIndex];
+              if (!q) return null;
+              return (
+                <Card glass>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge variant="default" size="sm">{q.category}</Badge>
+                    <Badge variant={difficultyBadge(q.difficulty || 'Medium')} size="sm">{q.difficulty || 'Medium'}</Badge>
+                    {q.timeEstimate && <span className="text-[11px] text-muted">{q.timeEstimate}</span>}
+                  </div>
+                  <p className="text-white text-sm md:text-base leading-relaxed mb-5">{q.question}</p>
+                  <div className="space-y-2.5">
+                    {q.options?.map((opt: string, oi: number) => (
+                      <motion.button key={oi} className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all border ${mockTestAnswers[q.id] === oi ? 'bg-[#0da2e7]/10 border-[#0da2e7]/30 text-white' : 'bg-white/[0.03] border-white/[0.05] text-secondary hover:bg-white/[0.05]'}`} onClick={() => setMockTestAnswers((a) => ({ ...a, [q.id]: oi }))} whileTap={{ scale: 0.98 }}>
+                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 ${mockTestAnswers[q.id] === oi ? 'bg-[#0da2e7]/20 text-[#0da2e7]' : 'bg-white/[0.05] text-muted'}`}>{String.fromCharCode(65 + oi)}</span>
+                        <span className="text-sm">{opt}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </Card>
+              );
+            })()}
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between">
+              <Button variant="secondary" size="sm" disabled={mockTestIndex === 0} onClick={() => setMockTestIndex((i) => i - 1)}>
+                <Icon name="arrow_back" size={16} /> Previous
+              </Button>
+              <span className="text-xs text-muted">{Object.keys(mockTestAnswers).length}/{activeMockTest.questions?.length || 0} answered</span>
+              {mockTestIndex < (activeMockTest.questions?.length || 1) - 1 ? (
+                <Button variant="primary" size="sm" onClick={() => setMockTestIndex((i) => i + 1)}>
+                  Next <Icon name="arrow_forward" size={16} />
+                </Button>
+              ) : (
+                <Button variant="primary" size="sm" onClick={handleSubmitMockTest}>
+                  Submit Test <Icon name="check" size={16} />
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── MOCK TEST RESULTS ─── */}
+      <AnimatePresence>
+        {mockTestResult && (
+          <motion.div variants={fadeScale} initial="hidden" animate="visible" exit="exit" className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" onClick={() => { setActiveMockTest(null); setMockTestResult(null); setMockTestAnswers({}); }}>
+                <Icon name="arrow_back" size={18} /> Back to Tests
+              </Button>
+              <h2 className="text-lg font-bold text-white">Test Results</h2>
+            </div>
+
+            <Card glass glow>
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <ReadinessRing score={mockTestResult.score} />
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="text-xl font-bold text-white mb-1">
+                    {mockTestResult.score >= 70 ? 'Great Job!' : mockTestResult.score >= 40 ? 'Good Effort!' : 'Keep Practicing!'}
+                  </h3>
+                  <p className="text-secondary text-sm mb-3">You scored {mockTestResult.score}% on this test</p>
+                  <div className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-1.5 text-sm"><span className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-secondary">Correct: {mockTestResult.correct}</span></div>
+                    <div className="flex items-center gap-1.5 text-sm"><span className="w-3 h-3 rounded-full bg-red-500" /><span className="text-secondary">Wrong: {mockTestResult.wrong}</span></div>
+                    <div className="flex items-center gap-1.5 text-sm"><span className="w-3 h-3 rounded-full bg-gray-500" /><span className="text-secondary">Unanswered: {mockTestResult.unanswered}</span></div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card glass>
+              <h3 className="text-sm font-bold text-white mb-3">Question Breakdown</h3>
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1 scrollbar-thin">
+                {mockTestResult.breakdown?.map((q: any, i: number) => (
+                  <div key={i} className="p-3 rounded-xl" style={{ background: q.isCorrect ? 'rgba(16,185,129,0.04)' : q.userAnswer !== undefined ? 'rgba(239,68,68,0.04)' : 'rgba(255,255,255,0.02)', border: `1px solid ${q.isCorrect ? 'rgba(16,185,129,0.1)' : q.userAnswer !== undefined ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.04)'}` }}>
+                    <div className="flex items-start gap-2">
+                      <Icon name={q.isCorrect ? 'check_circle' : q.userAnswer !== undefined ? 'cancel' : 'radio_button_unchecked'} size={16} className={`${q.isCorrect ? 'text-success' : q.userAnswer !== undefined ? 'text-error' : 'text-muted'} mt-0.5 flex-shrink-0`} filled />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-white font-medium">{q.question}</p>
+                        <p className="text-[11px] text-muted mt-1">
+                          {q.userAnswer !== undefined ? `Your answer: ${q.options?.[q.userAnswer]}` : 'Not answered'}
+                          {!q.isCorrect && q.correctAnswer !== undefined && ` · Correct: ${q.options?.[q.correctAnswer]}`}
+                        </p>
+                        {q.explanation && <p className="text-[11px] text-secondary mt-1">{q.explanation}</p>}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {(activeCompanyPrep || activeMockTest) ? null : (<>
       {/* ─── 3. COMPANY PREP PACKS ─── */}
       <motion.div variants={item}>
         <div className="flex items-center gap-3 mb-4">
@@ -938,8 +1284,8 @@ const PlacementPrep = () => {
                               <Icon name="currency_rupee" size={14} className="text-muted" />
                               <span>Package: {company.avgPackage}</span>
                             </div>
-                            <Button variant="primary" size="sm" className="w-full mt-2" onClick={() => setToastMessage(`${company.name} prep pack - Coming soon!`)}>
-                              Start {company.name} Prep
+                            <Button variant="primary" size="sm" className="w-full mt-2" onClick={() => handleStartCompanyPrep(company.name)} disabled={loadingCompanyPrep}>
+                              {loadingCompanyPrep ? 'Loading...' : `Start ${company.name} Prep`}
                             </Button>
                           </div>
                         </motion.div>
@@ -1389,7 +1735,7 @@ const PlacementPrep = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setToastMessage('Retake feature coming soon!')}
+                        onClick={() => handleStartMockTest(test)}
                       >
                         Retake
                       </Button>
@@ -1399,10 +1745,11 @@ const PlacementPrep = () => {
                       variant="primary"
                       size="sm"
                       className="w-full"
-                      onClick={() => setToastMessage(`"${test.title}" - Coming soon! Stay tuned.`)}
+                      onClick={() => handleStartMockTest(test)}
+                      disabled={loadingMockTest}
                     >
                       <Icon name="play_arrow" size={16} filled />
-                      Start Test
+                      {loadingMockTest ? 'Generating...' : 'Start Test'}
                     </Button>
                   )}
                 </div>
@@ -1505,6 +1852,7 @@ const PlacementPrep = () => {
           </div>
         </Card>
       </motion.div>
+      </>)}
     </motion.div>
   );
 };

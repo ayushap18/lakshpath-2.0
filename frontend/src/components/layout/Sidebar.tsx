@@ -38,7 +38,7 @@ const NAV_GROUPS = [
       { id: 'portfolio', label: 'Portfolio Hub', icon: 'work_history', path: '/portfolio' },
       { id: 'market', label: 'Market Intel', icon: 'query_stats', path: '/market' },
       { id: 'nsqf', label: 'NSQF Paths', icon: 'account_tree', path: '/nsqf' },
-      { id: 'ai-live', label: 'AI Live 1:1', icon: 'videocam', path: '/ai-live', badge: 'Soon' },
+      { id: 'ai-live', label: 'AI Live 1:1', icon: 'videocam', path: '/ai-live', badge: 'New' },
     ],
   },
 ];

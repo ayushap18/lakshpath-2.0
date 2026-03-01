@@ -585,6 +585,60 @@ Return JSON:
   }
 });
 
+// ---- Placement Session Persistence ----
+
+router.post('/placement/save-session', authenticate, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const { company, targetRole, questionsData, score, status } = req.body;
+
+    const session = await prisma.placementPrepSession.upsert({
+      where: { id: req.body.sessionId || '' },
+      create: { userId, company, targetRole, questionsData: JSON.stringify(questionsData), score, status: status || 'IN_PROGRESS' },
+      update: { questionsData: JSON.stringify(questionsData), score, status, updatedAt: new Date() },
+    });
+
+    res.json({ success: true, data: session });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/placement/sessions', authenticate, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const sessions = await prisma.placementPrepSession.findMany({
+      where: { userId },
+      orderBy: { updatedAt: 'desc' },
+    });
+    res.json({ success: true, data: sessions });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/placement/submit-test', authenticate, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const { testId, company, questionsData, score, totalQuestions, timeTaken } = req.body;
+
+    const session = await prisma.placementPrepSession.create({
+      data: {
+        userId,
+        company: company || 'General',
+        targetRole: testId,
+        questionsData: JSON.stringify(questionsData),
+        score,
+        status: 'COMPLETED',
+      },
+    });
+
+    res.json({ success: true, data: { sessionId: session.id, score, totalQuestions, timeTaken } });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.post('/placement/company-prep', attachUserIfPresent, async (req: Request, res: Response) => {
   try {
     const { company, profile } = req.body;
