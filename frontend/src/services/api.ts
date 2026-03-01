@@ -246,6 +246,24 @@ export const interviewAPI = {
   
   getStats: () =>
     api.get('/interview/stats'),
+
+  generateCodingQuestion: (data: {
+    company: string;
+    difficulty: string;
+    language: string;
+    questionIndex: number;
+  }) => api.post('/interview/coding-question', data),
+
+  analyzeCode: (data: {
+    problemStatement: string;
+    code: string;
+    language: string;
+    testResults: Array<{ input: string; expectedOutput: string; actualOutput: string; passed: boolean }>;
+    timeTaken: number;
+  }) => api.post('/interview/analyze-code', data),
+
+  textToSpeech: (text: string, voiceId?: string) =>
+    api.post('/interview/tts', { text, voiceId }, { responseType: 'arraybuffer' }),
 };
 
 // Portfolio Analysis API
