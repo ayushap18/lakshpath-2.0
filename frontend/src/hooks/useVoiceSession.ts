@@ -94,7 +94,26 @@ export function useVoiceSession() {
 
   /* ── Speech Synthesis ────────────────────────────────────────────── */
 
-  const speak = useCallback((text: string): Promise<void> => {
+  const speak = useCallback(async (text: string): Promise<void> => {
+    setPhase('speaking');
+    // Try ElevenLabs via backend proxy first
+    try {
+      const response = await interviewAPI.textToSpeech(text);
+      if (response.data && !(response.data as any).fallback) {
+        const blob = new Blob([response.data], { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        return new Promise((resolve) => {
+          audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+          audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
+          audio.play().catch(() => resolve());
+        });
+      }
+    } catch {
+      // Fall through to Web Speech API
+    }
+
+    // Fallback: Web Speech API
     return new Promise((resolve) => {
       if (!isSynthesisSupported) { resolve(); return; }
       window.speechSynthesis.cancel();
@@ -102,13 +121,11 @@ export function useVoiceSession() {
       utterance.lang = 'en-IN';
       utterance.rate = 1.0;
       utterance.pitch = 1.0;
-      // Prefer an English voice
       const voices = window.speechSynthesis.getVoices();
       const preferred = voices.find((v) => v.lang.startsWith('en-IN')) || voices.find((v) => v.lang.startsWith('en'));
       if (preferred) utterance.voice = preferred;
       utterance.onend = () => resolve();
       utterance.onerror = () => resolve();
-      setPhase('speaking');
       window.speechSynthesis.speak(utterance);
     });
   }, []);
