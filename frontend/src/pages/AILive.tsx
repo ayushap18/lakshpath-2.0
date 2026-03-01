@@ -1,11 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Editor from '@monaco-editor/react';
 import Icon from '../components/ui/Icon';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
-import ProgressBar from '../components/ui/ProgressBar';
-import { useVoiceSession, isSpeechSupported, isSynthesisSupported } from '../hooks/useVoiceSession';
+import { useToast } from '../contexts/ToastContext';
+import { useProctoring } from '../hooks/useProctoring';
+import { useCodeExecution } from '../hooks/useCodeExecution';
+import { interviewAPI } from '../services/api';
 
 /* ------------------------------------------------------------------ */
 /*  Animation Variants                                                 */
@@ -19,21 +22,59 @@ const item = {
   hidden: { opacity: 0, y: 16, filter: 'blur(4px)' },
   visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { type: 'spring', stiffness: 140, damping: 20 } },
 };
-const fadeScale = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 200, damping: 22 } },
-  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
-};
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
+interface CodingQuestion {
+  problemStatement: string;
+  constraints: string[];
+  examples: Array<{ input: string; output: string; explanation?: string }>;
+  testCases: Array<{ input: string; expectedOutput: string; isHidden: boolean }>;
+  expectedTimeComplexity: string;
+  expectedSpaceComplexity: string;
+  difficulty: string;
+  tags: string[];
+  starterCode?: Record<string, string>;
+}
+
+interface CodeAnalysis {
+  score: number;
+  feedback: string;
+  correctness: number;
+  timeComplexity: string;
+  spaceComplexity: string;
+  codeQuality: number;
+  edgeCaseHandling: number;
+  namingConventions: number;
+  strengths: string[];
+  improvements: string[];
+  optimalApproach?: string;
+}
+
+interface TestCaseResult {
+  input: string;
+  expectedOutput: string;
+  actualOutput: string;
+  passed: boolean;
+}
+
+type InterviewScreen = 'setup' | 'camera-check' | 'interview' | 'results';
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const INTERVIEW_TYPES = [
-  { id: 'TECHNICAL', label: 'Technical', icon: 'code', color: '#0da2e7', desc: 'DSA, system design, CS fundamentals' },
-  { id: 'BEHAVIORAL', label: 'Behavioral', icon: 'psychology', color: '#8B5CF6', desc: 'STAR method, leadership, teamwork' },
-  { id: 'SYSTEM_DESIGN', label: 'System Design', icon: 'architecture', color: '#10B981', desc: 'Scalability, databases, architecture' },
-  { id: 'CODING', label: 'HR Round', icon: 'person', color: '#F59E0B', desc: 'Tell me about yourself, strengths, goals' },
+const COMPANIES = [
+  { id: 'TCS', label: 'TCS', color: '#0da2e7', icon: 'business' },
+  { id: 'INFOSYS', label: 'Infosys', color: '#10B981', icon: 'apartment' },
+  { id: 'WIPRO', label: 'Wipro', color: '#8B5CF6', icon: 'corporate_fare' },
+  { id: 'GOOGLE', label: 'Google', color: '#F59E0B', icon: 'search' },
+  { id: 'AMAZON', label: 'Amazon', color: '#EF4444', icon: 'shopping_cart' },
+  { id: 'MICROSOFT', label: 'Microsoft', color: '#3B82F6', icon: 'window' },
+  { id: 'META', label: 'Meta', color: '#EC4899', icon: 'group' },
+  { id: 'FLIPKART', label: 'Flipkart', color: '#F97316', icon: 'store' },
 ];
 
 const DIFFICULTIES = [
@@ -42,566 +83,1095 @@ const DIFFICULTIES = [
   { id: 'HARD', label: 'Hard', color: '#EF4444' },
 ];
 
+const LANGUAGES = [
+  { id: 'python', label: 'Python' },
+  { id: 'javascript', label: 'JavaScript' },
+  { id: 'java', label: 'Java' },
+  { id: 'cpp', label: 'C++' },
+  { id: 'c', label: 'C' },
+];
+
+const TOTAL_QUESTIONS = 5;
+
+const formatTime = (s: number) => {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+};
+
 /* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
+/*  ScoreRing Component                                                */
 /* ------------------------------------------------------------------ */
 
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+function ScoreRing({ score, size = 120 }: { score: number; size?: number }) {
+  const r = (size - 12) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (score / 100) * circ;
+  const color = score >= 70 ? '#10B981' : score >= 40 ? '#F59E0B' : '#EF4444';
+  return (
+    <svg width={size} height={size} className="transform -rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.08)" strokeWidth={10} fill="none" />
+      <motion.circle
+        cx={size / 2} cy={size / 2} r={r}
+        stroke={color} strokeWidth={10} fill="none" strokeLinecap="round"
+        initial={{ strokeDashoffset: circ }} animate={{ strokeDashoffset: offset }}
+        strokeDasharray={circ} transition={{ duration: 1.5, ease: 'easeOut' }}
+      />
+      <text x={size / 2} y={size / 2} textAnchor="middle" dominantBaseline="central"
+        fill="white" fontSize={size * 0.28} fontWeight="bold" transform={`rotate(90 ${size / 2} ${size / 2})`}>
+        {score}
+      </text>
+    </svg>
+  );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Mic Animation Component                                            */
-/* ------------------------------------------------------------------ */
-
-const MicVisualizer = ({ phase }: { phase: string }) => {
-  const isListening = phase === 'listening';
-  const isProcessing = phase === 'processing';
-  const isSpeaking = phase === 'speaking';
-
-  return (
-    <div className="relative w-32 h-32 flex items-center justify-center">
-      {/* Outer ring */}
-      <motion.div
-        className="absolute inset-0 rounded-full"
-        style={{
-          background: isListening
-            ? 'rgba(13,162,231,0.08)'
-            : isSpeaking
-              ? 'rgba(139,92,246,0.08)'
-              : 'rgba(255,255,255,0.03)',
-          border: `2px solid ${isListening ? 'rgba(13,162,231,0.3)' : isSpeaking ? 'rgba(139,92,246,0.3)' : 'rgba(255,255,255,0.06)'}`,
-        }}
-        animate={
-          isListening
-            ? { scale: [1, 1.1, 1], borderColor: ['rgba(13,162,231,0.3)', 'rgba(13,162,231,0.6)', 'rgba(13,162,231,0.3)'] }
-            : isProcessing
-              ? { rotate: 360 }
-              : {}
-        }
-        transition={
-          isListening
-            ? { duration: 1.5, repeat: Infinity }
-            : isProcessing
-              ? { duration: 2, repeat: Infinity, ease: 'linear' }
-              : {}
-        }
-      />
-
-      {/* Inner circle */}
-      <motion.div
-        className="w-20 h-20 rounded-full flex items-center justify-center"
-        style={{
-          background: isListening
-            ? 'linear-gradient(135deg, rgba(13,162,231,0.2), rgba(13,162,231,0.1))'
-            : isSpeaking
-              ? 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1))'
-              : 'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))',
-          border: `1px solid ${isListening ? 'rgba(13,162,231,0.4)' : isSpeaking ? 'rgba(139,92,246,0.4)' : 'rgba(255,255,255,0.08)'}`,
-        }}
-        animate={isListening ? { scale: [1, 1.05, 1] } : {}}
-        transition={isListening ? { duration: 0.8, repeat: Infinity } : {}}
-      >
-        <Icon
-          name={isListening ? 'mic' : isSpeaking ? 'volume_up' : isProcessing ? 'hourglass_top' : 'mic_off'}
-          size={32}
-          className={isListening ? 'text-accent' : isSpeaking ? 'text-[#8B5CF6]' : 'text-muted'}
-        />
-      </motion.div>
-
-      {/* Pulse rings when listening */}
-      {isListening && (
-        <>
-          <motion.div
-            className="absolute inset-0 rounded-full border border-[#0da2e7]/20"
-            animate={{ scale: [1, 1.4], opacity: [0.4, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
-          />
-          <motion.div
-            className="absolute inset-0 rounded-full border border-[#0da2e7]/15"
-            animate={{ scale: [1, 1.6], opacity: [0.3, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
-          />
-        </>
-      )}
-    </div>
-  );
-};
-
-/* ------------------------------------------------------------------ */
-/*  Score Ring (reused from PlacementPrep style)                       */
-/* ------------------------------------------------------------------ */
-
-const ScoreRing = ({ score }: { score: number }) => {
-  const radius = 50;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (score / 100) * circumference;
-  const color = score >= 70 ? '#10B981' : score >= 40 ? '#F59E0B' : '#EF4444';
-
-  return (
-    <div className="relative w-[120px] h-[120px] flex-shrink-0">
-      <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="8" />
-        <motion.circle
-          cx="60" cy="60" r={radius} fill="none" stroke={color} strokeWidth="8" strokeLinecap="round"
-          strokeDasharray={circumference}
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-          style={{ filter: `drop-shadow(0 0 6px ${color}60)` }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <motion.span className="text-2xl font-extrabold text-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
-          {score}
-        </motion.span>
-        <span className="text-[10px] text-secondary">/100</span>
-      </div>
-    </div>
-  );
-};
-
-/* ================================================================== */
 /*  Main Component                                                     */
-/* ================================================================== */
+/* ------------------------------------------------------------------ */
 
-const AILive = () => {
-  const voice = useVoiceSession();
+export default function AICodeInterview() {
+  const { addToast } = useToast();
 
-  /* Setup state */
-  const [selectedType, setSelectedType] = useState<string>('TECHNICAL');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('MEDIUM');
-  const [role, setRole] = useState('');
-  const [starting, setStarting] = useState(false);
+  // Screen state
+  const [screen, setScreen] = useState<InterviewScreen>('setup');
 
-  const isInSession = !!voice.sessionId && !voice.result;
-  const showResults = !!voice.result;
-  const showSetup = !isInSession && !showResults;
+  // Setup state
+  const [selectedCompany, setSelectedCompany] = useState('TCS');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('MEDIUM');
+  const [selectedLanguage, setSelectedLanguage] = useState('python');
 
-  /* Start handler */
-  const handleStart = useCallback(async () => {
-    setStarting(true);
-    await voice.startSession(selectedType, selectedDifficulty, role || undefined);
-    setStarting(false);
-  }, [voice, selectedType, selectedDifficulty, role]);
+  // Interview state
+  const [questions, setQuestions] = useState<CodingQuestion[]>([]);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [code, setCode] = useState('');
+  const [, setCodes] = useState<string[]>([]);
+  const [analyses, setAnalyses] = useState<(CodeAnalysis | null)[]>([]);
+  const [testResults, setTestResults] = useState<TestCaseResult[]>([]);
+  const [outputTab, setOutputTab] = useState<'output' | 'tests'>('output');
+  const [rawOutput, setRawOutput] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingQuestion, setIsFetchingQuestion] = useState(false);
+  const [autoEndReason, setAutoEndReason] = useState<string | null>(null);
+  const [expandedQ, setExpandedQ] = useState<number | null>(null);
 
-  /* Auto-submit when recognition stops and we have a transcript */
+  // Timer
+  const [sessionTimer, setSessionTimer] = useState(0);
+  const [questionTimers, setQuestionTimers] = useState<number[]>([]);
+  const questionStartRef = useRef(Date.now());
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Speaking state
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Code execution
+  const { executeCode, isExecuting } = useCodeExecution();
+
+  // Proctoring
+  const handleAutoEnd = useCallback(() => {
+    addToast('error', 'Interview Terminated', 'Too many proctoring violations. Interview ended automatically.');
+    setAutoEndReason('Suspicious activity: exceeded maximum violation threshold (5 warnings)');
+    setScreen('results');
+  }, [addToast]);
+
+  // Ref to hold voice-warning handler (breaks circular dep: proctoring → speakText → proctoring)
+  const firstWarningHandlerRef = useRef<(type: string, message: string) => void>();
+
+  const proctoring = useProctoring({
+    enabled: screen === 'camera-check' || screen === 'interview',
+    maxViolations: 5,
+    detectionIntervalMs: 3000,
+    onMaxViolations: handleAutoEnd,
+    onFirstWarning: (type, message) => firstWarningHandlerRef.current?.(type, message),
+  });
+
+  // Start/stop detection during camera-check and interview
   useEffect(() => {
-    if (voice.phase === 'idle' && voice.transcript && voice.sessionId && !voice.evaluation && !voice.result) {
-      voice.submitAnswer();
+    if ((screen === 'camera-check' || screen === 'interview') && proctoring.isCameraActive && proctoring.isModelLoaded) {
+      proctoring.startDetection();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [voice.phase, voice.transcript]);
+    if (screen === 'interview') {
+      proctoring.startAudioMonitoring();
+    }
+    return () => {
+      if (screen !== 'camera-check' && screen !== 'interview') {
+        proctoring.stopDetection();
+      }
+      if (screen !== 'interview') {
+        proctoring.stopAudioMonitoring();
+      }
+    };
+  }, [screen, proctoring.isCameraActive, proctoring.isModelLoaded, proctoring]);
 
-  /* Browser compat check */
-  const browserOk = isSpeechSupported && isSynthesisSupported;
+  // Proctoring warning toasts
+  useEffect(() => {
+    if (proctoring.lastWarning && screen === 'interview') {
+      if (proctoring.isFirstWarning) {
+        addToast('info', 'First Warning', `${proctoring.lastWarning}. Next time will count as a violation.`);
+      } else {
+        const remaining = 5 - proctoring.violationCount;
+        addToast('error', 'Proctoring Violation', `${proctoring.lastWarning}. ${remaining} warning(s) remaining.`);
+      }
+    }
+  }, [proctoring.lastWarning, proctoring.violationCount, proctoring.isFirstWarning, screen, addToast]);
 
-  /* ================================================================ */
-  /*  RENDER                                                           */
-  /* ================================================================ */
+  // Timer
+  useEffect(() => {
+    if (screen === 'interview') {
+      timerRef.current = setInterval(() => setSessionTimer(p => p + 1), 1000);
+      return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [screen]);
 
-  return (
-    <motion.div variants={container} initial="hidden" animate="visible" className="space-y-6 pb-8">
-      {/* ─── Header ─── */}
-      <motion.div variants={item}>
-        <div
-          className="rounded-2xl p-6 md:p-8 relative overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, rgba(13,162,231,0.1), rgba(139,92,246,0.06), rgba(15,23,42,0.9))',
-            border: '1px solid rgba(13,162,231,0.12)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)',
-          }}
-        >
-          <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full opacity-[0.07] pointer-events-none" style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} />
-          <div className="relative z-[1]">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1))', border: '1px solid rgba(13,162,231,0.2)' }}>
-                <Icon name="videocam" size={24} className="text-accent" filled />
-              </div>
-              <Badge variant="gradient" size="sm">Voice-Powered AI</Badge>
+  // Speak question using Web Speech API
+  const speakText = useCallback((text: string) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    setIsSpeaking(true);
+    proctoring.setAISpeaking(true);
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-IN';
+    utterance.rate = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v => v.lang.startsWith('en-IN')) || voices.find(v => v.lang.startsWith('en'));
+    if (preferred) utterance.voice = preferred;
+    utterance.onend = () => { setIsSpeaking(false); proctoring.setAISpeaking(false); };
+    utterance.onerror = () => { setIsSpeaking(false); proctoring.setAISpeaking(false); };
+    window.speechSynthesis.speak(utterance);
+  }, [proctoring]);
+
+  // Wire up first-warning voice handler (now that speakText is available)
+  const FIRST_WARNING_VOICE: Record<string, string> = {
+    TAB_SWITCH: 'Warning. You are switching tabs. Please stay on this window. Next time this will count as a proctoring violation.',
+    MULTIPLE_PERSONS: 'Warning. Multiple persons detected in camera. Only one person is allowed. Next detection will count as a violation.',
+    PHONE_DETECTED: 'Warning. A phone has been detected in the frame. Please remove it immediately. Next time will count as a violation.',
+  };
+
+  useEffect(() => {
+    firstWarningHandlerRef.current = (type: string) => {
+      speakText(FIRST_WARNING_VOICE[type] || 'Warning detected. Next occurrence will count as a violation.');
+    };
+  }, [speakText]);
+
+  // Fetch a question
+  const fetchQuestion = useCallback(async (index: number) => {
+    setIsFetchingQuestion(true);
+    try {
+      const res = await interviewAPI.generateCodingQuestion({
+        company: selectedCompany,
+        difficulty: selectedDifficulty,
+        language: selectedLanguage,
+        questionIndex: index + 1,
+      });
+      const q = (res.data as any).question as CodingQuestion;
+      setQuestions(prev => {
+        const next = [...prev];
+        next[index] = q;
+        return next;
+      });
+      return q;
+    } catch {
+      addToast('error', 'Error', 'Failed to load question. Using fallback.');
+      return null;
+    } finally {
+      setIsFetchingQuestion(false);
+    }
+  }, [selectedCompany, selectedDifficulty, selectedLanguage, addToast]);
+
+  // Start interview (called from camera check)
+  const startInterview = useCallback(async () => {
+    const q = await fetchQuestion(0);
+    if (q) {
+      const starter = q.starterCode?.[selectedLanguage] || '';
+      setCode(starter);
+      setCodes([starter]);
+      setAnalyses([null]);
+      setQuestionTimers([]);
+      questionStartRef.current = Date.now();
+      setScreen('interview');
+      // Speak the first question
+      setTimeout(() => speakText(`Question 1. ${q.problemStatement.substring(0, 300)}`), 500);
+    }
+  }, [fetchQuestion, selectedLanguage, proctoring, speakText]);
+
+  // Prefetch next question
+  useEffect(() => {
+    if (screen === 'interview' && currentIdx < TOTAL_QUESTIONS - 1 && !questions[currentIdx + 1]) {
+      fetchQuestion(currentIdx + 1);
+    }
+  }, [screen, currentIdx, questions, fetchQuestion]);
+
+  // Run code against test cases
+  const handleRunCode = useCallback(async () => {
+    const q = questions[currentIdx];
+    if (!q) return;
+
+    setRawOutput('Running...');
+    setTestResults([]);
+    setOutputTab('tests');
+
+    const allTests = q.testCases;
+
+    try {
+      const results = await Promise.allSettled(
+        allTests.map(tc => executeCode(selectedLanguage, code, tc.input))
+      );
+
+      const tcResults: TestCaseResult[] = results.map((r, i) => {
+        const tc = allTests[i];
+        if (r.status === 'fulfilled') {
+          const actual = r.value.stdout.trim();
+          return {
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+            actualOutput: actual,
+            passed: actual === tc.expectedOutput.trim(),
+          };
+        }
+        return {
+          input: tc.input,
+          expectedOutput: tc.expectedOutput,
+          actualOutput: 'Execution error',
+          passed: false,
+        };
+      });
+
+      setTestResults(tcResults);
+
+      // Build raw output from first visible test
+      const firstResult = results[0];
+      if (firstResult?.status === 'fulfilled') {
+        const r = firstResult.value;
+        setRawOutput(r.stderr ? `${r.stdout}\n\nSTDERR:\n${r.stderr}` : r.stdout || '(no output)');
+      } else {
+        setRawOutput('Execution failed');
+      }
+    } catch {
+      setRawOutput('Code execution service unavailable');
+    }
+  }, [questions, currentIdx, code, selectedLanguage, executeCode]);
+
+  // Submit answer
+  const handleSubmit = useCallback(async () => {
+    const q = questions[currentIdx];
+    if (!q) return;
+
+    setIsSubmitting(true);
+    const timeTaken = Math.round((Date.now() - questionStartRef.current) / 1000);
+    setQuestionTimers(prev => { const n = [...prev]; n[currentIdx] = timeTaken; return n; });
+
+    // Save code for this question
+    setCodes(prev => { const n = [...prev]; n[currentIdx] = code; return n; });
+
+    // Run test cases if not already run
+    let currentTestResults = testResults;
+    if (testResults.length === 0) {
+      try {
+        const results = await Promise.allSettled(
+          q.testCases.map(tc => executeCode(selectedLanguage, code, tc.input))
+        );
+        currentTestResults = results.map((r, i) => {
+          const tc = q.testCases[i];
+          if (r.status === 'fulfilled') {
+            const actual = r.value.stdout.trim();
+            return { input: tc.input, expectedOutput: tc.expectedOutput, actualOutput: actual, passed: actual === tc.expectedOutput.trim() };
+          }
+          return { input: tc.input, expectedOutput: tc.expectedOutput, actualOutput: 'Error', passed: false };
+        });
+        setTestResults(currentTestResults);
+      } catch {
+        currentTestResults = q.testCases.map(tc => ({ input: tc.input, expectedOutput: tc.expectedOutput, actualOutput: 'Error', passed: false }));
+      }
+    }
+
+    // Get AI analysis
+    try {
+      const res = await interviewAPI.analyzeCode({
+        problemStatement: q.problemStatement,
+        code,
+        language: selectedLanguage,
+        testResults: currentTestResults,
+        timeTaken,
+      });
+      const analysis = (res.data as any).analysis as CodeAnalysis;
+      setAnalyses(prev => { const n = [...prev]; n[currentIdx] = analysis; return n; });
+    } catch {
+      const passed = currentTestResults.filter(t => t.passed).length;
+      const total = currentTestResults.length;
+      setAnalyses(prev => {
+        const n = [...prev];
+        n[currentIdx] = {
+          score: total > 0 ? Math.round((passed / total) * 100) : 0,
+          feedback: `${passed}/${total} test cases passed.`,
+          correctness: total > 0 ? Math.round((passed / total) * 100) : 0,
+          timeComplexity: 'N/A', spaceComplexity: 'N/A',
+          codeQuality: 50, edgeCaseHandling: 50, namingConventions: 50,
+          strengths: [], improvements: [],
+        };
+        return n;
+      });
+    }
+
+    setIsSubmitting(false);
+
+    // Move to next question or results
+    if (currentIdx < TOTAL_QUESTIONS - 1) {
+      const nextQ = questions[currentIdx + 1];
+      const nextIdx = currentIdx + 1;
+      setCurrentIdx(nextIdx);
+      const starter = nextQ?.starterCode?.[selectedLanguage] || '';
+      setCode(starter);
+      setTestResults([]);
+      setRawOutput('');
+      setOutputTab('output');
+      questionStartRef.current = Date.now();
+      setCodes(prev => { const n = [...prev]; if (!n[nextIdx]) n[nextIdx] = starter; return n; });
+      setAnalyses(prev => { const n = [...prev]; if (n.length <= nextIdx) n.push(null); return n; });
+      if (nextQ) {
+        setTimeout(() => speakText(`Question ${nextIdx + 1}. ${nextQ.problemStatement.substring(0, 300)}`), 300);
+      }
+    } else {
+      proctoring.stopDetection();
+      proctoring.stopAudioMonitoring();
+      setScreen('results');
+    }
+  }, [questions, currentIdx, code, testResults, selectedLanguage, executeCode, proctoring, speakText]);
+
+  // Skip question
+  const handleSkip = useCallback(() => {
+    setCodes(prev => { const n = [...prev]; n[currentIdx] = code; return n; });
+    setAnalyses(prev => { const n = [...prev]; n[currentIdx] = { score: 0, feedback: 'Skipped', correctness: 0, timeComplexity: 'N/A', spaceComplexity: 'N/A', codeQuality: 0, edgeCaseHandling: 0, namingConventions: 0, strengths: [], improvements: ['Question was skipped'] }; return n; });
+    const timeTaken = Math.round((Date.now() - questionStartRef.current) / 1000);
+    setQuestionTimers(prev => { const n = [...prev]; n[currentIdx] = timeTaken; return n; });
+
+    if (currentIdx < TOTAL_QUESTIONS - 1) {
+      const nextIdx = currentIdx + 1;
+      const nextQ = questions[nextIdx];
+      setCurrentIdx(nextIdx);
+      const starter = nextQ?.starterCode?.[selectedLanguage] || '';
+      setCode(starter);
+      setTestResults([]);
+      setRawOutput('');
+      questionStartRef.current = Date.now();
+      if (nextQ) setTimeout(() => speakText(`Question ${nextIdx + 1}. ${nextQ.problemStatement.substring(0, 300)}`), 300);
+    } else {
+      proctoring.stopDetection();
+      proctoring.stopAudioMonitoring();
+      setScreen('results');
+    }
+  }, [currentIdx, code, questions, selectedLanguage, proctoring, speakText]);
+
+  // Keyboard shortcut: Ctrl+Enter to run code
+  useEffect(() => {
+    if (screen !== 'interview') return;
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleRunCode();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [screen, handleRunCode]);
+
+  // Calculate results
+  const overallScore = analyses.filter(Boolean).length > 0
+    ? Math.round(analyses.filter(Boolean).reduce((s, a) => s + (a?.score || 0), 0) / analyses.filter(Boolean).length)
+    : 0;
+
+  const proctoringStatus = autoEndReason ? 'Terminated' : proctoring.violationCount > 0 ? 'Flagged' : 'Clean';
+
+  /* ================================================================== */
+  /*  SETUP SCREEN                                                       */
+  /* ================================================================== */
+
+  if (screen === 'setup') {
+    return (
+      <motion.div className="p-6 max-w-5xl mx-auto space-y-6" variants={container} initial="hidden" animate="visible">
+        <motion.div variants={item}>
+          <h1 className="text-2xl font-bold text-primary">AI Code Interviewer</h1>
+          <p className="text-secondary mt-1">Real-time proctored coding interview with AI evaluation</p>
+        </motion.div>
+
+        {/* Company Selection */}
+        <motion.div variants={item}>
+          <Card className="p-5">
+            <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-3">Target Company</h3>
+            <div className="grid grid-cols-4 gap-2">
+              {COMPANIES.map(c => (
+                <motion.button key={c.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedCompany(c.id)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-medium transition-all ${
+                    selectedCompany === c.id
+                      ? 'border-accent/50 bg-accent/10 text-accent'
+                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/10 hover:bg-white/[0.04]'
+                  }`}>
+                  <Icon name={c.icon} size={18} style={{ color: c.color }} />
+                  {c.label}
+                </motion.button>
+              ))}
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white mt-3 tracking-tight">AI Live 1:1 Sessions</h1>
-            <p className="text-secondary text-sm md:text-base mt-1.5 max-w-2xl">
-              Practice interviews with real-time voice interaction. Speak your answers naturally and get instant AI evaluation.
-            </p>
+          </Card>
+        </motion.div>
+
+        {/* Difficulty + Language */}
+        <motion.div variants={item} className="grid grid-cols-2 gap-4">
+          <Card className="p-5">
+            <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-3">Difficulty</h3>
+            <div className="flex gap-2">
+              {DIFFICULTIES.map(d => (
+                <motion.button key={d.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedDifficulty(d.id)}
+                  className={`flex-1 px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                    selectedDifficulty === d.id
+                      ? 'border-accent/50 bg-accent/10 text-accent'
+                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/10'
+                  }`}>
+                  <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: d.color }} />
+                  {d.label}
+                </motion.button>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="p-5">
+            <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-3">Language</h3>
+            <div className="flex flex-wrap gap-2">
+              {LANGUAGES.map(l => (
+                <motion.button key={l.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedLanguage(l.id)}
+                  className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                    selectedLanguage === l.id
+                      ? 'border-accent/50 bg-accent/10 text-accent'
+                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/10'
+                  }`}>
+                  {l.label}
+                </motion.button>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* How It Works */}
+        <motion.div variants={item}>
+          <Card className="p-5">
+            <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-3">How It Works</h3>
+            <div className="grid grid-cols-4 gap-4">
+              {[
+                { icon: 'videocam', title: 'Camera On', desc: 'Proctored with AI detection' },
+                { icon: 'code', title: '5 Questions', desc: 'Company-specific coding problems' },
+                { icon: 'play_arrow', title: 'Run & Test', desc: 'Real-time code compilation' },
+                { icon: 'analytics', title: 'AI Review', desc: 'Detailed code analysis & score' },
+              ].map((s, i) => (
+                <div key={i} className="text-center">
+                  <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mx-auto mb-2">
+                    <Icon name={s.icon} size={20} className="text-accent" />
+                  </div>
+                  <p className="text-sm font-medium text-primary">{s.title}</p>
+                  <p className="text-xs text-tertiary mt-0.5">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Proctoring Rules */}
+        <motion.div variants={item}>
+          <Card className="p-4 border-yellow-500/20 bg-yellow-500/5">
+            <div className="flex items-start gap-3">
+              <Icon name="shield" size={20} className="text-yellow-400 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-yellow-300">Proctoring Rules</p>
+                <ul className="text-xs text-yellow-300/70 mt-1 space-y-0.5 list-disc list-inside">
+                  <li>Camera must be on throughout the interview</li>
+                  <li>Only one person allowed in frame</li>
+                  <li>No phones, books, or other devices</li>
+                  <li>Switching tabs/windows will trigger a warning</li>
+                  <li>Talking or voice activity will be monitored</li>
+                  <li>5 violations = automatic termination</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={item}>
+          <Button onClick={() => { proctoring.startCamera(); setScreen('camera-check'); }} className="w-full py-3 text-base">
+            <Icon name="videocam" size={20} className="mr-2" /> Start Interview
+          </Button>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  /* ================================================================== */
+  /*  CAMERA CHECK SCREEN                                                */
+  /* ================================================================== */
+
+  if (screen === 'camera-check') {
+    const allReady = proctoring.isCameraActive && proctoring.isModelLoaded && proctoring.personDetected;
+
+    return (
+      <motion.div className="p-6 max-w-2xl mx-auto space-y-6" variants={container} initial="hidden" animate="visible">
+        <motion.div variants={item}>
+          <h2 className="text-xl font-bold text-primary">Camera Check</h2>
+          <p className="text-secondary text-sm mt-1">Verify your camera and proctoring setup before starting</p>
+        </motion.div>
+
+        <motion.div variants={item}>
+          <Card className="p-4 overflow-hidden">
+            <div className="relative rounded-lg overflow-hidden bg-black aspect-video flex items-center justify-center">
+              <video ref={proctoring.videoRef} autoPlay playsInline muted
+                className="w-full h-full object-cover" style={{ transform: 'scaleX(-1)' }} />
+              {!proctoring.isCameraActive && (
+                <div className="absolute inset-0 flex items-center justify-center bg-surface/80">
+                  <div className="text-center">
+                    <Icon name="videocam_off" size={48} className="text-tertiary mx-auto mb-2" />
+                    <p className="text-secondary text-sm">
+                      {proctoring.cameraError || 'Initializing camera...'}
+                    </p>
+                    {proctoring.cameraError && (
+                      <Button onClick={proctoring.startCamera} className="mt-3 text-sm">
+                        Retry Camera
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Status Checks */}
+        <motion.div variants={item}>
+          <Card className="p-4 space-y-3">
+            {[
+              { label: 'Camera Active', ready: proctoring.isCameraActive, icon: 'videocam' },
+              { label: 'AI Model Loaded', ready: proctoring.isModelLoaded, icon: 'psychology' },
+              { label: 'Person Verified', ready: proctoring.personDetected, icon: 'person' },
+            ].map(check => (
+              <div key={check.label} className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                  check.ready ? 'bg-emerald-500/10' : 'bg-white/5'
+                }`}>
+                  <Icon name={check.ready ? 'check_circle' : 'hourglass_top'}
+                    size={18} className={check.ready ? 'text-emerald-400' : 'text-tertiary animate-spin'} />
+                </div>
+                <span className={`text-sm font-medium ${check.ready ? 'text-emerald-400' : 'text-secondary'}`}>
+                  {check.label}
+                </span>
+                {check.ready && <Badge variant="success" size="sm">Ready</Badge>}
+              </div>
+            ))}
+          </Card>
+        </motion.div>
+
+        <motion.div variants={item} className="flex gap-3">
+          <Button variant="secondary" onClick={() => { proctoring.stopCamera(); setScreen('setup'); }} className="flex-1">
+            Back
+          </Button>
+          <Button onClick={startInterview} disabled={!allReady} className="flex-1">
+            {isFetchingQuestion ? 'Loading...' : 'Begin Interview'}
+          </Button>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  /* ================================================================== */
+  /*  INTERVIEW SCREEN                                                   */
+  /* ================================================================== */
+
+  if (screen === 'interview') {
+    const currentQ = questions[currentIdx];
+    const monacoLang = selectedLanguage === 'cpp' ? 'cpp' : selectedLanguage === 'c' ? 'c' : selectedLanguage;
+    const companyData = COMPANIES.find(c => c.id === selectedCompany);
+
+    return (
+      <div className="h-[calc(100vh-64px)] flex flex-col overflow-hidden">
+        {/* Top Bar */}
+        <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-surface/80 backdrop-blur shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-sm font-mono text-secondary">
+              <Icon name="timer" size={16} className="text-accent" />
+              {formatTime(sessionTimer)}
+            </div>
+            <Badge variant="accent" size="sm">Q {currentIdx + 1}/{TOTAL_QUESTIONS}</Badge>
+            <Badge variant={selectedDifficulty === 'EASY' ? 'success' : selectedDifficulty === 'MEDIUM' ? 'warning' : 'error'} size="sm">
+              {selectedDifficulty}
+            </Badge>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Violation counter */}
+            <div className={`flex items-center gap-1.5 text-sm ${proctoring.violationCount > 0 ? 'text-red-400' : 'text-secondary'}`}>
+              <Icon name="shield" size={16} />
+              {proctoring.violationCount}/5
+            </div>
+
+            {/* Voice indicator */}
+            {proctoring.isVoiceDetected && (
+              <div className="flex items-center gap-1 text-red-400 text-xs">
+                <Icon name="mic" size={14} className="animate-pulse" />
+                Voice
+              </div>
+            )}
+
+            <Button variant="secondary" size="sm" onClick={() => { proctoring.stopDetection(); proctoring.stopAudioMonitoring(); setScreen('results'); }}>
+              End
+            </Button>
           </div>
         </div>
+
+        {/* Main Content */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* LEFT PANEL — Cameras + Question */}
+          <div className="w-[40%] border-r border-white/5 overflow-y-auto p-4 space-y-4">
+
+            {/* AI Interviewer + User Camera */}
+            <div className="flex items-stretch gap-3">
+              {/* AI Interviewer Avatar */}
+              <div className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-accent/5 to-violet-500/5 border border-accent/10">
+                <div className="relative shrink-0">
+                  <div className={`w-14 h-14 rounded-full bg-gradient-to-br from-accent to-violet-500 flex items-center justify-center ${
+                    isSpeaking ? 'ring-2 ring-accent ring-offset-2 ring-offset-[#0a0a0f]' : ''
+                  }`}>
+                    <Icon name="smart_toy" size={24} className="text-white" />
+                  </div>
+                  <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#0a0a0f] ${
+                    isSpeaking ? 'bg-accent animate-pulse' : 'bg-emerald-500'
+                  }`} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-primary">AI Interviewer</p>
+                  <p className="text-xs text-secondary">{companyData?.label || selectedCompany}</p>
+                  {isSpeaking && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <div className="flex gap-0.5">
+                        {[0, 1, 2, 3].map(i => (
+                          <motion.div key={i} className="w-0.5 bg-accent rounded-full"
+                            animate={{ height: [3, 10, 3] }}
+                            transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.12 }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-accent ml-1">Speaking...</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* User Camera */}
+              <div className="relative w-36 rounded-xl overflow-hidden border border-white/10 bg-black shrink-0">
+                <video ref={proctoring.videoRef} autoPlay playsInline muted
+                  className="w-full h-full object-cover" style={{ transform: 'scaleX(-1)' }} />
+                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/60 rounded-full px-1.5 py-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-[8px] font-bold text-white">YOU</span>
+                </div>
+                {proctoring.isVoiceDetected && (
+                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-red-500/80 rounded-full px-2 py-0.5">
+                    <span className="text-[8px] font-bold text-white flex items-center gap-1">
+                      <Icon name="mic" size={10} /> Voice
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Question Content */}
+            {isFetchingQuestion || !currentQ ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                  <Icon name="hourglass_top" size={32} className="text-accent animate-spin mx-auto mb-2" />
+                  <p className="text-secondary text-sm">Generating question...</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {currentQ.tags.map(tag => (
+                    <Badge key={tag} variant="accent" size="sm">{tag}</Badge>
+                  ))}
+                  {isSpeaking && (
+                    <Badge variant="warning" size="sm">
+                      <Icon name="volume_up" size={12} className="mr-1 animate-pulse" /> Speaking
+                    </Badge>
+                  )}
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold text-primary mb-2">Problem Statement</h3>
+                  <p className="text-sm text-secondary whitespace-pre-wrap leading-relaxed">{currentQ.problemStatement}</p>
+                </div>
+
+                {currentQ.constraints.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-semibold text-tertiary uppercase tracking-wider mb-1">Constraints</h4>
+                    <ul className="text-xs text-secondary space-y-0.5 list-disc list-inside">
+                      {currentQ.constraints.map((c, i) => <li key={i}>{c}</li>)}
+                    </ul>
+                  </div>
+                )}
+
+                {currentQ.examples.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-semibold text-tertiary uppercase tracking-wider mb-2">Examples</h4>
+                    {currentQ.examples.map((ex, i) => (
+                      <div key={i} className="mb-3 p-3 rounded-lg bg-white/[0.02] border border-white/5 text-xs">
+                        <div className="mb-1"><span className="text-tertiary">Input:</span> <code className="text-accent">{ex.input}</code></div>
+                        <div className="mb-1"><span className="text-tertiary">Output:</span> <code className="text-emerald-400">{ex.output}</code></div>
+                        {ex.explanation && <div className="text-tertiary mt-1">Explanation: {ex.explanation}</div>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Visible test cases */}
+                <div>
+                  <h4 className="text-xs font-semibold text-tertiary uppercase tracking-wider mb-2">Test Cases</h4>
+                  {currentQ.testCases.filter(t => !t.isHidden).map((tc, i) => (
+                    <div key={i} className="mb-2 p-2 rounded bg-white/[0.02] border border-white/5 text-xs font-mono">
+                      <span className="text-tertiary">In:</span> {tc.input} → <span className="text-emerald-400">{tc.expectedOutput}</span>
+                    </div>
+                  ))}
+                  {currentQ.testCases.filter(t => t.isHidden).length > 0 && (
+                    <p className="text-xs text-tertiary">+ {currentQ.testCases.filter(t => t.isHidden).length} hidden test case(s)</p>
+                  )}
+                </div>
+
+                <div className="text-xs text-tertiary">
+                  <span className="mr-3">Expected: {currentQ.expectedTimeComplexity}</span>
+                  <span>{currentQ.expectedSpaceComplexity}</span>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* RIGHT PANEL — Editor + Output */}
+          <div className="w-[60%] flex flex-col">
+            {/* Monaco Editor */}
+            <div className="flex-1 min-h-0" style={{ height: '60%' }}>
+              <Editor
+                height="100%"
+                language={monacoLang}
+                theme="vs-dark"
+                value={code}
+                onChange={(v) => setCode(v || '')}
+                options={{
+                  fontSize: 14,
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  tabSize: 4,
+                  wordWrap: 'on',
+                  padding: { top: 12 },
+                }}
+                loading={
+                  <div className="flex items-center justify-center h-full bg-[#1e1e1e]">
+                    <Icon name="hourglass_top" size={24} className="text-accent animate-spin" />
+                    <span className="text-secondary ml-2 text-sm">Loading editor...</span>
+                  </div>
+                }
+              />
+            </div>
+
+            {/* Output Console */}
+            <div className="border-t border-white/5" style={{ height: '40%' }}>
+              <div className="flex items-center border-b border-white/5">
+                <button onClick={() => setOutputTab('output')}
+                  className={`px-4 py-2 text-xs font-medium ${outputTab === 'output' ? 'text-accent border-b-2 border-accent' : 'text-tertiary'}`}>
+                  Output
+                </button>
+                <button onClick={() => setOutputTab('tests')}
+                  className={`px-4 py-2 text-xs font-medium ${outputTab === 'tests' ? 'text-accent border-b-2 border-accent' : 'text-tertiary'}`}>
+                  Test Results {testResults.length > 0 && `(${testResults.filter(t => t.passed).length}/${testResults.length})`}
+                </button>
+              </div>
+
+              <div className="overflow-y-auto p-3 h-[calc(100%-33px)]">
+                {outputTab === 'output' ? (
+                  <pre className="text-xs font-mono text-secondary whitespace-pre-wrap">
+                    {rawOutput || 'Run your code to see output...'}
+                  </pre>
+                ) : (
+                  <div className="space-y-2">
+                    {testResults.length === 0 ? (
+                      <p className="text-xs text-tertiary">Run your code to see test results...</p>
+                    ) : (
+                      testResults.map((tr, i) => {
+                        const tc = questions[currentIdx]?.testCases[i];
+                        const isHidden = tc?.isHidden;
+                        return (
+                          <div key={i} className={`p-2 rounded border text-xs ${
+                            tr.passed ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-red-500/20 bg-red-500/5'
+                          }`}>
+                            <div className="flex items-center gap-2 mb-1">
+                              <Icon name={tr.passed ? 'check_circle' : 'cancel'} size={14}
+                                className={tr.passed ? 'text-emerald-400' : 'text-red-400'} />
+                              <span className={`font-medium ${tr.passed ? 'text-emerald-400' : 'text-red-400'}`}>
+                                Test {i + 1} {isHidden ? '(Hidden)' : ''} — {tr.passed ? 'PASS' : 'FAIL'}
+                              </span>
+                            </div>
+                            {!isHidden && (
+                              <div className="font-mono text-tertiary ml-5">
+                                <div>Input: {tr.input}</div>
+                                <div>Expected: {tr.expectedOutput}</div>
+                                {!tr.passed && <div className="text-red-400">Got: {tr.actualOutput}</div>}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Action Bar */}
+        <div className="flex items-center justify-between px-4 py-2 border-t border-white/5 bg-surface/80 backdrop-blur shrink-0">
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" size="sm" onClick={handleRunCode} disabled={isExecuting || !currentQ}>
+              <Icon name="play_arrow" size={16} className="mr-1" />
+              {isExecuting ? 'Running...' : 'Run Code'}
+              <span className="ml-2 text-[10px] text-tertiary">(Ctrl+Enter)</span>
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" size="sm" onClick={handleSkip} disabled={isSubmitting}>
+              Skip
+            </Button>
+            <Button size="sm" onClick={handleSubmit} disabled={isSubmitting || !currentQ}>
+              <Icon name="send" size={16} className="mr-1" />
+              {isSubmitting ? 'Submitting...' : currentIdx < TOTAL_QUESTIONS - 1 ? 'Submit & Next' : 'Submit & Finish'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Proctoring Warning Overlay */}
+        <AnimatePresence>
+          {proctoring.lastWarning && (
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+              className={`fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl backdrop-blur-sm shadow-2xl ${
+                proctoring.isFirstWarning
+                  ? 'bg-amber-500/90 border border-amber-400/50'
+                  : 'bg-red-500/90 border border-red-400/50'
+              }`}>
+              <div className="flex items-center gap-2">
+                <Icon name="warning" size={20} className="text-white" />
+                <span className="text-white text-sm font-medium">
+                  {proctoring.isFirstWarning ? `${proctoring.lastWarning} — this is a warning` : proctoring.lastWarning}
+                </span>
+                {proctoring.isFirstWarning
+                  ? <Badge variant="warning" size="sm">Warning</Badge>
+                  : <Badge variant="error" size="sm">{5 - proctoring.violationCount} left</Badge>
+                }
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
+  /* ================================================================== */
+  /*  RESULTS SCREEN                                                     */
+  /* ================================================================== */
+
+  return (
+    <motion.div className="p-6 max-w-4xl mx-auto space-y-6" variants={container} initial="hidden" animate="visible">
+      <motion.div variants={item}>
+        <h1 className="text-2xl font-bold text-primary">Interview Results</h1>
+        <p className="text-secondary text-sm mt-1">{selectedCompany} — {selectedDifficulty} — {selectedLanguage}</p>
       </motion.div>
 
-      {/* ─── Browser Compat Warning ─── */}
-      {!browserOk && (
+      {/* Auto-end banner */}
+      {autoEndReason && (
         <motion.div variants={item}>
-          <Card glass>
-            <div className="flex items-center gap-3 p-1">
-              <Icon name="warning" size={20} className="text-warning" filled />
+          <Card className="p-4 border-red-500/30 bg-red-500/10">
+            <div className="flex items-center gap-3">
+              <Icon name="gpp_bad" size={24} className="text-red-400" />
               <div>
-                <p className="text-sm text-white font-semibold">Browser Not Fully Supported</p>
-                <p className="text-xs text-secondary">
-                  {!isSpeechSupported ? 'Speech recognition' : 'Speech synthesis'} is not available.
-                  Please use Google Chrome or Microsoft Edge for the best experience.
-                </p>
+                <p className="text-sm font-semibold text-red-400">Interview Terminated</p>
+                <p className="text-xs text-red-300/70">{autoEndReason}</p>
               </div>
             </div>
           </Card>
         </motion.div>
       )}
 
-      {/* ─── Error Toast ─── */}
-      <AnimatePresence>
-        {voice.error && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl text-sm font-semibold text-white"
-            style={{ background: 'rgba(239,68,68,0.9)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 12px 40px rgba(0,0,0,0.4)' }}
-          >
-            <div className="flex items-center gap-2">
-              <Icon name="error" size={18} />
-              {voice.error}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Score + Proctoring Summary */}
+      <motion.div variants={item} className="grid grid-cols-2 gap-4">
+        <Card className="p-6 flex flex-col items-center justify-center">
+          <ScoreRing score={overallScore} size={140} />
+          <p className="text-lg font-bold text-primary mt-3">
+            {overallScore >= 70 ? 'Excellent!' : overallScore >= 40 ? 'Good Effort' : 'Keep Practicing'}
+          </p>
+          <p className="text-xs text-secondary mt-1">
+            {analyses.filter(Boolean).length} of {TOTAL_QUESTIONS} questions evaluated  |  {formatTime(sessionTimer)}
+          </p>
+        </Card>
 
-      {/* ================================================================ */}
-      {/*  SETUP SCREEN                                                     */}
-      {/* ================================================================ */}
-
-      <AnimatePresence mode="wait">
-        {showSetup && (
-          <motion.div key="setup" variants={fadeScale} initial="hidden" animate="visible" exit="exit" className="space-y-5">
-            {/* Interview Type */}
-            <motion.div variants={item}>
-              <h2 className="text-sm font-bold text-white mb-3">Select Interview Type</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {INTERVIEW_TYPES.map((t) => (
-                  <motion.button
-                    key={t.id}
-                    onClick={() => setSelectedType(t.id)}
-                    className={`p-4 rounded-xl text-left transition-all border ${selectedType === t.id ? 'ring-1' : ''}`}
-                    style={{
-                      background: selectedType === t.id ? `${t.color}10` : 'rgba(255,255,255,0.03)',
-                      border: `1px solid ${selectedType === t.id ? `${t.color}40` : 'rgba(255,255,255,0.06)'}`,
-                      ...(selectedType === t.id ? { ringColor: `${t.color}30` } : {}),
-                    }}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                  >
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-2" style={{ background: `${t.color}15`, border: `1px solid ${t.color}25` }}>
-                      <Icon name={t.icon} size={20} style={{ color: t.color }} />
-                    </div>
-                    <p className="text-sm font-bold text-white">{t.label}</p>
-                    <p className="text-[11px] text-muted mt-0.5">{t.desc}</p>
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Difficulty */}
-            <motion.div variants={item}>
-              <h2 className="text-sm font-bold text-white mb-3">Select Difficulty</h2>
-              <div className="flex gap-3">
-                {DIFFICULTIES.map((d) => (
-                  <motion.button
-                    key={d.id}
-                    onClick={() => setSelectedDifficulty(d.id)}
-                    className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold transition-all border`}
-                    style={{
-                      background: selectedDifficulty === d.id ? `${d.color}12` : 'rgba(255,255,255,0.03)',
-                      border: `1px solid ${selectedDifficulty === d.id ? `${d.color}40` : 'rgba(255,255,255,0.06)'}`,
-                      color: selectedDifficulty === d.id ? d.color : 'rgba(255,255,255,0.5)',
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {d.label}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Role (optional) */}
-            <motion.div variants={item}>
-              <h2 className="text-sm font-bold text-white mb-3">Target Role <span className="text-muted font-normal">(optional)</span></h2>
-              <input
-                type="text"
-                placeholder="e.g. Full Stack Developer, Data Scientist..."
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-muted bg-white/[0.03] border border-white/[0.06] focus:border-[#0da2e7]/40 focus:outline-none transition-all"
-              />
-            </motion.div>
-
-            {/* Start Button */}
-            <motion.div variants={item}>
-              <Button variant="primary" size="lg" className="w-full" onClick={handleStart} loading={starting} disabled={!browserOk || starting}>
-                <Icon name="mic" size={20} />
-                Start Live Session
-              </Button>
-              <p className="text-center text-[11px] text-muted mt-2">
-                5 questions · Voice-based · Adaptive difficulty · Instant AI feedback
-              </p>
-            </motion.div>
-
-            {/* How it works */}
-            <motion.div variants={item}>
-              <Card glass>
-                <h3 className="text-sm font-bold text-white mb-3">How It Works</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                  {[
-                    { icon: 'play_circle', title: 'Start', desc: 'AI asks you a question via voice' },
-                    { icon: 'mic', title: 'Speak', desc: 'Answer naturally using your microphone' },
-                    { icon: 'smart_toy', title: 'Evaluate', desc: 'AI scores and provides instant feedback' },
-                    { icon: 'analytics', title: 'Improve', desc: 'Get detailed session analytics' },
-                  ].map((step, i) => (
-                    <div key={i} className="flex flex-col items-center text-center p-3">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style={{ background: 'rgba(13,162,231,0.1)', border: '1px solid rgba(13,162,231,0.15)' }}>
-                        <Icon name={step.icon} size={20} className="text-accent" />
-                      </div>
-                      <p className="text-xs font-bold text-white">{step.title}</p>
-                      <p className="text-[10px] text-muted mt-0.5">{step.desc}</p>
-                    </div>
-                  ))}
+        <Card className="p-6">
+          <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Proctoring Report</h3>
+          <div className="flex items-center gap-2 mb-4">
+            <Icon name={proctoringStatus === 'Clean' ? 'verified_user' : 'gpp_bad'} size={24}
+              className={proctoringStatus === 'Clean' ? 'text-emerald-400' : 'text-red-400'} />
+            <Badge variant={proctoringStatus === 'Clean' ? 'success' : 'error'}>{proctoringStatus}</Badge>
+          </div>
+          <div className="space-y-2">
+            {['TAB_SWITCH', 'MULTIPLE_PERSONS', 'NO_PERSON', 'PHONE_DETECTED', 'SUSPICIOUS_OBJECT', 'VOICE_DETECTED'].map(type => {
+              const count = proctoring.violations.filter(v => v.type === type).length;
+              if (count === 0) return null;
+              return (
+                <div key={type} className="flex items-center justify-between text-xs">
+                  <span className="text-secondary">{type.replace(/_/g, ' ')}</span>
+                  <Badge variant="error" size="sm">{count}</Badge>
                 </div>
-              </Card>
-            </motion.div>
-          </motion.div>
-        )}
-
-        {/* ================================================================ */}
-        {/*  LIVE SESSION SCREEN                                              */}
-        {/* ================================================================ */}
-
-        {isInSession && (
-          <motion.div key="session" variants={fadeScale} initial="hidden" animate="visible" exit="exit" className="space-y-5">
-            {/* Status Bar */}
-            <motion.div variants={item}>
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-3">
-                  <Badge variant="accent">Q{voice.currentIdx + 1} of {voice.totalQuestions}</Badge>
-                  <Badge variant={voice.difficulty === 'HARD' ? 'error' : voice.difficulty === 'MEDIUM' ? 'warning' : 'success'} size="sm">
-                    {voice.difficulty}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(13,162,231,0.08)', border: '1px solid rgba(13,162,231,0.15)' }}>
-                    <Icon name="timer" size={16} className="text-accent" />
-                    <span className="text-sm font-mono font-bold text-white">{formatTime(voice.sessionTimer)}</span>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={voice.endSession}>
-                    <Icon name="stop" size={16} /> End Session
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Question Display */}
-            <motion.div variants={item}>
-              <Card glass glow>
-                <div className="flex flex-col items-center py-4">
-                  {/* Question text */}
-                  {voice.currentQuestion && (
-                    <div className="text-center mb-6 max-w-2xl">
-                      <p className="text-xs text-muted mb-2">{voice.currentQuestion.category || voice.currentQuestion.type}</p>
-                      <p className="text-white text-base md:text-lg leading-relaxed">{voice.currentQuestion.question}</p>
-                    </div>
-                  )}
-
-                  {/* Mic Visualizer */}
-                  <MicVisualizer phase={voice.phase} />
-
-                  {/* Phase indicator */}
-                  <p className="text-sm text-secondary mt-4 font-medium">
-                    {voice.phase === 'listening' && 'Listening... speak your answer'}
-                    {voice.phase === 'processing' && 'Evaluating your answer...'}
-                    {voice.phase === 'speaking' && 'AI is speaking...'}
-                    {voice.phase === 'idle' && !voice.evaluation && 'Ready'}
-                    {voice.phase === 'idle' && voice.evaluation && 'Answer evaluated'}
-                  </p>
-
-                  {/* Live Transcript */}
-                  {(voice.transcript || voice.interimTranscript) && (
-                    <div className="mt-4 w-full max-w-2xl p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Icon name="subtitles" size={14} className="text-accent" />
-                        <span className="text-[11px] text-muted font-semibold uppercase tracking-wider">Your Answer</span>
-                      </div>
-                      <p className="text-sm text-white leading-relaxed">
-                        {voice.transcript}
-                        {voice.interimTranscript && <span className="text-muted italic"> {voice.interimTranscript}</span>}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Evaluation Result */}
-                  <AnimatePresence>
-                    {voice.evaluation && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="w-full max-w-2xl overflow-hidden mt-4">
-                        <div className="p-4 rounded-xl" style={{ background: voice.evaluation.score >= 60 ? 'rgba(16,185,129,0.06)' : 'rgba(239,68,68,0.06)', border: `1px solid ${voice.evaluation.score >= 60 ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}` }}>
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className={`text-2xl font-extrabold ${voice.evaluation.score >= 60 ? 'text-success' : 'text-error'}`}>{voice.evaluation.score}/100</span>
-                            <Badge variant={voice.evaluation.score >= 60 ? 'success' : 'error'} size="sm">
-                              {voice.evaluation.score >= 80 ? 'Excellent' : voice.evaluation.score >= 60 ? 'Good' : voice.evaluation.score >= 40 ? 'Fair' : 'Needs Work'}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-secondary mb-3">{voice.evaluation.feedback}</p>
-                          {voice.evaluation.strengths.length > 0 && (
-                            <div className="mb-2">
-                              <p className="text-[11px] text-success font-semibold mb-1">Strengths:</p>
-                              {voice.evaluation.strengths.map((s, i) => (
-                                <p key={i} className="text-[11px] text-secondary flex items-start gap-1"><Icon name="check" size={12} className="text-success mt-0.5" /> {s}</p>
-                              ))}
-                            </div>
-                          )}
-                          {voice.evaluation.improvements.length > 0 && (
-                            <div>
-                              <p className="text-[11px] text-warning font-semibold mb-1">Improvements:</p>
-                              {voice.evaluation.improvements.map((s, i) => (
-                                <p key={i} className="text-[11px] text-secondary flex items-start gap-1"><Icon name="lightbulb" size={12} className="text-warning mt-0.5" /> {s}</p>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </Card>
-            </motion.div>
-
-            {/* Controls */}
-            <motion.div variants={item}>
-              <div className="flex items-center justify-center gap-3">
-                {voice.phase === 'listening' ? (
-                  <Button variant="secondary" size="md" onClick={voice.stopListening}>
-                    <Icon name="stop" size={18} /> Stop Recording
-                  </Button>
-                ) : voice.evaluation ? (
-                  <Button variant="primary" size="md" onClick={voice.nextQuestion}>
-                    {voice.currentIdx < voice.totalQuestions - 1 ? (
-                      <>Next Question <Icon name="arrow_forward" size={18} /></>
-                    ) : (
-                      <>Finish Session <Icon name="check_circle" size={18} /></>
-                    )}
-                  </Button>
-                ) : voice.phase === 'idle' && !voice.evaluation && voice.transcript ? (
-                  <Button variant="primary" size="md" onClick={voice.submitAnswer}>
-                    <Icon name="send" size={18} /> Submit Answer
-                  </Button>
-                ) : null}
-
-                {voice.phase !== 'processing' && voice.phase !== 'speaking' && (
-                  <Button variant="ghost" size="md" onClick={voice.skipQuestion}>
-                    <Icon name="skip_next" size={18} /> Skip
-                  </Button>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Progress */}
-            <motion.div variants={item}>
-              <div className="flex items-center gap-3">
-                <ProgressBar value={((voice.currentIdx + (voice.evaluation ? 1 : 0)) / voice.totalQuestions) * 100} color="accent" size="sm" className="flex-1" />
-                <span className="text-[11px] text-muted">{voice.currentIdx + (voice.evaluation ? 1 : 0)}/{voice.totalQuestions} completed</span>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-
-        {/* ================================================================ */}
-        {/*  RESULTS SCREEN                                                   */}
-        {/* ================================================================ */}
-
-        {showResults && voice.result && (
-          <motion.div key="results" variants={fadeScale} initial="hidden" animate="visible" exit="exit" className="space-y-5">
-            {/* Score Overview */}
-            <motion.div variants={item}>
-              <Card glass glow>
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                  <ScoreRing score={voice.result.overallScore} />
-                  <div className="flex-1 text-center sm:text-left">
-                    <h2 className="text-xl font-bold text-white mb-1">
-                      {voice.result.overallScore >= 70 ? 'Great Performance!' : voice.result.overallScore >= 40 ? 'Good Effort!' : 'Keep Practicing!'}
-                    </h2>
-                    <p className="text-secondary text-sm mb-3">{voice.result.feedback}</p>
-                    <div className="flex flex-wrap gap-3 text-xs">
-                      <div className="flex items-center gap-1.5"><Icon name="timer" size={14} className="text-accent" /><span className="text-secondary">Duration: {formatTime(voice.result.duration)}</span></div>
-                      <div className="flex items-center gap-1.5"><Icon name="help" size={14} className="text-accent" /><span className="text-secondary">{voice.result.qaHistory.length} Questions</span></div>
-                      <div className="flex items-center gap-1.5"><Icon name="speed" size={14} className="text-accent" /><span className="text-secondary">Final: {voice.difficulty}</span></div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-
-            {/* Speech Analysis */}
-            {voice.result.speechAnalysis && (
-              <motion.div variants={item}>
-                <Card glass>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Icon name="record_voice_over" size={18} className="text-accent" />
-                    <h3 className="text-sm font-bold text-white">Speech Analysis</h3>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {[
-                      { label: 'Confidence', value: voice.result.speechAnalysis.confidence || 'N/A', icon: 'sentiment_satisfied' },
-                      { label: 'Clarity', value: voice.result.speechAnalysis.clarity || 'N/A', icon: 'visibility' },
-                      { label: 'Pace', value: voice.result.speechAnalysis.pace || 'N/A', icon: 'speed' },
-                      { label: 'Filler Words', value: voice.result.speechAnalysis.fillerWords || 'N/A', icon: 'edit_note' },
-                    ].map((m) => (
-                      <div key={m.label} className="p-3 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                        <Icon name={m.icon} size={18} className="text-accent mx-auto mb-1" />
-                        <p className="text-xs font-bold text-white">{typeof m.value === 'number' ? `${m.value}%` : m.value}</p>
-                        <p className="text-[10px] text-muted">{m.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </motion.div>
+              );
+            })}
+            {proctoring.violationCount === 0 && (
+              <p className="text-xs text-emerald-400">No violations detected</p>
             )}
+          </div>
+        </Card>
+      </motion.div>
 
-            {/* Per-Question Breakdown */}
-            <motion.div variants={item}>
-              <Card glass>
-                <h3 className="text-sm font-bold text-white mb-3">Question-by-Question Breakdown</h3>
-                <div className="space-y-3">
-                  {voice.result.qaHistory.map((qa, i) => (
-                    <div key={i} className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                      <div className="flex items-start justify-between gap-3 mb-2">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-white">Q{i + 1}: {qa.question.question}</p>
-                        </div>
-                        {qa.evaluation && (
-                          <Badge variant={qa.evaluation.score >= 60 ? 'success' : qa.evaluation.score >= 40 ? 'warning' : 'error'} size="sm">
-                            {qa.evaluation.score}/100
-                          </Badge>
+      {/* Code Quality Summary */}
+      {analyses.filter(Boolean).length > 0 && (
+        <motion.div variants={item}>
+          <Card className="p-5">
+            <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-3">Code Quality Averages</h3>
+            <div className="grid grid-cols-4 gap-4">
+              {[
+                { label: 'Correctness', key: 'correctness' },
+                { label: 'Code Quality', key: 'codeQuality' },
+                { label: 'Edge Cases', key: 'edgeCaseHandling' },
+                { label: 'Naming', key: 'namingConventions' },
+              ].map(m => {
+                const vals = analyses.filter(Boolean).map(a => (a as any)[m.key] || 0);
+                const avg = vals.length > 0 ? Math.round(vals.reduce((s, v) => s + v, 0) / vals.length) : 0;
+                const color = avg >= 70 ? 'text-emerald-400' : avg >= 40 ? 'text-yellow-400' : 'text-red-400';
+                return (
+                  <div key={m.key} className="text-center">
+                    <p className={`text-2xl font-bold ${color}`}>{avg}</p>
+                    <p className="text-xs text-tertiary mt-1">{m.label}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Per-Question Breakdown */}
+      <motion.div variants={item}>
+        <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-3">Question Breakdown</h3>
+        <div className="space-y-3">
+          {questions.map((q, i) => {
+            if (!q) return null;
+            const a = analyses[i];
+            const isExpanded = expandedQ === i;
+            return (
+              <Card key={i} className="overflow-hidden">
+                <button onClick={() => setExpandedQ(isExpanded ? null : i)}
+                  className="w-full p-4 flex items-center justify-between text-left">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      a && a.score >= 70 ? 'bg-emerald-500/10' : a && a.score >= 40 ? 'bg-yellow-500/10' : 'bg-red-500/10'
+                    }`}>
+                      <span className={`text-sm font-bold ${
+                        a && a.score >= 70 ? 'text-emerald-400' : a && a.score >= 40 ? 'text-yellow-400' : 'text-red-400'
+                      }`}>{a?.score ?? '-'}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-primary truncate max-w-md">
+                        Q{i + 1}: {q.problemStatement.substring(0, 80)}...
+                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {q.tags.map(t => <Badge key={t} variant="accent" size="sm">{t}</Badge>)}
+                        {questionTimers[i] && (
+                          <span className="text-[10px] text-tertiary">{formatTime(questionTimers[i])}</span>
                         )}
                       </div>
-                      <p className="text-[11px] text-secondary mb-1">
-                        <span className="text-muted">Your answer:</span> {qa.transcript === '(skipped)' ? <span className="italic text-muted">Skipped</span> : qa.transcript}
-                      </p>
-                      {qa.evaluation && (
-                        <p className="text-[11px] text-muted">{qa.evaluation.feedback}</p>
-                      )}
-                      {qa.timeTaken > 0 && (
-                        <p className="text-[10px] text-muted mt-1 flex items-center gap-1"><Icon name="timer" size={10} /> {qa.timeTaken}s</p>
-                      )}
                     </div>
-                  ))}
-                </div>
-              </Card>
-            </motion.div>
+                  </div>
+                  <Icon name={isExpanded ? 'expand_less' : 'expand_more'} size={20} className="text-tertiary" />
+                </button>
 
-            {/* Start New */}
-            <motion.div variants={item} className="flex justify-center">
-              <Button variant="primary" size="lg" onClick={voice.reset}>
-                <Icon name="refresh" size={20} /> Start New Session
-              </Button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                <AnimatePresence>
+                  {isExpanded && a && (
+                    <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}
+                      className="overflow-hidden">
+                      <div className="px-4 pb-4 space-y-3">
+                        <p className="text-sm text-secondary">{a.feedback}</p>
+                        <div className="grid grid-cols-3 gap-3 text-xs">
+                          <div className="p-2 rounded bg-white/[0.02] border border-white/5">
+                            <p className="text-tertiary">Time Complexity</p>
+                            <p className="text-primary font-mono">{a.timeComplexity}</p>
+                          </div>
+                          <div className="p-2 rounded bg-white/[0.02] border border-white/5">
+                            <p className="text-tertiary">Space Complexity</p>
+                            <p className="text-primary font-mono">{a.spaceComplexity}</p>
+                          </div>
+                          <div className="p-2 rounded bg-white/[0.02] border border-white/5">
+                            <p className="text-tertiary">Correctness</p>
+                            <p className="text-primary font-mono">{a.correctness}%</p>
+                          </div>
+                        </div>
+                        {a.strengths.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold text-emerald-400 mb-1">Strengths</p>
+                            <ul className="text-xs text-secondary space-y-0.5 list-disc list-inside">
+                              {a.strengths.map((s, si) => <li key={si}>{s}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                        {a.improvements.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold text-yellow-400 mb-1">Improvements</p>
+                            <ul className="text-xs text-secondary space-y-0.5 list-disc list-inside">
+                              {a.improvements.map((im, ii) => <li key={ii}>{im}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                        {a.optimalApproach && (
+                          <div className="p-2 rounded bg-accent/5 border border-accent/20 text-xs text-accent">
+                            <Icon name="lightbulb" size={14} className="inline mr-1" />
+                            {a.optimalApproach}
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Card>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      <motion.div variants={item}>
+        <Button onClick={() => {
+          setScreen('setup');
+          setQuestions([]);
+          setCodes([]);
+          setAnalyses([]);
+          setTestResults([]);
+          setCurrentIdx(0);
+          setSessionTimer(0);
+          setAutoEndReason(null);
+          setRawOutput('');
+          setCode('');
+          setExpandedQ(null);
+          proctoring.stopCamera();
+        }} className="w-full py-3">
+          Start New Interview
+        </Button>
+      </motion.div>
     </motion.div>
   );
-};
-
-export default AILive;
+}
