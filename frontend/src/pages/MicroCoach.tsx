@@ -121,7 +121,8 @@ const MicroCoach = () => {
   const loadNextAction = async () => {
     try {
       const res = await learningEnhancedAPI.getNextAction();
-      setNextAction(res.data);
+      // Backend wraps in { success, data }
+      setNextAction(res.data?.data || res.data);
     } catch {
       // ignore
     }
@@ -155,9 +156,11 @@ const MicroCoach = () => {
   const handleExplain = async () => {
     if (!concept.trim()) return;
     setExplaining(true);
+    setError('');
     try {
       const res = await learningEnhancedAPI.explainConcept({ concept: concept.trim(), depth });
-      setExplanation(res.data);
+      // Backend wraps in { success, data }
+      setExplanation(res.data?.data || res.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to explain concept');
     }
@@ -284,7 +287,7 @@ const MicroCoach = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="bg-inset rounded-xl p-4 border border-white/5 overflow-hidden"
+                className="bg-inset rounded-xl p-4 border border-white/5 overflow-hidden space-y-3"
               >
                 <motion.p
                   className="text-sm text-white leading-relaxed"
@@ -292,8 +295,26 @@ const MicroCoach = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.15 }}
                 >
-                  {explanation.explanation || explanation.content || JSON.stringify(explanation)}
+                  {explanation.explanation || explanation.summary || explanation.content || (typeof explanation === 'string' ? explanation : JSON.stringify(explanation))}
                 </motion.p>
+                {explanation.keyPoints && Array.isArray(explanation.keyPoints) && explanation.keyPoints.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-[#0da2e7] mb-1">Key Points</p>
+                    <ul className="list-disc list-inside space-y-1">
+                      {explanation.keyPoints.map((kp: string, ki: number) => (
+                        <li key={ki} className="text-xs text-[#94A3B8]">{kp}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {explanation.analogies && Array.isArray(explanation.analogies) && explanation.analogies.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-[#0da2e7] mb-1">Analogies</p>
+                    {explanation.analogies.map((a: string, ai: number) => (
+                      <p key={ai} className="text-xs text-[#94A3B8]">{a}</p>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

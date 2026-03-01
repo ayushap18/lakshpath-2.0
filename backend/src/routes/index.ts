@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authLimiter, aiLimiter } from '@middleware/rateLimiter';
 
 import assessmentRouter from './assessment.routes';
 import careersRouter from './careers.routes';
@@ -22,24 +23,24 @@ import profileRouter from './profile.routes';
 
 const router = Router();
 
-router.use('/auth', authRouter);
+router.use('/auth', authLimiter, authRouter);
 router.use('/assessment', assessmentRouter);
 router.use('/careers', careersRouter);
 router.use('/roadmap', roadmapRouter);
 router.use('/insights', insightsRouter);
-router.use('/chat', chatRouter);
+router.use('/chat', aiLimiter, chatRouter);
 router.use('/jobs', jobsRouter);
 router.use('/market', marketRouter);
 router.use('/scholarships', scholarshipsRouter);
 router.use('/demo', demoRouter);
 router.use('/user', userRouter);
-router.use('/interview', interviewRouter);
-router.use('/interview-enhanced', interviewEnhancedRouter);
+router.use('/interview', aiLimiter, interviewRouter);
+router.use('/interview-enhanced', aiLimiter, interviewEnhancedRouter);
 router.use('/portfolio', portfolioRouter);
 router.use('/linkedin', linkedinRouter);
 router.use('/learning-enhanced', learningEnhancedRouter);
 router.use('/nsqf', nsqfRouter);
-router.use('/features', featuresRouter);
+router.use('/features', aiLimiter, featuresRouter);
 router.use('/profile', profileRouter);
 
 export default router;

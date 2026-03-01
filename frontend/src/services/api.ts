@@ -103,12 +103,19 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor for error handling and badge events
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Dispatch badge-earned event when newBadges are in any response
+    const newBadges = response.data?.newBadges;
+    if (newBadges?.length) {
+      window.dispatchEvent(new CustomEvent('badge-earned', { detail: { badges: newBadges } }));
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
-      // Unauthorized - clear storage and redirect to login
+      window.dispatchEvent(new CustomEvent('auth-expired'));
       localStorage.clear();
       window.location.href = '/login';
     }
@@ -560,6 +567,8 @@ export const profileAPI = {
     api.get('/profile/badges'),
   getAnalysis: () =>
     api.get('/profile/analysis'),
+  getBadgeCatalog: () =>
+    api.get('/profile/badge-catalog'),
   previewGitHub: (username: string) =>
     api.get(`/profile/github-preview/${username}`),
 };

@@ -1,19 +1,18 @@
 import { Router, Request, Response } from 'express';
 import { authenticate, attachUserIfPresent } from '@middleware/authenticate';
 import prisma from '@lib/prisma';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import env from '@config/env';
 
 const router = Router();
+
+// Use the shared env config for consistent Gemini initialization
+const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: env.GEMINI_MODEL });
 
 // Shared Gemini helper - tries real AI, returns null on failure
 async function callGeminiJSON(prompt: string, temperature = 0.7): Promise<any | null> {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) return null;
-
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || 'gemini-2.0-flash' });
-
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: { responseMimeType: 'application/json', temperature }

@@ -3,8 +3,11 @@
  */
 import { Router, Request, Response } from 'express';
 import { authenticate } from '@middleware/authenticate';
+import { validate } from '@middleware/validate';
+import { profileSetupSchema } from '@middleware/schemas';
 import prisma from '@lib/prisma';
 import { runFullAnalysis, getLatestAnalysis, fetchGitHubProfile } from '@services/analysisEngine';
+import { badgeService, ALL_BADGES } from '@services/badgeService';
 
 const router = Router();
 
@@ -39,7 +42,7 @@ router.get('/full', authenticate, async (req: Request, res: Response) => {
 });
 
 // ─── POST /profile/setup — Complete profile setup ────────
-router.post('/setup', authenticate, async (req: Request, res: Response) => {
+router.post('/setup', authenticate, validate(profileSetupSchema), async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     const {
@@ -67,6 +70,9 @@ router.post('/setup', authenticate, async (req: Request, res: Response) => {
     // Run full analysis after profile setup
     const result = await runFullAnalysis(userId);
 
+    // Award badges based on activity
+    const newBadges = await badgeService.checkAndAward(userId);
+
     res.json({
       success: true,
       user: {
@@ -77,6 +83,7 @@ router.post('/setup', authenticate, async (req: Request, res: Response) => {
       },
       analysis: result.analysis,
       badges: result.badges,
+      newBadges,
     });
   } catch (err: any) {
     console.error('[ProfileRoutes] setup:', err.message);
@@ -131,6 +138,28 @@ router.get('/analysis', authenticate, async (req: Request, res: Response) => {
     res.json(result);
   } catch (err: any) {
     res.status(500).json({ message: 'Failed to load analysis' });
+  }
+});
+
+// ─── GET /profile/badge-catalog — Get all badges with earned status ──
+router.get('/badge-catalog', authenticate, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const earnedBadges = await prisma.badge.findMany({
+      where: { userId },
+      select: { name: true, earnedAt: true },
+    });
+    const earnedMap = new Map(earnedBadges.map(b => [b.name, b.earnedAt]));
+
+    const catalog = ALL_BADGES.map(b => ({
+      ...b,
+      earned: earnedMap.has(b.name),
+      earnedAt: earnedMap.get(b.name) || null,
+    }));
+
+    res.json({ badges: catalog });
+  } catch (err: any) {
+    res.status(500).json({ message: 'Failed to load badge catalog' });
   }
 });
 

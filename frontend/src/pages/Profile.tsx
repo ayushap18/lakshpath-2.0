@@ -9,16 +9,15 @@ import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
 import ProgressBar from '../components/ui/ProgressBar';
 import { useProfile } from '../hooks/useProfile';
-import { userAPI } from '../services/api';
+import { userAPI, profileAPI, authAPI } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 
-const ACHIEVEMENTS = [
-  { icon: 'psychology', title: 'First Assessment', desc: 'Completed career assessment', earned: true, color: '#0da2e7' },
-  { icon: 'local_fire_department', title: '5 Day Streak', desc: 'Logged in 5 days in a row', earned: false, color: '#F59E0B' },
-  { icon: 'folder_special', title: 'Portfolio Analyzed', desc: 'Analyzed GitHub portfolio', earned: false, color: '#10B981' },
-  { icon: 'record_voice_over', title: 'Interview Pro', desc: 'Completed 5 interview sessions', earned: false, color: '#8B5CF6' },
-  { icon: 'school', title: 'Quick Learner', desc: 'Completed 10 milestones', earned: false, color: '#22D3EE' },
-  { icon: 'emoji_events', title: 'Top Scorer', desc: 'Scored 90%+ in an interview', earned: false, color: '#EF4444' },
-];
+const BADGE_COLORS: Record<string, string> = {
+  COMMON: '#94A3B8',
+  RARE: '#0da2e7',
+  EPIC: '#8B5CF6',
+  LEGENDARY: '#F59E0B',
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,6 +33,7 @@ type TabId = 'overview' | 'settings';
 const Profile = () => {
   const navigate = useNavigate();
   const { profile, stats, loading, error } = useProfile();
+  const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState('');
@@ -50,11 +50,14 @@ const Profile = () => {
   // Streak/XP state
   const [streakData, setStreakData] = useState<any>(null);
 
+  // Data-driven badge catalog
+  const [badgeCatalog, setBadgeCatalog] = useState<any[]>([]);
+
   const userName = profile?.profile?.name || localStorage.getItem('userName') || 'Student';
   const userEmail = profile?.profile?.email || localStorage.getItem('userEmail') || '';
   const joinDate = profile?.profile?.createdAt ? new Date(profile.profile.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long' }) : '';
 
-  // Load settings and streak
+  // Load settings, streak, and badge catalog
   useEffect(() => {
     userAPI.getSettings().then(res => {
       const u = res.data.user;
@@ -72,6 +75,8 @@ const Profile = () => {
     }).catch(() => {});
 
     userAPI.getStreak().then(res => setStreakData(res.data)).catch(() => {});
+
+    profileAPI.getBadgeCatalog().then(res => setBadgeCatalog(res.data.badges || [])).catch(() => {});
   }, []);
 
   const handleSave = async () => {
@@ -92,14 +97,17 @@ const Profile = () => {
       await userAPI.updateSettings(settings);
       if (settings.name) localStorage.setItem('userName', settings.name);
       setSettingsMsg('Settings saved successfully!');
+      addToast('success', 'Settings saved', 'Your profile has been updated.');
       setTimeout(() => setSettingsMsg(''), 3000);
     } catch {
       setSettingsMsg('Failed to save settings');
+      addToast('error', 'Save failed', 'Could not update your settings.');
     }
     setSettingsSaving(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try { await authAPI.logout(); } catch {}
     localStorage.clear();
     navigate('/login');
   };
@@ -125,8 +133,12 @@ const Profile = () => {
   }
 
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const activityData = weekDays.map(() => Math.floor(Math.random() * 80) + 20);
-  const earnedCount = ACHIEVEMENTS.filter(a => a.earned).length;
+  const streak = streakData?.streak || 0;
+  const activityData = streakData?.breakdown
+    ? [streakData.breakdown.assessments * 20, streakData.breakdown.interviews * 15, streakData.breakdown.portfolios * 20, 40, 50, streakData.breakdown.badges * 10, streak * 10].map(v => Math.min(100, Math.max(10, v)))
+    : weekDays.map(() => 10);
+  const earnedCount = badgeCatalog.filter(a => a.earned).length;
+  const totalBadges = badgeCatalog.length || 1;
 
   const xp = streakData?.xp || 0;
   const level = streakData?.level || 1;
@@ -134,7 +146,6 @@ const Profile = () => {
   const xpProgress = streakData?.xpProgress || 0;
   const xpNeeded = streakData?.xpNeeded || 100;
   const xpInLevel = streakData?.xpInLevel || 0;
-  const streak = streakData?.streak || 0;
 
   const inputClass = "w-full bg-[#1E293B] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors text-sm";
 
@@ -270,12 +281,12 @@ const Profile = () => {
                     <div className="relative flex-shrink-0">
                       <svg className="w-16 h-16" viewBox="0 0 64 64">
                         <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="5" />
-                        <motion.circle cx="32" cy="32" r="26" fill="none" strokeWidth="5" stroke="url(#achieveGrad)" strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 26}`} initial={{ strokeDashoffset: 2 * Math.PI * 26 }} animate={{ strokeDashoffset: 2 * Math.PI * 26 * (1 - earnedCount / ACHIEVEMENTS.length) }} transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }} transform="rotate(-90 32 32)" />
+                        <motion.circle cx="32" cy="32" r="26" fill="none" strokeWidth="5" stroke="url(#achieveGrad)" strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 26}`} initial={{ strokeDashoffset: 2 * Math.PI * 26 }} animate={{ strokeDashoffset: 2 * Math.PI * 26 * (1 - earnedCount / totalBadges) }} transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }} transform="rotate(-90 32 32)" />
                         <defs><linearGradient id="achieveGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#F59E0B" /><stop offset="100%" stopColor="#EF4444" /></linearGradient></defs>
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className="text-lg font-extrabold text-white">{earnedCount}</span>
-                        <span className="text-[8px] text-muted font-medium uppercase tracking-wider">of {ACHIEVEMENTS.length}</span>
+                        <span className="text-[8px] text-muted font-medium uppercase tracking-wider">of {totalBadges}</span>
                       </div>
                     </div>
                     <div>
@@ -283,12 +294,15 @@ const Profile = () => {
                       <p className="text-xs text-muted mt-0.5">Complete tasks to unlock badges.</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {ACHIEVEMENTS.map((a, i) => (
-                      <motion.div key={a.title} className={`w-9 h-9 rounded-lg flex items-center justify-center ${a.earned ? '' : 'opacity-30'}`} style={{ background: a.earned ? `${a.color}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${a.earned ? `${a.color}30` : 'rgba(255,255,255,0.05)'}` }} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 + i * 0.06, type: 'spring', stiffness: 300 }} title={a.title}>
-                        <Icon name={a.icon} size={16} style={{ color: a.earned ? a.color : undefined }} className={a.earned ? '' : 'text-muted'} filled={a.earned} />
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {badgeCatalog.slice(0, 6).map((a, i) => {
+                      const color = BADGE_COLORS[a.rarity] || '#94A3B8';
+                      return (
+                      <motion.div key={a.name} className={`w-9 h-9 rounded-lg flex items-center justify-center ${a.earned ? '' : 'opacity-30'}`} style={{ background: a.earned ? `${color}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${a.earned ? `${color}30` : 'rgba(255,255,255,0.05)'}` }} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 + i * 0.06, type: 'spring', stiffness: 300 }} title={a.name}>
+                        <Icon name={a.icon} size={16} style={{ color: a.earned ? color : undefined }} className={a.earned ? '' : 'text-muted'} filled={a.earned} />
                       </motion.div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </Card>
               </motion.div>
@@ -302,21 +316,24 @@ const Profile = () => {
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}><Icon name="workspace_premium" size={16} style={{ color: '#8B5CF6' }} /></div>
                     <h3 className="text-[15px] font-bold text-white">All Badges</h3>
                   </div>
-                  <span className="text-xs text-muted">{earnedCount} of {ACHIEVEMENTS.length} earned</span>
+                  <span className="text-xs text-muted">{earnedCount} of {totalBadges} earned</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {ACHIEVEMENTS.map((a, i) => (
-                    <motion.div key={a.title} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: a.earned ? 1 : 0.5, scale: 1 }} transition={{ delay: 0.4 + i * 0.06, type: 'spring', stiffness: 260, damping: 20 }} className={`flex items-center gap-3 p-3.5 rounded-xl border ${a.earned ? 'border-white/[0.06]' : 'border-white/[0.03]'}`} style={{ background: a.earned ? `linear-gradient(135deg, ${a.color}08, transparent)` : 'rgba(15,23,42,0.3)' }}>
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: a.earned ? `${a.color}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${a.earned ? `${a.color}25` : 'rgba(255,255,255,0.05)'}` }}>
-                        <Icon name={a.icon} size={20} style={a.earned ? { color: a.color } : undefined} className={a.earned ? '' : 'text-muted'} filled={a.earned} />
+                  {badgeCatalog.map((a, i) => {
+                    const color = BADGE_COLORS[a.rarity] || '#94A3B8';
+                    return (
+                    <motion.div key={a.name} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: a.earned ? 1 : 0.5, scale: 1 }} transition={{ delay: 0.4 + i * 0.06, type: 'spring', stiffness: 260, damping: 20 }} className={`flex items-center gap-3 p-3.5 rounded-xl border ${a.earned ? 'border-white/[0.06]' : 'border-white/[0.03]'}`} style={{ background: a.earned ? `linear-gradient(135deg, ${color}08, transparent)` : 'rgba(15,23,42,0.3)' }}>
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: a.earned ? `${color}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${a.earned ? `${color}25` : 'rgba(255,255,255,0.05)'}` }}>
+                        <Icon name={a.icon} size={20} style={a.earned ? { color } : undefined} className={a.earned ? '' : 'text-muted'} filled={a.earned} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-white">{a.title}</p>
-                        <p className="text-[11px] text-muted truncate">{a.desc}</p>
+                        <p className="text-sm font-semibold text-white">{a.name}</p>
+                        <p className="text-[11px] text-muted truncate">{a.description}</p>
                       </div>
-                      {a.earned ? <Icon name="check_circle" size={16} style={{ color: a.color }} /> : <Icon name="lock" size={14} className="text-muted flex-shrink-0" />}
+                      {a.earned ? <Icon name="check_circle" size={16} style={{ color }} /> : <Icon name="lock" size={14} className="text-muted flex-shrink-0" />}
                     </motion.div>
-                  ))}
+                    );
+                  })}
                 </div>
               </Card>
             </motion.div>

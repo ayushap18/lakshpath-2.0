@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { interviewService } from '@services/interviewService';
+import { badgeService } from '@services/badgeService';
 
 export const interviewController = {
   /**
@@ -74,7 +75,11 @@ export const interviewController = {
         userId,
         speechTranscript
       );
-      res.json(result);
+
+      // Check and award badges after interview completion
+      const newBadges = await badgeService.checkAndAward(userId);
+
+      res.json({ ...result, newBadges });
     } catch (error) {
       next(error);
     }

@@ -22,9 +22,19 @@ const Login = () => {
     localStorage.setItem('userEmail', user.email || '');
     if (user.avatarUrl) localStorage.setItem('userAvatar', user.avatarUrl);
 
+    // Set onboarding flags from auth response
+    if (user.profileSetupCompleted) {
+      localStorage.setItem('profileSetupCompleted', 'true');
+    }
+    if (user.hasAssessment) {
+      localStorage.setItem('assessmentCompleted', 'true');
+    }
+
     // New users or users who haven't set up profile → profile setup
     if (isNewUser || user.profileSetupCompleted === false) {
       navigate('/profile-setup', { replace: true });
+    } else if (!user.hasAssessment) {
+      navigate('/quiz-intro', { replace: true });
     } else {
       navigate('/dashboard', { replace: true });
     }

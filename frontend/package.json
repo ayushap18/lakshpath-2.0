@@ -16,7 +16,6 @@
     "@capgo/capacitor-updater": "^7.27.9",
     "@react-oauth/google": "^0.12.2",
     "axios": "^1.6.2",
-    "firebase": "^10.7.1",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.300.0",
     "react": "^18.2.0",

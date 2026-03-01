@@ -71,11 +71,7 @@ const Dashboard = () => {
     { label: 'Market', icon: 'query_stats', path: '/market', color: '#F59E0B', bgColor: 'rgba(245,158,11,0.1)' },
   ];
 
-  const microTasks = results?.microCoach?.microTasks?.slice(0, 3) || [
-    { title: 'Review "Transform Goals"', skill: 'Planning' },
-    { title: 'Update LinkedIn Headline', skill: 'Branding' },
-    { title: 'Mock Interview: Behavioral', skill: 'Interview' },
-  ];
+  const microTasks = results?.microCoach?.microTasks?.slice(0, 3) || [];
 
   if (loading) {
     return (
@@ -297,7 +293,7 @@ const Dashboard = () => {
                 <button onClick={() => navigate('/roadmap')} className="text-xs text-accent hover:text-accent-light font-semibold flex items-center gap-1 transition-colors">Full Map <Icon name="arrow_forward" size={14} /></button>
               </div>
               <div className="flex items-start gap-2">
-                {(roadmap?.phases?.slice(0, 4) || [{ title: 'Skill Mapping' }, { title: 'Online Skills' }, { title: 'Internship' }, { title: 'System Design' }]).map((phase: any, i: number) => {
+                {roadmap?.phases?.length > 0 ? (roadmap.phases.slice(0, 4)).map((phase: any, i: number) => {
                   const states = ['completed', 'active', 'locked', 'locked'];
                   const state = states[i];
                   return (
@@ -310,7 +306,15 @@ const Dashboard = () => {
                       <span className="text-[11px] text-muted text-center leading-tight mt-2.5">{phase.title || `Phase ${i + 1}`}</span>
                     </div>
                   );
-                })}
+                }) : (
+                  <div className="flex-1 flex flex-col items-center justify-center py-6 text-center">
+                    <Icon name="conversion_path" size={32} className="text-muted mb-2" />
+                    <p className="text-xs text-muted">Get a career match first to generate your learning roadmap.</p>
+                    <Button variant="ghost" size="sm" onClick={() => navigate('/roadmap')} className="mt-2">
+                      <Icon name="add" size={14} /> Generate Roadmap
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="mt-5 pt-4 border-t border-white/[0.04]">
                 <div className="flex items-center justify-between mb-2">
@@ -416,8 +420,9 @@ const Dashboard = () => {
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}><Icon name="fitness_center" size={16} style={{ color: '#8B5CF6' }} /></div>
                   <h3 className="text-[15px] font-bold text-white">Micro-Coach</h3>
                 </div>
-                <Badge variant="violet" size="sm">3 tasks</Badge>
+                <Badge variant="violet" size="sm">{microTasks.length > 0 ? `${microTasks.length} tasks` : 'No tasks'}</Badge>
               </div>
+              {microTasks.length > 0 ? (
               <div className="space-y-2.5">
                 {microTasks.map((task: any, i: number) => (
                   <motion.div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-white/[0.04] cursor-pointer group transition-all duration-200" style={{ background: 'rgba(15,23,42,0.4)' }} whileHover={{ borderColor: 'rgba(139,92,246,0.2)', background: 'rgba(139,92,246,0.03)' }} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 + i * 0.08 }}>
@@ -432,6 +437,15 @@ const Dashboard = () => {
                   </motion.div>
                 ))}
               </div>
+              ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <Icon name="task_alt" size={32} className="text-muted mb-2" />
+                <p className="text-xs text-muted">Complete your assessment to get personalized micro-tasks.</p>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/micro-coach')} className="mt-2">
+                  <Icon name="add" size={14} /> Generate Tasks
+                </Button>
+              </div>
+              )}
               <button onClick={() => navigate('/micro-coach')} className="w-full mt-4 py-2.5 rounded-xl text-xs font-semibold text-[#8B5CF6] flex items-center justify-center gap-1 transition-all duration-200 hover:bg-[#8B5CF6]/5" style={{ border: '1px solid rgba(139,92,246,0.15)' }}>View All Tasks <Icon name="arrow_forward" size={14} /></button>
             </Card>
           </motion.div>
@@ -473,7 +487,18 @@ const Dashboard = () => {
                 {(() => {
                   const skillEntries = Object.keys(skills).length > 0
                     ? Object.entries(skills).map(([name, val]) => ({ name: name.replace(/([A-Z])/g, ' $1').trim(), score: Math.min(100, (val as number) * 20) }))
-                    : [{ name: 'Problem Solving', score: 60 }, { name: 'System Design', score: 40 }, { name: 'Programming', score: 65 }, { name: 'Cloud Computing', score: 30 }, { name: 'Data Structures', score: 55 }];
+                    : [];
+                  if (skillEntries.length === 0) {
+                    return (
+                      <div className="flex flex-col items-center justify-center py-6 text-center">
+                        <Icon name="radar" size={32} className="text-muted mb-2" />
+                        <p className="text-xs text-muted">Complete your assessment to see skill ratings.</p>
+                        <Button variant="ghost" size="sm" onClick={() => navigate('/assessment')} className="mt-2">
+                          <Icon name="psychology" size={14} /> Take Assessment
+                        </Button>
+                      </div>
+                    );
+                  }
                   return skillEntries.slice(0, 6).map((skill: any, i: number) => {
                     const score = skill.score || 0;
                     const barColor = score >= 75 ? 'success' : score >= 50 ? 'accent' : 'warning';

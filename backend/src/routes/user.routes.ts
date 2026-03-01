@@ -1,6 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
 import { authenticate } from '@middleware/authenticate';
+import { validate } from '@middleware/validate';
+import { settingsUpdateSchema } from '@middleware/schemas';
 import { userService } from '@services/userService';
 import prisma from '@lib/prisma';
 
@@ -233,7 +235,7 @@ router.get('/notifications', async (req: Request, res: Response) => {
 });
 
 // ─── PATCH /user/settings — Update profile settings (github, linkedin, etc.) ─
-router.patch('/settings', async (req: Request, res: Response) => {
+router.patch('/settings', validate(settingsUpdateSchema), async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     const { githubUsername, linkedinUrl, bio, phone, college, degree, branch, graduationYear, name } = req.body;

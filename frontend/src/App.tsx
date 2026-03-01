@@ -22,6 +22,7 @@ import PlacementPrep from './pages/PlacementPrep'
 import AILive from './pages/AILive'
 import AppShell from './components/layout/AppShell'
 import ProtectedRoute from './components/ProtectedRoute'
+import { ToastProvider } from './contexts/ToastContext'
 import './App.css'
 
 // Redirect logged-in users away from auth pages
@@ -51,6 +52,7 @@ function App() {
   }, []);
 
   return (
+    <ToastProvider>
     <Router>
       <Routes>
         {/* Public Routes */}
@@ -88,6 +90,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
+    </ToastProvider>
   )
 }
 

@@ -110,31 +110,35 @@ export const interviewService = {
     difficulty: 'EASY' | 'MEDIUM' | 'HARD',
     role?: string
   ) {
+    // Normalize to uppercase for consistency
+    const normalizedType = (type || 'TECHNICAL').toUpperCase().replace(/ /g, '_') as any;
+    const normalizedDifficulty = (difficulty || 'MEDIUM').toUpperCase() as any;
+
     const session = await prisma.interviewSession.create({
       data: {
         userId,
-        type,
-        difficulty,
+        type: normalizedType,
+        difficulty: normalizedDifficulty,
         role,
         status: 'IN_PROGRESS',
       },
     });
 
     // Try AI questions, fall back to demo questions
-    const questionCount = type === 'CODING' ? 1 : 5;
+    const questionCount = normalizedType === 'CODING' ? 1 : 5;
     let questionData: Array<{ questionText: string; questionType: string; difficulty: string; expectedAnswer: string }>;
 
     try {
       const questionsResult = await geminiService.generateInterviewQuestions({
-        type,
-        difficulty,
+        type: normalizedType,
+        difficulty: normalizedDifficulty,
         role,
         count: questionCount,
       });
       questionData = questionsResult.parsed.questions;
     } catch (error: any) {
       console.warn('[InterviewService] AI generation failed, using demo questions:', error.message?.slice(0, 120));
-      const pool = DEMO_QUESTIONS[type]?.[difficulty] || DEMO_QUESTIONS.TECHNICAL.MEDIUM;
+      const pool = DEMO_QUESTIONS[normalizedType]?.[normalizedDifficulty] || DEMO_QUESTIONS.TECHNICAL.MEDIUM;
       questionData = pool.slice(0, questionCount);
     }
 

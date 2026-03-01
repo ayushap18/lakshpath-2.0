@@ -7,6 +7,7 @@ import path from 'path';
 import env from '@config/env';
 import apiRouter from '@routes/index';
 import { errorHandler } from '@middleware/errorHandler';
+import { globalLimiter } from '@middleware/rateLimiter';
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+app.use(globalLimiter);
 
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), env: env.NODE_ENV });
@@ -44,13 +46,15 @@ app.get('/health', (_req: Request, res: Response) => {
 
 app.use('/api', apiRouter);
 
+// Error handler MUST be registered before the wildcard static file route
+// so that API errors (thrown by routes/services) are caught properly
+app.use(errorHandler);
+
 // Serve frontend static files in all environments
 const publicPath = path.join(__dirname, '..', 'public');
 app.use(express.static(publicPath));
 app.get('*', (_req: Request, res: Response) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
-
-app.use(errorHandler);
 
 export default app;

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { authService } from '@services/authService';
+import prisma from '@lib/prisma';
 
 export const authController = {
   async googleSignIn(req: Request, res: Response, next: NextFunction) {
@@ -8,8 +9,11 @@ export const authController = {
       const { credential } = req.body as { credential?: string };
       const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.socket.remoteAddress;
       const userAgent = req.headers['user-agent'];
-      
+
       const result = await authService.signInWithGoogle(credential ?? '', ipAddress, userAgent);
+
+      // Check if user has completed an assessment
+      const hasAssessment = await prisma.quizResult.count({ where: { userId: result.user.id } }) > 0;
 
       res.status(200).json({
         token: result.token,
@@ -19,6 +23,7 @@ export const authController = {
           email: result.user.email,
           avatarUrl: result.user.avatarUrl,
           profileSetupCompleted: (result.user as any).profileSetupCompleted ?? false,
+          hasAssessment,
         },
         isNewUser: result.isNewUser,
       });
@@ -31,8 +36,10 @@ export const authController = {
     try {
       const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.socket.remoteAddress;
       const userAgent = req.headers['user-agent'];
-      
+
       const result = await authService.signInAsDemoUser(ipAddress, userAgent);
+
+      const hasAssessment = await prisma.quizResult.count({ where: { userId: result.user.id } }) > 0;
 
       res.status(200).json({
         token: result.token,
@@ -41,6 +48,8 @@ export const authController = {
           name: result.user.name,
           email: result.user.email,
           avatarUrl: result.user.avatarUrl,
+          profileSetupCompleted: (result.user as any).profileSetupCompleted ?? false,
+          hasAssessment,
         },
       });
     } catch (error) {

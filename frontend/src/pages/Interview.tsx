@@ -69,16 +69,21 @@ const Interview = () => {
   const [difficulty, setDifficulty] = useState('Medium');
   const [role, setRole] = useState('');
   const [activeSession, setActiveSession] = useState<any>(null);
+  const [allQuestions, setAllQuestions] = useState<any[]>([]);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [currentQ, setCurrentQ] = useState<any>(null);
   const [answer, setAnswer] = useState('');
   const [feedback, setFeedback] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const handleStart = async () => {
-    const session = await startSession(type.toLowerCase(), difficulty.toLowerCase(), role || undefined);
-    if (session) {
-      setActiveSession(session);
-      setCurrentQ(session.questions?.[0] || session.currentQuestion);
+    const data = await startSession(type.toUpperCase().replace(/ /g, '_'), difficulty.toUpperCase(), role || undefined);
+    if (data) {
+      const questions = data.questions || [];
+      setActiveSession(data.session || data);
+      setAllQuestions(questions);
+      setQuestionIndex(0);
+      setCurrentQ(questions[0] || null);
       setMode('active');
       setFeedback([]);
       setAnswer('');
@@ -90,11 +95,23 @@ const Interview = () => {
     setSubmitting(true);
     const result = await submitAnswer(currentQ.id, answer);
     if (result) {
-      setFeedback((prev) => [...prev, { question: currentQ.question, answer, feedback: result.feedback || result }]);
+      const evalData = result.evaluation || result;
+      setFeedback((prev) => [...prev, {
+        question: currentQ.questionText || currentQ.question,
+        answer,
+        feedback: evalData.feedback || evalData,
+        score: evalData.score,
+        strengths: evalData.strengths,
+        improvements: evalData.improvements,
+      }]);
       setAnswer('');
-      if (result.nextQuestion) {
-        setCurrentQ(result.nextQuestion);
+      // Advance to next question
+      const nextIdx = questionIndex + 1;
+      if (nextIdx < allQuestions.length) {
+        setQuestionIndex(nextIdx);
+        setCurrentQ(allQuestions[nextIdx]);
       } else {
+        // All questions done
         setMode('setup');
         refetch();
       }
@@ -105,6 +122,8 @@ const Interview = () => {
   const handleEndSession = () => {
     setMode('setup');
     setActiveSession(null);
+    setAllQuestions([]);
+    setQuestionIndex(0);
     refetch();
   };
 
@@ -139,15 +158,20 @@ const Interview = () => {
                 </Button>
               </div>
 
+              {/* Question counter */}
+              <p className="text-xs text-[#64748B] mb-2">
+                Question {questionIndex + 1} of {allQuestions.length}
+              </p>
+
               {/* Question with slide-in from right */}
               <motion.h2
-                key={currentQ?.id || currentQ?.question}
+                key={currentQ?.id || currentQ?.questionText}
                 variants={slideInRight}
                 initial="hidden"
                 animate="visible"
                 className="text-lg font-bold text-white mb-6"
               >
-                {currentQ?.question || 'Loading question...'}
+                {currentQ?.questionText || currentQ?.question || 'Loading question...'}
               </motion.h2>
 
               {/* Answer area with fade-in */}
@@ -211,12 +235,33 @@ const Interview = () => {
                           exit={{ opacity: 0, x: -20 }}
                           className="bg-[#1E293B] rounded-xl p-3"
                         >
-                          <p className="text-xs text-[#0da2e7] font-medium mb-1">Q{i + 1} Feedback</p>
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs text-[#0da2e7] font-medium">Q{i + 1} Feedback</p>
+                            {f.score != null && (
+                              <Badge variant={f.score >= 70 ? 'success' : f.score >= 40 ? 'warning' : 'error'} size="sm">
+                                {Math.round(f.score)}%
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-sm text-[#94A3B8]">
-                            {typeof f.feedback === 'string'
-                              ? f.feedback
-                              : JSON.stringify(f.feedback?.feedback || f.feedback?.evaluation || 'Good answer!')}
+                            {typeof f.feedback === 'string' ? f.feedback : (f.feedback?.feedback || 'Answer evaluated.')}
                           </p>
+                          {f.strengths && Array.isArray(f.strengths) && f.strengths.length > 0 && (
+                            <div className="mt-2">
+                              <p className="text-xs text-green-400 font-medium mb-1">Strengths</p>
+                              {f.strengths.map((s: string, si: number) => (
+                                <p key={si} className="text-xs text-[#94A3B8]">+ {s}</p>
+                              ))}
+                            </div>
+                          )}
+                          {f.improvements && Array.isArray(f.improvements) && f.improvements.length > 0 && (
+                            <div className="mt-2">
+                              <p className="text-xs text-amber-400 font-medium mb-1">Improve</p>
+                              {f.improvements.map((imp: string, ii: number) => (
+                                <p key={ii} className="text-xs text-[#94A3B8]">- {imp}</p>
+                              ))}
+                            </div>
+                          )}
                         </motion.div>
                       ))}
                     </AnimatePresence>
@@ -233,11 +278,11 @@ const Interview = () => {
                     <motion.div
                       className="h-full bg-gradient-to-r from-[#0da2e7] to-[#22D3EE] rounded-full"
                       initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(feedback.length * 20, 100)}%` }}
+                      animate={{ width: `${allQuestions.length > 0 ? (feedback.length / allQuestions.length) * 100 : 0}%` }}
                       transition={{ duration: 0.6, ease: 'easeOut' }}
                     />
                   </div>
-                  <p className="text-xs text-[#94A3B8] whitespace-nowrap">{feedback.length} answered</p>
+                  <p className="text-xs text-[#94A3B8] whitespace-nowrap">{feedback.length}/{allQuestions.length}</p>
                 </div>
               </Card>
             </motion.div>

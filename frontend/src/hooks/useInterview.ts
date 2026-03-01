@@ -15,7 +15,9 @@ export const useInterview = () => {
         interviewAPI.getSessions(10),
         interviewAPI.getStats(),
       ]);
-      setSessions(sessionsRes.data.sessions || []);
+      // Backend returns array directly, not { sessions: [...] }
+      const sessData = sessionsRes.data;
+      setSessions(Array.isArray(sessData) ? sessData : sessData?.sessions || []);
       setStats(statsRes.data);
       setError(null);
     } catch (err: any) {
