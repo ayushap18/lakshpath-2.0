@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { razorpayService } from '@services/razorpayService';
+import prisma from '@lib/prisma';
 
 export const billingController = {
   async getPlans(_req: Request, res: Response, next: NextFunction) {
@@ -100,6 +101,59 @@ export const billingController = {
 
       const result = await razorpayService.handleWebhook(req.body, signature);
       res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async startTrial(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: 'Not authenticated' });
+      }
+
+      const existing = await prisma.subscription.findUnique({ where: { userId: req.user.id } });
+
+      // Can't start trial if already Pro or already used trial
+      if (existing?.plan === 'PRO' && existing.status === 'ACTIVE') {
+        return res.status(400).json({ message: 'Already subscribed to Pro' });
+      }
+      if (existing?.trialEndsAt) {
+        return res.status(400).json({ message: 'Free trial already used' });
+      }
+
+      const now = new Date();
+      const trialEnd = new Date(now);
+      trialEnd.setDate(trialEnd.getDate() + 7);
+
+      const subscription = await prisma.subscription.upsert({
+        where: { userId: req.user.id },
+        create: {
+          userId: req.user.id,
+          plan: 'PRO',
+          status: 'TRIALING',
+          currentPeriodStart: now,
+          currentPeriodEnd: trialEnd,
+          trialEndsAt: trialEnd,
+        },
+        update: {
+          plan: 'PRO',
+          status: 'TRIALING',
+          currentPeriodStart: now,
+          currentPeriodEnd: trialEnd,
+          trialEndsAt: trialEnd,
+        },
+      });
+
+      res.status(200).json({
+        message: 'Free trial started! Enjoy 7 days of Pro.',
+        subscription: {
+          plan: subscription.plan,
+          status: subscription.status,
+          currentPeriodEnd: subscription.currentPeriodEnd,
+          trialEndsAt: subscription.trialEndsAt,
+        },
+      });
     } catch (error) {
       next(error);
     }

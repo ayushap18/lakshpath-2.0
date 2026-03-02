@@ -16,5 +16,6 @@ router.post('/subscribe', authenticate, billingController.subscribe);
 router.post('/verify', authenticate, billingController.verifyPayment);
 router.get('/subscription', authenticate, billingController.getSubscription);
 router.post('/cancel', authenticate, billingController.cancelSubscription);
+router.post('/trial', authenticate, billingController.startTrial);
 
 export default router;

@@ -224,6 +224,60 @@ export const adminController = {
     }
   },
 
+  async giftPro(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { duration, unit } = req.body; // duration: number, unit: 'days' | 'months' | 'years'
+
+      if (!duration || !unit || !['days', 'months', 'years'].includes(unit)) {
+        return res.status(400).json({ message: 'Invalid duration or unit. Use { duration: number, unit: "days" | "months" | "years" }' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { id } });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Calculate expiry date
+      const now = new Date();
+      const expiryDate = new Date(now);
+      if (unit === 'days') expiryDate.setDate(expiryDate.getDate() + duration);
+      else if (unit === 'months') expiryDate.setMonth(expiryDate.getMonth() + duration);
+      else if (unit === 'years') expiryDate.setFullYear(expiryDate.getFullYear() + duration);
+
+      const subscription = await prisma.subscription.upsert({
+        where: { userId: id },
+        create: {
+          userId: id,
+          plan: 'PRO',
+          status: 'ACTIVE',
+          currentPeriodStart: now,
+          currentPeriodEnd: expiryDate,
+          cancelAtPeriodEnd: false,
+        },
+        update: {
+          plan: 'PRO',
+          status: 'ACTIVE',
+          currentPeriodStart: now,
+          currentPeriodEnd: expiryDate,
+          cancelAtPeriodEnd: false,
+        },
+      });
+
+      res.status(200).json({
+        message: `Pro gifted to ${user.email} for ${duration} ${unit}`,
+        subscription: {
+          plan: subscription.plan,
+          status: subscription.status,
+          currentPeriodStart: subscription.currentPeriodStart,
+          currentPeriodEnd: subscription.currentPeriodEnd,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async getUsageStats(_req: Request, res: Response, next: NextFunction) {
     try {
       const thirtyDaysAgo = new Date();

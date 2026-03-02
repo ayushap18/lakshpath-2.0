@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '../contexts/SubscriptionContext';
 import Icon from './ui/Icon';
 
@@ -31,8 +32,28 @@ const FEATURE_BENEFITS: Record<string, { title: string; description: string; ico
   },
   ai_chat: {
     title: 'Unlimited AI Chat',
-    description: 'Get unlimited AI mentor guidance for career questions, technical doubts, and more.',
+    description: "You've used all 3 free chats today. Upgrade for unlimited AI mentor guidance.",
     icon: 'chat',
+  },
+  mock_interview: {
+    title: 'Unlimited Mock Interviews',
+    description: "You've used your 2 free mock interviews this month. Upgrade for unlimited practice.",
+    icon: 'mic',
+  },
+  career_dna: {
+    title: 'Career DNA',
+    description: "You've generated your Career DNA this month. Upgrade for unlimited regeneration.",
+    icon: 'fingerprint',
+  },
+  roadmap: {
+    title: 'Unlimited Roadmaps',
+    description: "You've used your free roadmap slot. Upgrade for unlimited learning roadmaps.",
+    icon: 'route',
+  },
+  micro_coach: {
+    title: 'Unlimited Micro-Coaching',
+    description: "You've used all 3 free micro-coaching tasks today. Upgrade for unlimited access.",
+    icon: 'psychology',
   },
   default: {
     title: 'Pro Feature',
@@ -43,6 +64,7 @@ const FEATURE_BENEFITS: Record<string, { title: string; description: string; ico
 
 export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: UpgradePromptProps) {
   const { subscribe } = useSubscription();
+  const navigate = useNavigate();
   const info = FEATURE_BENEFITS[feature] || FEATURE_BENEFITS.default;
 
   const handleUpgrade = async () => {
@@ -110,18 +132,24 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
             </ul>
 
             {/* Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={onClose}
-                className="flex-1 px-4 py-3 rounded-xl border border-white/10 text-white/60 hover:bg-white/5 transition-colors text-sm"
-              >
-                Maybe Later
-              </button>
+            <div className="flex flex-col gap-2">
               <button
                 onClick={handleUpgrade}
-                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all text-sm"
               >
-                Upgrade Now
+                Upgrade Now — ₹499/mo
+              </button>
+              <button
+                onClick={() => { onClose(); navigate('/pricing'); }}
+                className="w-full px-4 py-2.5 rounded-xl text-indigo-400 text-sm font-medium hover:bg-white/5 transition-colors"
+              >
+                Or try 7 days free
+              </button>
+              <button
+                onClick={onClose}
+                className="text-white/30 text-xs hover:text-white/50 transition-colors"
+              >
+                Maybe Later
               </button>
             </div>
           </motion.div>

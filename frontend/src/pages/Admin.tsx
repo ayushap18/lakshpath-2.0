@@ -23,6 +23,7 @@ interface UserRow {
   createdAt: string;
   lastLoginAt: string | null;
   loginCount: number;
+  subscriptionStatus: string | null;
 }
 
 interface PaymentRow {
@@ -46,6 +47,11 @@ export default function Admin() {
   const [monthlyRevenue, setMonthlyRevenue] = useState<Record<string, number>>({});
   const [usageData, setUsageData] = useState<Array<{ feature: string; count: number }>>([]);
   const [loading, setLoading] = useState(true);
+  const [giftModal, setGiftModal] = useState<UserRow | null>(null);
+  const [giftDuration, setGiftDuration] = useState(1);
+  const [giftUnit, setGiftUnit] = useState<'days' | 'months' | 'years'>('months');
+  const [giftLoading, setGiftLoading] = useState(false);
+  const [giftSuccess, setGiftSuccess] = useState('');
 
   const fetchStats = useCallback(async () => {
     try {
@@ -84,6 +90,22 @@ export default function Admin() {
       console.error('Failed to fetch usage:', err);
     }
   }, []);
+
+  const handleGiftPro = async () => {
+    if (!giftModal) return;
+    setGiftLoading(true);
+    try {
+      const { data } = await adminAPI.giftPro(giftModal.id, { duration: giftDuration, unit: giftUnit });
+      setGiftSuccess(data.message);
+      fetchUsers();
+      setTimeout(() => { setGiftModal(null); setGiftSuccess(''); setGiftDuration(1); setGiftUnit('months'); }, 2000);
+    } catch (err) {
+      console.error('Gift Pro failed:', err);
+      setGiftSuccess('Failed to gift Pro');
+    } finally {
+      setGiftLoading(false);
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -186,6 +208,7 @@ export default function Admin() {
                   <th className="text-left px-4 py-3 font-medium">Role</th>
                   <th className="text-left px-4 py-3 font-medium">Logins</th>
                   <th className="text-left px-4 py-3 font-medium">Joined</th>
+                  <th className="text-left px-4 py-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -206,6 +229,14 @@ export default function Admin() {
                     <td className="px-4 py-3 text-white/60">{u.loginCount}</td>
                     <td className="px-4 py-3 text-white/40 text-xs">
                       {new Date(u.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => { setGiftModal(u); setGiftSuccess(''); }}
+                        className="px-3 py-1 text-xs rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium hover:opacity-90 transition-opacity"
+                      >
+                        Gift Pro
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -332,6 +363,93 @@ export default function Admin() {
           ) : (
             <p className="text-white/30 text-center py-8">No usage data yet</p>
           )}
+        </div>
+      )}
+
+      {/* Gift Pro Modal */}
+      {giftModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => !giftLoading && setGiftModal(null)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#1a1f36] border border-white/10 rounded-2xl p-6 w-full max-w-md mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-bold text-white mb-1">Gift Pro Subscription</h3>
+            <p className="text-white/50 text-sm mb-5">
+              Gift Pro to <span className="text-indigo-400 font-medium">{giftModal.name || giftModal.email}</span>
+            </p>
+
+            {giftSuccess ? (
+              <div className={`p-4 rounded-lg text-center text-sm font-medium ${
+                giftSuccess.includes('Failed') ? 'bg-red-500/20 text-red-300' : 'bg-emerald-500/20 text-emerald-300'
+              }`}>
+                {giftSuccess}
+              </div>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-white/60 text-sm block mb-1.5">Duration</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={999}
+                      value={giftDuration}
+                      onChange={(e) => setGiftDuration(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-white/60 text-sm block mb-1.5">Unit</label>
+                    <div className="flex gap-2">
+                      {(['days', 'months', 'years'] as const).map((u) => (
+                        <button
+                          key={u}
+                          onClick={() => setGiftUnit(u)}
+                          className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                            giftUnit === u
+                              ? 'bg-indigo-500 text-white'
+                              : 'bg-white/5 text-white/50 hover:bg-white/10'
+                          }`}
+                        >
+                          {u.charAt(0).toUpperCase() + u.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-white/40 text-xs">
+                    Pro will expire on{' '}
+                    <span className="text-white/70">
+                      {(() => {
+                        const d = new Date();
+                        if (giftUnit === 'days') d.setDate(d.getDate() + giftDuration);
+                        else if (giftUnit === 'months') d.setMonth(d.getMonth() + giftDuration);
+                        else d.setFullYear(d.getFullYear() + giftDuration);
+                        return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+                      })()}
+                    </span>
+                  </p>
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => setGiftModal(null)}
+                    className="flex-1 py-2.5 rounded-lg bg-white/5 text-white/60 text-sm font-medium hover:bg-white/10 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleGiftPro}
+                    disabled={giftLoading}
+                    className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    {giftLoading ? 'Gifting...' : `Gift ${giftDuration} ${giftUnit}`}
+                  </button>
+                </div>
+              </>
+            )}
+          </motion.div>
         </div>
       )}
     </div>

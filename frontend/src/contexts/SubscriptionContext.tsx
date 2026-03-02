@@ -71,7 +71,7 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
         status: sub.status || 'ACTIVE',
         currentPeriodEnd: sub.currentPeriodEnd || null,
         cancelAtPeriodEnd: sub.cancelAtPeriodEnd || false,
-        isProUser: sub.plan === 'PRO' && sub.status === 'ACTIVE',
+        isProUser: sub.plan === 'PRO' && (sub.status === 'ACTIVE' || sub.status === 'TRIALING'),
         loading: false,
       });
     } catch {

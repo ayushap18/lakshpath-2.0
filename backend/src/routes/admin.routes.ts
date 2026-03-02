@@ -13,6 +13,7 @@ router.get('/stats', adminController.getStats);
 router.get('/users', adminController.getUsers);
 router.get('/users/:id', adminController.getUserDetail);
 router.patch('/users/:id', adminController.updateUser);
+router.post('/users/:id/gift-pro', adminController.giftPro);
 router.get('/revenue', adminController.getRevenue);
 router.get('/usage', adminController.getUsageStats);
 

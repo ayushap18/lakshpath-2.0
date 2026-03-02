@@ -47,6 +47,11 @@ model User {
   subscription          Subscription?
   payments              Payment[]
   usageLogs             UsageLog[]
+  referralsSent         Referral[]    @relation("referrer")
+  referralsReceived     Referral[]    @relation("referred")
+  streakCount           Int           @default(0)
+  lastActiveDate        DateTime?
+  referralCode          String?       @unique
 }
 
 // ============================================
@@ -78,11 +83,13 @@ model Subscription {
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan               Plan      @default(FREE)
   status             SubStatus @default(ACTIVE)
+  billingCycle       String    @default("monthly") // "monthly" | "yearly"
   razorpaySubId      String?   @unique
   razorpayCustomerId String?
   currentPeriodStart DateTime  @default(now())
   currentPeriodEnd   DateTime?
   cancelAtPeriodEnd  Boolean   @default(false)
+  trialEndsAt        DateTime? // For free trial tracking
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 }
@@ -451,6 +458,26 @@ model RepositoryAnalysis {
   createdAt          DateTime          @default(now())
   
   @@index([portfolioId])
+}
+
+// ============================================
+// REFERRAL SYSTEM
+// ============================================
+
+model Referral {
+  id          String    @id @default(cuid())
+  referrerId  String
+  referrer    User      @relation("referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredId  String?
+  referred    User?     @relation("referred", fields: [referredId], references: [id], onDelete: SetNull)
+  code        String    @unique
+  status      String    @default("PENDING") // PENDING, REDEEMED, EXPIRED
+  rewardGiven Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  redeemedAt  DateTime?
+
+  @@index([referrerId])
+  @@index([code])
 }
 
 // ============================================

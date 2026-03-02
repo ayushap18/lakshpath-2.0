@@ -618,6 +618,17 @@ export const billingAPI = {
   }) => api.post('/billing/verify', data),
   getSubscription: () => api.get('/billing/subscription'),
   cancelSubscription: () => api.post('/billing/cancel'),
+  startTrial: () => api.post('/billing/trial'),
+};
+
+// ============================================================
+//  REFERRAL API
+// ============================================================
+
+export const referralAPI = {
+  generate: () => api.post('/referral/generate'),
+  getStats: () => api.get('/referral/stats'),
+  redeem: (code: string) => api.post('/referral/redeem', { code }),
 };
 
 // ============================================================
@@ -634,6 +645,8 @@ export const adminAPI = {
   getRevenue: (params?: { page?: number; limit?: number }) =>
     api.get('/admin/revenue', { params }),
   getUsageStats: () => api.get('/admin/usage'),
+  giftPro: (id: string, data: { duration: number; unit: 'days' | 'months' | 'years' }) =>
+    api.post(`/admin/users/${id}/gift-pro`, data),
 };
 
 export default api;

@@ -22,12 +22,14 @@ import featuresRouter from './features.routes';
 import profileRouter from './profile.routes';
 import billingRouter from './billing.routes';
 import adminRouter from './admin.routes';
+import referralRouter from './referral.routes';
 
 const router = Router();
 
 router.use('/auth', authLimiter, authRouter);
 router.use('/billing', billingRouter);
 router.use('/admin', adminRouter);
+router.use('/referral', referralRouter);
 router.use('/assessment', assessmentRouter);
 router.use('/careers', careersRouter);
 router.use('/roadmap', roadmapRouter);

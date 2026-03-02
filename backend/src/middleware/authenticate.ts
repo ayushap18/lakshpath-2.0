@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import env from '@config/env';
+import prisma from '@lib/prisma';
 
 interface TokenPayload {
   sub: string;
@@ -19,6 +20,35 @@ const extractToken = (req: Request) => {
   return null;
 };
 
+// Lightweight streak update (fire and forget, non-blocking)
+const updateStreak = (userId: string) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  prisma.user.findUnique({ where: { id: userId }, select: { lastActiveDate: true, streakCount: true } })
+    .then(user => {
+      if (!user) return;
+      const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
+      if (lastActive) lastActive.setHours(0, 0, 0, 0);
+
+      // Already updated today
+      if (lastActive && lastActive.getTime() === today.getTime()) return;
+
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const isConsecutive = lastActive && lastActive.getTime() === yesterday.getTime();
+
+      return prisma.user.update({
+        where: { id: userId },
+        data: {
+          lastActiveDate: new Date(),
+          streakCount: isConsecutive ? (user.streakCount || 0) + 1 : 1,
+        },
+      });
+    })
+    .catch(() => { /* non-critical, ignore silently */ });
+};
+
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const token = extractToken(req);
 
@@ -29,6 +59,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   try {
     const payload = jwt.verify(token, env.JWT_SECRET) as TokenPayload;
     req.user = { id: payload.sub, email: payload.email };
+    updateStreak(payload.sub);
     return next();
   } catch (error) {
     console.error('JWT verification failed', error);
