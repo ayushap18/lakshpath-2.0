@@ -46,8 +46,9 @@ const env = envSchema.parse(process.env);
 if (env.NODE_ENV === 'production') {
   const warnings: string[] = [];
 
+  // FIX CRIT-4: Throw on insecure JWT_SECRET in production instead of just warning
   if (env.JWT_SECRET === 'lakshpath-dev-secret') {
-    warnings.push('CRITICAL: JWT_SECRET is the default dev secret. Set a strong random value (64+ chars).');
+    throw new Error('FATAL: JWT_SECRET is the default dev secret. Cannot start in production. Set a strong random value (64+ chars).');
   }
   if (env.JWT_SECRET.length < 32) {
     warnings.push('WARNING: JWT_SECRET is too short. Use at least 32 characters.');

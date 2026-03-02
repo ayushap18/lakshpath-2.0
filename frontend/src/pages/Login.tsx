@@ -10,7 +10,9 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
   const [error, setError] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
@@ -45,14 +47,14 @@ const Login = () => {
 
   const handleGoogleLogin = async (credentialResponse: any) => {
     try {
-      setLoading(true);
+      setGoogleLoading(true);
       setError('');
       const res = await authAPI.googleLogin(credentialResponse.credential);
       handleSuccess(res.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Google login failed');
     } finally {
-      setLoading(false);
+      setGoogleLoading(false);
     }
   };
 
@@ -88,14 +90,14 @@ const Login = () => {
     e.preventDefault();
     if (!forgotEmail) return;
     try {
-      setLoading(true);
+      setForgotLoading(true);
       setError('');
       await authAPI.forgotPassword(forgotEmail);
       setForgotSent(true);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to send reset email');
     } finally {
-      setLoading(false);
+      setForgotLoading(false);
     }
   };
 
@@ -317,7 +319,7 @@ const Login = () => {
           {/* Google Sign In */}
           <motion.div variants={itemVariants} className="mb-4">
             <div
-              className="rounded-xl p-0.5 flex justify-center [&>div]:!w-full"
+              className={`rounded-xl p-0.5 flex justify-center [&>div]:!w-full ${googleLoading ? 'opacity-50 pointer-events-none' : ''}`}
               style={{
                 background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.06)',
@@ -497,10 +499,10 @@ const Login = () => {
                     </button>
                     <button
                       type="submit"
-                      disabled={loading || !forgotEmail}
+                      disabled={forgotLoading || !forgotEmail}
                       className="flex-1 px-4 py-2.5 rounded-xl bg-accent text-white font-semibold text-sm disabled:opacity-50"
                     >
-                      {loading ? 'Sending...' : 'Send Reset Link'}
+                      {forgotLoading ? 'Sending...' : 'Send Reset Link'}
                     </button>
                   </div>
                 </form>

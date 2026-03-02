@@ -49,6 +49,7 @@ const Profile = () => {
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [settingsMsg, setSettingsMsg] = useState('');
   const [cancellingPlan, setCancellingPlan] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   // Streak/XP state
   const [streakData, setStreakData] = useState<any>(null);
@@ -120,6 +121,7 @@ const Profile = () => {
     }
   };
 
+  // FIX HIGH-12: Add cancel subscription confirmation dialog
   const handleCancelPlan = async () => {
     setCancellingPlan(true);
     try {
@@ -129,6 +131,7 @@ const Profile = () => {
       addToast('error', 'Cancel failed', 'Could not cancel your subscription.');
     }
     setCancellingPlan(false);
+    setShowCancelConfirm(false);
   };
 
   const handleLogout = async () => {
@@ -542,9 +545,23 @@ const Profile = () => {
                       </div>
                     )}
                     {!cancelAtPeriodEnd && (
-                      <button onClick={handleCancelPlan} disabled={cancellingPlan} className="w-full mt-2 py-2.5 rounded-xl border border-white/10 text-white/60 hover:bg-white/5 text-sm font-medium transition-colors disabled:opacity-50">
+                      <button onClick={() => setShowCancelConfirm(true)} disabled={cancellingPlan} className="w-full mt-2 py-2.5 rounded-xl border border-white/10 text-white/60 hover:bg-white/5 text-sm font-medium transition-colors disabled:opacity-50">
                         {cancellingPlan ? 'Cancelling...' : 'Cancel Subscription'}
                       </button>
+                    )}
+                    {showCancelConfirm && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-3 p-4 rounded-xl border border-red-500/20 bg-red-500/5">
+                        <p className="text-sm text-white mb-2">Are you sure you want to cancel your Pro subscription?</p>
+                        <p className="text-xs text-muted mb-3">You'll retain access until the end of your current billing period.</p>
+                        <div className="flex gap-2">
+                          <button onClick={() => setShowCancelConfirm(false)} className="flex-1 py-2 rounded-lg bg-white/5 text-white/60 text-sm hover:bg-white/10 transition-colors">
+                            Keep Pro
+                          </button>
+                          <button onClick={handleCancelPlan} disabled={cancellingPlan} className="flex-1 py-2 rounded-lg bg-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/30 transition-colors disabled:opacity-50">
+                            {cancellingPlan ? 'Cancelling...' : 'Yes, Cancel'}
+                          </button>
+                        </div>
+                      </motion.div>
                     )}
                     {cancelAtPeriodEnd && (
                       <p className="text-xs text-warning text-center mt-2">Your Pro access continues until the end of the current billing period.</p>

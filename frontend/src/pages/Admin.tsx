@@ -41,6 +41,7 @@ export default function Admin() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [users, setUsers] = useState<UserRow[]>([]);
   const [userSearch, setUserSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [userPage, setUserPage] = useState(1);
   const [userTotal, setUserTotal] = useState(0);
   const [payments, setPayments] = useState<PaymentRow[]>([]);
@@ -53,6 +54,12 @@ export default function Admin() {
   const [giftLoading, setGiftLoading] = useState(false);
   const [giftSuccess, setGiftSuccess] = useState('');
 
+  // FIX HIGH-13: Debounce search input to avoid firing API on every keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(userSearch), 300);
+    return () => clearTimeout(timer);
+  }, [userSearch]);
+
   const fetchStats = useCallback(async () => {
     try {
       const { data } = await adminAPI.getStats();
@@ -64,13 +71,13 @@ export default function Admin() {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const { data } = await adminAPI.getUsers({ page: userPage, limit: 20, search: userSearch });
+      const { data } = await adminAPI.getUsers({ page: userPage, limit: 20, search: debouncedSearch });
       setUsers(data.users);
       setUserTotal(data.total);
     } catch (err) {
       console.error('Failed to fetch users:', err);
     }
-  }, [userPage, userSearch]);
+  }, [userPage, debouncedSearch]);
 
   const fetchRevenue = useCallback(async () => {
     try {

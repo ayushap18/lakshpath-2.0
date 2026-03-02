@@ -61,17 +61,18 @@ router.get('/streak', async (req: Request, res: Response) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
+      // FIX HIGH-7: Zero-pad months and days for correct lexicographic sort
       const uniqueDays = new Set<string>();
       logs.forEach(log => {
         const d = new Date(log.createdAt);
-        uniqueDays.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+        uniqueDays.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
       });
 
       const sortedDays = Array.from(uniqueDays).sort().reverse();
-      const todayStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = `${yesterday.getFullYear()}-${yesterday.getMonth()}-${yesterday.getDate()}`;
+      const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
 
       // Streak starts from today or yesterday
       if (sortedDays[0] === todayStr || sortedDays[0] === yesterdayStr) {

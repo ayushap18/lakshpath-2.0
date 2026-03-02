@@ -100,7 +100,9 @@ export const billingController = {
         return res.status(400).json({ message: 'Missing signature' });
       }
 
-      const result = await razorpayService.handleWebhook(req.body, signature);
+      // FIX CRIT-2: Pass raw body (Buffer) for correct HMAC verification.
+      // express.raw() middleware gives us req.body as a Buffer.
+      const result = await razorpayService.handleWebhook(req.body as Buffer, signature);
       res.status(200).json(result);
     } catch (error) {
       next(error);

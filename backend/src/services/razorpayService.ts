@@ -48,12 +48,11 @@ export const razorpayService = {
       },
     });
 
-    // Store pending subscription
+    // FIX CRIT-1: Store as pending — do NOT set status to ACTIVE before payment
     await prisma.subscription.upsert({
       where: { userId },
       update: {
         razorpaySubId: subscription.id,
-        status: 'ACTIVE',
         billingCycle,
       },
       create: {
@@ -82,13 +81,23 @@ export const razorpayService = {
       throw new AppError('Razorpay is not configured', 503);
     }
 
-    // Verify signature
+    // FIX HIGH-5: Verify the subscription belongs to this user
+    const pendingSub = await prisma.subscription.findFirst({
+      where: { razorpaySubId: razorpaySubscriptionId },
+    });
+    if (!pendingSub || pendingSub.userId !== userId) {
+      throw new AppError('Subscription does not belong to this user', 403);
+    }
+
+    // Verify signature using timing-safe comparison (FIX M-7)
     const expectedSignature = crypto
       .createHmac('sha256', env.RAZORPAY_KEY_SECRET)
       .update(`${razorpayPaymentId}|${razorpaySubscriptionId}`)
       .digest('hex');
 
-    if (expectedSignature !== razorpaySignature) {
+    const expected = Buffer.from(expectedSignature, 'utf8');
+    const received = Buffer.from(razorpaySignature, 'utf8');
+    if (expected.length !== received.length || !crypto.timingSafeEqual(expected, received)) {
       throw new AppError('Invalid payment signature', 400);
     }
 
@@ -96,9 +105,9 @@ export const razorpayService = {
     const now = new Date();
     const periodEnd = new Date(now);
 
-    // Check billing cycle from the pending subscription
-    const pendingSub = await prisma.subscription.findFirst({ where: { razorpaySubId: razorpaySubscriptionId } });
-    if (pendingSub?.billingCycle === 'yearly') {
+    // FIX HIGH-17: Use billing cycle for correct period and amount
+    const isYearly = pendingSub.billingCycle === 'yearly';
+    if (isYearly) {
       periodEnd.setFullYear(periodEnd.getFullYear() + 1);
     } else {
       periodEnd.setMonth(periodEnd.getMonth() + 1);
@@ -124,14 +133,14 @@ export const razorpayService = {
       },
     });
 
-    // Record payment
+    // Record payment with correct amount based on billing cycle
     await prisma.payment.create({
       data: {
         userId,
         razorpayPaymentId,
         razorpayOrderId: razorpaySubscriptionId,
         razorpaySignature,
-        amount: 49900, // ₹499 in paise
+        amount: isYearly ? 479000 : 49900,
         currency: 'INR',
         status: 'SUCCESS',
         plan: 'PRO',
@@ -145,6 +154,11 @@ export const razorpayService = {
     const subscription = await prisma.subscription.findUnique({ where: { userId } });
     if (!subscription || subscription.plan === 'FREE') {
       throw new AppError('No active Pro subscription to cancel', 400);
+    }
+
+    // FIX L-3: Don't try to cancel already-cancelled subscriptions
+    if (subscription.status === 'CANCELLED') {
+      throw new AppError('Subscription is already cancelled', 400);
     }
 
     // Cancel at period end (don't revoke immediately)
@@ -170,20 +184,28 @@ export const razorpayService = {
     return subscription || { plan: 'FREE', status: 'ACTIVE', currentPeriodEnd: null, cancelAtPeriodEnd: false };
   },
 
-  async handleWebhook(payload: any, signature: string) {
+  // FIX CRIT-2: Accept raw body Buffer for webhook signature verification
+  async handleWebhook(rawBody: Buffer | string, signature: string) {
     if (!env.RAZORPAY_WEBHOOK_SECRET) {
       throw new AppError('Webhook secret not configured', 503);
     }
 
+    // Use raw body bytes for HMAC — NOT re-serialized JSON
+    const bodyStr = typeof rawBody === 'string' ? rawBody : rawBody.toString('utf8');
+
     const expectedSignature = crypto
       .createHmac('sha256', env.RAZORPAY_WEBHOOK_SECRET)
-      .update(JSON.stringify(payload))
+      .update(bodyStr)
       .digest('hex');
 
-    if (expectedSignature !== signature) {
+    // FIX M-6: Timing-safe comparison for webhook signature
+    const expected = Buffer.from(expectedSignature, 'utf8');
+    const received = Buffer.from(signature, 'utf8');
+    if (expected.length !== received.length || !crypto.timingSafeEqual(expected, received)) {
       throw new AppError('Invalid webhook signature', 400);
     }
 
+    const payload = typeof rawBody === 'string' ? JSON.parse(rawBody) : JSON.parse(rawBody.toString('utf8'));
     const event = payload.event;
     const entity = payload.payload?.subscription?.entity || payload.payload?.payment?.entity;
 
@@ -196,7 +218,12 @@ export const razorpayService = {
           if (sub) {
             const now = new Date();
             const periodEnd = new Date(now);
-            periodEnd.setMonth(periodEnd.getMonth() + 1);
+            // FIX HIGH-4: Use billing cycle for correct period end
+            if (sub.billingCycle === 'yearly') {
+              periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+            } else {
+              periodEnd.setMonth(periodEnd.getMonth() + 1);
+            }
             await prisma.subscription.update({
               where: { id: sub.id },
               data: {

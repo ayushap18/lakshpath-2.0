@@ -42,7 +42,7 @@ const Register = () => {
       setLoading(true);
       setError('');
       const res = await authAPI.googleLogin(credentialResponse.credential);
-      handleSuccess(res.data);
+      await handleSuccess(res.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Google signup failed');
     } finally {
@@ -61,7 +61,7 @@ const Register = () => {
         form.email,
         form.password,
       );
-      handleSuccess(res.data);
+      await handleSuccess(res.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {

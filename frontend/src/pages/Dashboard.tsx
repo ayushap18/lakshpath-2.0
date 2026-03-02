@@ -46,9 +46,11 @@ const Dashboard = () => {
   const badges = profileData?.badges || [];
   const topCareerMatch = analysis?.careerMatches?.[0];
   const topMatch = results?.careerMatches?.[0];
-  const matchScore = topCareerMatch?.matchScore || topMatch?.match_score || topMatch?.matchPercentage || 78;
-  const matchTitle = topCareerMatch?.role || topMatch?.title || 'Software Engineer';
-  const matchSalary = topCareerMatch?.avgSalary || topMatch?.salary || '8-20 LPA';
+  // FIX HIGH-10: Don't show fake fallback career data — use null when no real data exists
+  const matchScore = topCareerMatch?.matchScore || topMatch?.match_score || topMatch?.matchPercentage || null;
+  const matchTitle = topCareerMatch?.role || topMatch?.title || null;
+  const matchSalary = topCareerMatch?.avgSalary || topMatch?.salary || null;
+  const hasCareerMatch = matchTitle !== null;
   const roadmap = results?.roadmap;
   const skills = analysis?.skillLevels || {};
   const overallScore = profileData?.analysis?.overallScore || 0;
@@ -232,41 +234,56 @@ const Dashboard = () => {
       <div className="flex flex-col lg:flex-row gap-5">
         {/* Left Column */}
         <div className="flex-1 space-y-5">
-          {/* Top Match Card */}
+          {/* Top Match Card — FIX HIGH-10: Show empty state when no real career match data */}
           <motion.div variants={item}>
             <Card tilt glass className="relative">
               <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} />
-              <div className="flex items-center gap-2 mb-4">
-                <Badge variant="accent" size="sm" dot>TOP CAREER MATCH</Badge>
-                <Badge variant="default" size="sm">Updated today</Badge>
-              </div>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h2 className="text-2xl font-extrabold text-white mb-3 tracking-tight">{matchTitle}</h2>
-                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                    <div className="flex items-center gap-1.5"><Icon name="payments" size={15} className="text-muted" /><span className="text-muted">Salary</span><span className="text-white font-semibold">{matchSalary}</span></div>
-                    <div className="flex items-center gap-1.5"><Icon name="trending_up" size={15} className="text-success" /><span className="text-muted">Growth</span><span className="text-success font-semibold">High</span></div>
-                    <div className="flex items-center gap-1.5"><Icon name="schedule" size={15} className="text-muted" /><span className="text-muted">Timeline</span><span className="text-white font-semibold">6 Months</span></div>
+              {hasCareerMatch ? (
+                <>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Badge variant="accent" size="sm" dot>TOP CAREER MATCH</Badge>
+                    <Badge variant="default" size="sm">Updated today</Badge>
                   </div>
-                  <div className="flex items-center gap-2 mt-4">
-                    <Badge variant="gradient" size="sm" dot>NSQF Paired</Badge>
-                    <Badge variant="success" size="sm" dot>High Demand</Badge>
-                    <Badge variant="violet" size="sm" dot>AI Verified</Badge>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h2 className="text-2xl font-extrabold text-white mb-3 tracking-tight">{matchTitle}</h2>
+                      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                        {matchSalary && <div className="flex items-center gap-1.5"><Icon name="payments" size={15} className="text-muted" /><span className="text-muted">Salary</span><span className="text-white font-semibold">{matchSalary}</span></div>}
+                        <div className="flex items-center gap-1.5"><Icon name="trending_up" size={15} className="text-success" /><span className="text-muted">Growth</span><span className="text-success font-semibold">High</span></div>
+                        <div className="flex items-center gap-1.5"><Icon name="schedule" size={15} className="text-muted" /><span className="text-muted">Timeline</span><span className="text-white font-semibold">6 Months</span></div>
+                      </div>
+                      <div className="flex items-center gap-2 mt-4">
+                        <Badge variant="gradient" size="sm" dot>NSQF Paired</Badge>
+                        <Badge variant="success" size="sm" dot>High Demand</Badge>
+                        <Badge variant="violet" size="sm" dot>AI Verified</Badge>
+                      </div>
+                    </div>
+                    {matchScore != null && (
+                      <div className="relative flex-shrink-0 ml-4">
+                        <svg className="w-24 h-24" viewBox="0 0 96 96">
+                          <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="7" />
+                          <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(13,162,231,0.08)" strokeWidth="7" />
+                          <motion.circle cx="48" cy="48" r="40" fill="none" strokeWidth="7" stroke="url(#scoreGradient)" strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 40}`} initial={{ strokeDashoffset: 2 * Math.PI * 40 }} animate={{ strokeDashoffset: 2 * Math.PI * 40 * (1 - matchScore / 100) }} transition={{ duration: 1.8, ease: 'easeOut', delay: 0.3 }} transform="rotate(-90 48 48)" style={{ filter: 'drop-shadow(0 0 6px rgba(13,162,231,0.4))' }} />
+                          <defs><linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#0da2e7" /><stop offset="100%" stopColor="#8B5CF6" /></linearGradient></defs>
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-2xl font-extrabold text-white">{matchScore}%</span>
+                          <span className="text-[9px] text-muted font-medium uppercase tracking-wider">Match</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <Icon name="psychology" size={36} className="text-muted mb-3" />
+                  <h3 className="text-base font-bold text-white mb-1">No Career Match Yet</h3>
+                  <p className="text-xs text-muted mb-4 max-w-xs">Take the AI career assessment to discover your top career matches with salary insights and growth data.</p>
+                  <Button variant="primary" size="sm" onClick={() => navigate('/assessment')}>
+                    <Icon name="psychology" size={16} /> Take Assessment
+                  </Button>
                 </div>
-                <div className="relative flex-shrink-0 ml-4">
-                  <svg className="w-24 h-24" viewBox="0 0 96 96">
-                    <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="7" />
-                    <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(13,162,231,0.08)" strokeWidth="7" />
-                    <motion.circle cx="48" cy="48" r="40" fill="none" strokeWidth="7" stroke="url(#scoreGradient)" strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 40}`} initial={{ strokeDashoffset: 2 * Math.PI * 40 }} animate={{ strokeDashoffset: 2 * Math.PI * 40 * (1 - matchScore / 100) }} transition={{ duration: 1.8, ease: 'easeOut', delay: 0.3 }} transform="rotate(-90 48 48)" style={{ filter: 'drop-shadow(0 0 6px rgba(13,162,231,0.4))' }} />
-                    <defs><linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#0da2e7" /><stop offset="100%" stopColor="#8B5CF6" /></linearGradient></defs>
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-extrabold text-white">{matchScore}%</span>
-                    <span className="text-[9px] text-muted font-medium uppercase tracking-wider">Match</span>
-                  </div>
-                </div>
-              </div>
+              )}
             </Card>
           </motion.div>
 
@@ -316,13 +333,23 @@ const Dashboard = () => {
                   </div>
                 )}
               </div>
-              <div className="mt-5 pt-4 border-t border-white/[0.04]">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-secondary font-medium">Overall Progress</span>
-                  <span className="text-xs font-bold text-accent">25%</span>
-                </div>
-                <ProgressBar value={25} color="gradient" size="sm" />
-              </div>
+              {/* FIX HIGH-9: Compute roadmap progress from actual phase data instead of hardcoded 25% */}
+              {(() => {
+                const totalPhases = roadmap?.phases?.length || 0;
+                const completedPhases = totalPhases > 0
+                  ? roadmap.phases.filter((p: any) => p.status === 'completed' || p.completed).length
+                  : 0;
+                const progress = totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
+                return (
+                  <div className="mt-5 pt-4 border-t border-white/[0.04]">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-secondary font-medium">Overall Progress</span>
+                      <span className="text-xs font-bold text-accent">{progress}%</span>
+                    </div>
+                    <ProgressBar value={progress} color="gradient" size="sm" />
+                  </div>
+                );
+              })()}
             </Card>
           </motion.div>
 

@@ -33,6 +33,7 @@ export default function Pricing() {
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly');
   const [trialLoading, setTrialLoading] = useState(false);
   const [trialError, setTrialError] = useState('');
+  const [upgradeError, setUpgradeError] = useState('');
   const token = localStorage.getItem('token');
 
   const monthlyPrice = 499;
@@ -57,11 +58,13 @@ export default function Pricing() {
 
     try {
       setUpgrading(true);
+      setUpgradeError('');
       await subscribe(billing);
       navigate('/dashboard');
     } catch (err: any) {
       if (err.message !== 'Payment cancelled') {
-        console.error('Upgrade failed:', err);
+        // FIX HIGH-11: Show error feedback on payment failure
+        setUpgradeError(err.response?.data?.message || err.message || 'Payment failed. Please try again.');
       }
     } finally {
       setUpgrading(false);
@@ -242,6 +245,9 @@ export default function Pricing() {
                   <p className="text-red-400 text-xs mt-1">{trialError}</p>
                 )}
               </div>
+            )}
+            {upgradeError && (
+              <p className="text-red-400 text-xs text-center mt-2">{upgradeError}</p>
             )}
           </motion.div>
         </div>

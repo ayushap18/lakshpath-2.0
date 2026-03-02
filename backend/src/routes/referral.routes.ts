@@ -85,50 +85,59 @@ router.post('/redeem', authenticate, async (req: Request, res: Response, next: N
     if (!referrer) return res.status(404).json({ message: 'Invalid referral code' });
     if (referrer.id === req.user.id) return res.status(400).json({ message: 'Cannot use your own referral code' });
 
-    // Check if already redeemed a referral
-    const existing = await prisma.referral.findFirst({ where: { referredId: req.user.id } });
-    if (existing) return res.status(400).json({ message: 'Already used a referral code' });
-
+    // FIX HIGH-14: Use transaction to prevent TOCTOU race condition on referral redemption
     const now = new Date();
-    const oneMonthLater = new Date(now);
-    oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
 
-    // Create referral record
-    await prisma.referral.create({
-      data: {
-        referrerId: referrer.id,
-        referredId: req.user.id,
-        code,
-        status: 'REDEEMED',
-        rewardGiven: true,
-        redeemedAt: now,
-      },
-    });
+    const result = await prisma.$transaction(async (tx) => {
+      // Check if already redeemed a referral (inside transaction)
+      const existing = await tx.referral.findFirst({ where: { referredId: req.user!.id } });
+      if (existing) {
+        throw new Error('ALREADY_REDEEMED');
+      }
 
-    // Reward: Give 1 month Pro to BOTH referrer and referred user
-    for (const userId of [referrer.id, req.user.id]) {
-      const existingSub = await prisma.subscription.findUnique({ where: { userId } });
-      const currentEnd = existingSub?.currentPeriodEnd && existingSub.plan === 'PRO' && existingSub.status === 'ACTIVE'
-        ? new Date(existingSub.currentPeriodEnd)
-        : now;
-      const newEnd = new Date(currentEnd);
-      newEnd.setMonth(newEnd.getMonth() + 1);
-
-      await prisma.subscription.upsert({
-        where: { userId },
-        create: {
-          userId,
-          plan: 'PRO',
-          status: 'ACTIVE',
-          currentPeriodStart: now,
-          currentPeriodEnd: newEnd,
-        },
-        update: {
-          plan: 'PRO',
-          status: 'ACTIVE',
-          currentPeriodEnd: newEnd,
+      // Create referral record
+      await tx.referral.create({
+        data: {
+          referrerId: referrer.id,
+          referredId: req.user!.id,
+          code,
+          status: 'REDEEMED',
+          rewardGiven: true,
+          redeemedAt: now,
         },
       });
+
+      // Reward: Give 1 month Pro to BOTH referrer and referred user
+      for (const userId of [referrer.id, req.user!.id]) {
+        const existingSub = await tx.subscription.findUnique({ where: { userId } });
+        const currentEnd = existingSub?.currentPeriodEnd && existingSub.plan === 'PRO' && existingSub.status === 'ACTIVE'
+          ? new Date(existingSub.currentPeriodEnd)
+          : now;
+        const newEnd = new Date(currentEnd);
+        newEnd.setMonth(newEnd.getMonth() + 1);
+
+        await tx.subscription.upsert({
+          where: { userId },
+          create: {
+            userId,
+            plan: 'PRO',
+            status: 'ACTIVE',
+            currentPeriodStart: now,
+            currentPeriodEnd: newEnd,
+          },
+          update: {
+            plan: 'PRO',
+            status: 'ACTIVE',
+            currentPeriodEnd: newEnd,
+          },
+        });
+      }
+
+      return true;
+    });
+
+    if (!result) {
+      return res.status(400).json({ message: 'Failed to redeem referral' });
     }
 
     res.status(200).json({

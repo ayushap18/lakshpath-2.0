@@ -12,7 +12,11 @@ export const usageLimit = (feature: string, freeLimit: number, period: 'day' | '
       where: { userId: req.user.id },
     });
 
-    if (subscription?.plan === 'PRO' && subscription.status === 'ACTIVE') {
+    // FIX HIGH-1: Also recognize TRIALING status as Pro access
+    const isProAccess = subscription?.plan === 'PRO' &&
+      (subscription.status === 'ACTIVE' || subscription.status === 'TRIALING');
+
+    if (isProAccess) {
       // Log usage and pass through
       await prisma.usageLog.create({
         data: { userId: req.user.id, feature },

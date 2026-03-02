@@ -43,20 +43,39 @@ export const adminController = {
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
+      // FIX M-10: Cap pagination limit to prevent large queries
+      const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
       const search = (req.query.search as string) || '';
       const planFilter = req.query.plan as string;
 
       const where: any = {};
 
-      if (search) {
+      // FIX HIGH-6: Handle search + plan filter together without overwriting OR
+      if (search && planFilter === 'PRO') {
+        where.AND = [
+          { OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: 'insensitive' } },
+          ]},
+          { subscription: { plan: 'PRO', status: 'ACTIVE' } },
+        ];
+      } else if (search && planFilter === 'FREE') {
+        where.AND = [
+          { OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: 'insensitive' } },
+          ]},
+          { OR: [
+            { subscription: null },
+            { subscription: { plan: 'FREE' } },
+          ]},
+        ];
+      } else if (search) {
         where.OR = [
           { name: { contains: search, mode: 'insensitive' } },
           { email: { contains: search, mode: 'insensitive' } },
         ];
-      }
-
-      if (planFilter === 'PRO') {
+      } else if (planFilter === 'PRO') {
         where.subscription = { plan: 'PRO', status: 'ACTIVE' };
       } else if (planFilter === 'FREE') {
         where.OR = [
@@ -229,8 +248,9 @@ export const adminController = {
       const { id } = req.params;
       const { duration, unit } = req.body; // duration: number, unit: 'days' | 'months' | 'years'
 
-      if (!duration || !unit || !['days', 'months', 'years'].includes(unit)) {
-        return res.status(400).json({ message: 'Invalid duration or unit. Use { duration: number, unit: "days" | "months" | "years" }' });
+      // FIX M-11: Validate that duration is a positive number
+      if (!duration || typeof duration !== 'number' || duration <= 0 || !unit || !['days', 'months', 'years'].includes(unit)) {
+        return res.status(400).json({ message: 'Invalid duration or unit. Use { duration: positive number, unit: "days" | "months" | "years" }' });
       }
 
       const user = await prisma.user.findUnique({ where: { id } });

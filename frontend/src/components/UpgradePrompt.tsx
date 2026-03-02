@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '../contexts/SubscriptionContext';
+import { billingAPI } from '../services/api';
 import Icon from './ui/Icon';
 
 interface UpgradePromptProps {
@@ -66,6 +68,7 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
   const { subscribe } = useSubscription();
   const navigate = useNavigate();
   const info = FEATURE_BENEFITS[feature] || FEATURE_BENEFITS.default;
+  const [trialLoading, setTrialLoading] = useState(false);
 
   const handleUpgrade = async () => {
     try {
@@ -75,6 +78,22 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
       if (err.message !== 'Payment cancelled') {
         console.error('Payment failed:', err);
       }
+    }
+  };
+
+  // FIX HIGH-15: Actually start trial via API instead of just navigating to /pricing
+  const handleStartTrial = async () => {
+    setTrialLoading(true);
+    try {
+      await billingAPI.startTrial();
+      window.dispatchEvent(new Event('subscription-refresh'));
+      onClose();
+    } catch {
+      // If trial fails (e.g., already used), fall back to pricing page
+      onClose();
+      navigate('/pricing');
+    } finally {
+      setTrialLoading(false);
     }
   };
 
@@ -140,10 +159,11 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
                 Upgrade Now — ₹499/mo
               </button>
               <button
-                onClick={() => { onClose(); navigate('/pricing'); }}
-                className="w-full px-4 py-2.5 rounded-xl text-indigo-400 text-sm font-medium hover:bg-white/5 transition-colors"
+                onClick={handleStartTrial}
+                disabled={trialLoading}
+                className="w-full px-4 py-2.5 rounded-xl text-indigo-400 text-sm font-medium hover:bg-white/5 transition-colors disabled:opacity-50"
               >
-                Or try 7 days free
+                {trialLoading ? 'Starting trial...' : 'Or try 7 days free'}
               </button>
               <button
                 onClick={onClose}
