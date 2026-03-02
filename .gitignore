@@ -65,6 +65,9 @@ frontend-dev.pid
 # Credentials master file
 .allapi
 
+# Internal docs (private project context — not for public repo)
+.docs/
+
 # Temporary
 .cache/
 .temp/
