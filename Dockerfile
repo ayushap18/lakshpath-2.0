@@ -19,6 +19,7 @@ COPY frontend/ ./
 RUN printf '%s\n' \
     'VITE_API_BASE_URL=/api' \
     'VITE_GOOGLE_CLIENT_ID=336426317494-0q8g121u3e6qglp3c14vge0hdmfgrgg1.apps.googleusercontent.com' \
+    'VITE_RAZORPAY_KEY_ID=rzp_live_SMJ69n0mn5p6LO' \
     > .env.production && cat .env.production
 RUN npm run build
 

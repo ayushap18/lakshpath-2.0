@@ -24,6 +24,7 @@ const envSchema = z.object({
   RAZORPAY_KEY_SECRET: z.string().optional(),
   RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
   RAZORPAY_PLAN_ID_PRO: z.string().optional(),
+  RAZORPAY_PLAN_ID_PRO_YEARLY: z.string().optional(),
   // Auth
   BCRYPT_ROUNDS: z.coerce.number().default(12),
   // Email / SMTP

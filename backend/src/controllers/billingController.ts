@@ -19,7 +19,8 @@ export const billingController = {
         return res.status(401).json({ message: 'Not authenticated' });
       }
 
-      const result = await razorpayService.createSubscription(req.user.id);
+      const billingCycle = req.body?.billingCycle === 'yearly' ? 'yearly' : 'monthly';
+      const result = await razorpayService.createSubscription(req.user.id, billingCycle);
       res.status(200).json(result);
     } catch (error) {
       next(error);

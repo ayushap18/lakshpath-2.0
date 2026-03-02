@@ -16,7 +16,7 @@ const getRazorpayInstance = () => {
 };
 
 export const razorpayService = {
-  async createSubscription(userId: string) {
+  async createSubscription(userId: string, billingCycle: 'monthly' | 'yearly' = 'monthly') {
     const razorpay = getRazorpayInstance();
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -28,14 +28,23 @@ export const razorpayService = {
       throw new AppError('Already subscribed to Pro', 400);
     }
 
+    const planId = billingCycle === 'yearly'
+      ? env.RAZORPAY_PLAN_ID_PRO_YEARLY
+      : env.RAZORPAY_PLAN_ID_PRO;
+
+    if (!planId) {
+      throw new AppError(`Razorpay ${billingCycle} plan not configured`, 503);
+    }
+
     // Create Razorpay subscription
     const subscription = await razorpay.subscriptions.create({
-      plan_id: env.RAZORPAY_PLAN_ID_PRO!,
+      plan_id: planId,
       customer_notify: 1,
-      total_count: 12, // 12 months max
+      total_count: billingCycle === 'yearly' ? 5 : 12,
       notes: {
         userId: user.id,
         email: user.email || '',
+        billingCycle,
       },
     });
 
@@ -45,18 +54,21 @@ export const razorpayService = {
       update: {
         razorpaySubId: subscription.id,
         status: 'ACTIVE',
+        billingCycle,
       },
       create: {
         userId,
         plan: 'FREE',
         status: 'ACTIVE',
         razorpaySubId: subscription.id,
+        billingCycle,
       },
     });
 
     return {
       subscriptionId: subscription.id,
       razorpayKeyId: env.RAZORPAY_KEY_ID,
+      billingCycle,
     };
   },
 
@@ -83,7 +95,14 @@ export const razorpayService = {
     // Update subscription to PRO
     const now = new Date();
     const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
+
+    // Check billing cycle from the pending subscription
+    const pendingSub = await prisma.subscription.findFirst({ where: { razorpaySubId: razorpaySubscriptionId } });
+    if (pendingSub?.billingCycle === 'yearly') {
+      periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+    } else {
+      periodEnd.setMonth(periodEnd.getMonth() + 1);
+    }
 
     const subscription = await prisma.subscription.upsert({
       where: { userId },

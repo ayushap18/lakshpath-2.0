@@ -20,7 +20,7 @@ interface SubscriptionState {
 }
 
 interface SubscriptionContextValue extends SubscriptionState {
-  subscribe: () => Promise<void>;
+  subscribe: (billingCycle?: 'monthly' | 'yearly') => Promise<void>;
   cancelSubscription: () => Promise<void>;
   refreshSubscription: () => Promise<void>;
 }
@@ -90,13 +90,13 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     return () => window.removeEventListener('subscription-refresh', handler);
   }, [refreshSubscription]);
 
-  const subscribe = useCallback(async () => {
+  const subscribe = useCallback(async (billingCycle: 'monthly' | 'yearly' = 'monthly') => {
     const loaded = await loadRazorpayScript();
     if (!loaded) {
       throw new Error('Failed to load Razorpay');
     }
 
-    const { data } = await billingAPI.subscribe();
+    const { data } = await billingAPI.subscribe(billingCycle);
     const { subscriptionId, razorpayKeyId } = data;
 
     return new Promise<void>((resolve, reject) => {
@@ -104,7 +104,7 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
         key: razorpayKeyId,
         subscription_id: subscriptionId,
         name: 'LakshPath',
-        description: 'Pro Monthly Subscription',
+        description: billingCycle === 'yearly' ? 'Pro Yearly Subscription' : 'Pro Monthly Subscription',
         theme: { color: '#667eea' },
         handler: async (response: any) => {
           try {

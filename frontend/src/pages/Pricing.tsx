@@ -57,7 +57,7 @@ export default function Pricing() {
 
     try {
       setUpgrading(true);
-      await subscribe();
+      await subscribe(billing);
       navigate('/dashboard');
     } catch (err: any) {
       if (err.message !== 'Payment cancelled') {

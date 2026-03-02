@@ -610,7 +610,7 @@ export const profileAPI = {
 
 export const billingAPI = {
   getPlans: () => api.get('/billing/plans'),
-  subscribe: () => api.post('/billing/subscribe'),
+  subscribe: (billingCycle?: 'monthly' | 'yearly') => api.post('/billing/subscribe', { billingCycle: billingCycle || 'monthly' }),
   verifyPayment: (data: {
     razorpay_payment_id: string;
     razorpay_subscription_id: string;
