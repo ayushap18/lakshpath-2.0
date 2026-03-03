@@ -27,7 +27,7 @@ import referralRouter from './referral.routes';
 const router = Router();
 
 router.use('/auth', authLimiter, authRouter);
-router.use('/billing', authLimiter, billingRouter);
+router.use('/billing', billingRouter);
 router.use('/admin', adminRouter);
 router.use('/referral', referralRouter);
 router.use('/assessment', assessmentRouter);
