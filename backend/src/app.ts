@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors, { CorsOptions } from 'cors';
+import compression from 'compression';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
@@ -44,7 +45,7 @@ const allowedOrigins = env.CLIENT_ORIGIN
 const allowAllOrigins = !allowedOrigins || allowedOrigins.length === 0 || allowedOrigins.includes('*');
 
 if (env.NODE_ENV === 'production' && allowAllOrigins) {
-  console.warn('WARNING: CORS allows all origins in production. Set CLIENT_ORIGIN to your frontend domain.');
+  throw new Error('FATAL: CLIENT_ORIGIN not set. Cannot allow all origins in production. Set CLIENT_ORIGIN to your frontend domain.');
 }
 
 const corsOptions: CorsOptions = allowAllOrigins
@@ -60,6 +61,7 @@ const corsOptions: CorsOptions = allowAllOrigins
     };
 
 app.use(cors(corsOptions));
+app.use(compression());
 
 // FIX CRIT-2: Razorpay webhook needs raw body for HMAC verification.
 // Register express.raw() for webhook route BEFORE express.json() parses it.

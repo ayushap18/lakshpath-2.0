@@ -7,6 +7,8 @@ export const billingController = {
   async getPlans(_req: Request, res: Response, next: NextFunction) {
     try {
       const plans = razorpayService.getPlans();
+      // Static data — cache for 1 hour
+      res.set('Cache-Control', 'public, max-age=3600');
       res.status(200).json({ plans });
     } catch (error) {
       next(error);

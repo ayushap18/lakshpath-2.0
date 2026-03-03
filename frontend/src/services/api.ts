@@ -103,7 +103,11 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling and badge events
+// Response interceptor for error handling, badge events, and retry logic
+const MAX_RETRIES = 2;
+const RETRY_DELAY = 1000;
+const RETRYABLE_STATUSES = [408, 429, 500, 502, 503, 504];
+
 api.interceptors.response.use(
   (response) => {
     // Dispatch badge-earned event when newBadges are in any response
@@ -113,12 +117,30 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  async (error) => {
+    const config = error.config;
     if (error.response?.status === 401) {
       window.dispatchEvent(new CustomEvent('auth-expired'));
       localStorage.clear();
       window.location.href = '/login';
+      return Promise.reject(error);
     }
+
+    // Retry on transient server errors and network failures (GET/HEAD only)
+    const status = error.response?.status;
+    const isRetryable = !status || RETRYABLE_STATUSES.includes(status);
+    const isIdempotent = !config || config.method === 'get' || config.method === 'head';
+
+    if (isRetryable && isIdempotent && config) {
+      config.__retryCount = config.__retryCount || 0;
+      if (config.__retryCount < MAX_RETRIES) {
+        config.__retryCount += 1;
+        const delay = RETRY_DELAY * Math.pow(2, config.__retryCount - 1);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return api(config);
+      }
+    }
+
     return Promise.reject(error);
   }
 );

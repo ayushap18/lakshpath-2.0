@@ -2,14 +2,15 @@ import { Router } from 'express';
 
 import { billingController } from '@controllers/billingController';
 import { authenticate } from '@middleware/authenticate';
+import { webhookLimiter } from '@middleware/rateLimiter';
 
 const router = Router();
 
 // Public
 router.get('/plans', billingController.getPlans);
 
-// Webhook (no auth, verified by signature)
-router.post('/webhook', billingController.webhook);
+// Webhook (no auth, verified by signature, rate-limited)
+router.post('/webhook', webhookLimiter, billingController.webhook);
 
 // Authenticated
 router.post('/subscribe', authenticate, billingController.subscribe);
