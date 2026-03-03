@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { authService } from '@services/authService';
+import env from '@config/env';
 import prisma from '@lib/prisma';
 
 export const authController = {
@@ -34,6 +35,11 @@ export const authController = {
 
   async demoSignIn(req: Request, res: Response, next: NextFunction) {
     try {
+      // FIX M-17: Check if demo mode is actually enabled
+      if (!env.DEMO_MODE_ENABLED) {
+        return res.status(403).json({ message: 'Demo mode is disabled' });
+      }
+
       const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.socket.remoteAddress;
       const userAgent = req.headers['user-agent'];
 

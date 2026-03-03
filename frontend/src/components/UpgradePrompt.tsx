@@ -69,8 +69,12 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
   const navigate = useNavigate();
   const info = FEATURE_BENEFITS[feature] || FEATURE_BENEFITS.default;
   const [trialLoading, setTrialLoading] = useState(false);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
 
+  // FIX M-46: Prevent double-click on upgrade button
   const handleUpgrade = async () => {
+    if (upgradeLoading) return;
+    setUpgradeLoading(true);
     try {
       await subscribe();
       onClose();
@@ -78,6 +82,8 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
       if (err.message !== 'Payment cancelled') {
         console.error('Payment failed:', err);
       }
+    } finally {
+      setUpgradeLoading(false);
     }
   };
 
@@ -154,9 +160,10 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleUpgrade}
-                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all text-sm"
+                disabled={upgradeLoading || trialLoading}
+                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all text-sm disabled:opacity-50"
               >
-                Upgrade Now — ₹499/mo
+                {upgradeLoading ? 'Processing...' : 'Upgrade Now — ₹499/mo'}
               </button>
               <button
                 onClick={handleStartTrial}

@@ -95,6 +95,14 @@ router.post('/redeem', authenticate, async (req: Request, res: Response, next: N
         throw new Error('ALREADY_REDEEMED');
       }
 
+      // FIX M-13: Cap referral rewards at 10 per referrer to prevent farming
+      const referrerCount = await tx.referral.count({
+        where: { referrerId: referrer.id, status: 'REDEEMED' },
+      });
+      if (referrerCount >= 10) {
+        throw new Error('REFERRER_CAP_REACHED');
+      }
+
       // Create referral record
       await tx.referral.create({
         data: {

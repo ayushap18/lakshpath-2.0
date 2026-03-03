@@ -50,6 +50,10 @@ if (env.NODE_ENV === 'production') {
   if (env.JWT_SECRET === 'lakshpath-dev-secret') {
     throw new Error('FATAL: JWT_SECRET is the default dev secret. Cannot start in production. Set a strong random value (64+ chars).');
   }
+  // FIX M-26: Throw if DATABASE_URL points to localhost in production
+  if (env.DATABASE_URL.includes('localhost') || env.DATABASE_URL.startsWith('file:')) {
+    throw new Error('FATAL: DATABASE_URL points to localhost/SQLite in production. Use a managed PostgreSQL connection string.');
+  }
   if (env.JWT_SECRET.length < 32) {
     warnings.push('WARNING: JWT_SECRET is too short. Use at least 32 characters.');
   }
@@ -64,9 +68,6 @@ if (env.NODE_ENV === 'production') {
   }
   if (env.DEMO_MODE_ENABLED) {
     warnings.push('WARNING: Demo mode is enabled in production.');
-  }
-  if (env.DATABASE_URL.includes('localhost') || env.DATABASE_URL.startsWith('file:')) {
-    warnings.push('WARNING: DATABASE_URL points to localhost/SQLite. Use a managed PostgreSQL.');
   }
 
   if (warnings.length > 0) {

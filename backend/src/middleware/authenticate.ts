@@ -49,7 +49,7 @@ const updateStreak = (userId: string) => {
     .catch(() => { /* non-critical, ignore silently */ });
 };
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   const token = extractToken(req);
 
   if (!token) {
@@ -58,7 +58,17 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
   try {
     const payload = jwt.verify(token, env.JWT_SECRET) as TokenPayload;
-    req.user = { id: payload.sub, email: payload.email };
+
+    // FIX M-3: Verify user still exists in DB (handles deleted/banned users)
+    const user = await prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { id: true, email: true },
+    });
+    if (!user) {
+      return res.status(401).json({ message: 'User no longer exists' });
+    }
+
+    req.user = { id: user.id, email: user.email || payload.email };
     updateStreak(payload.sub);
     return next();
   } catch (error) {

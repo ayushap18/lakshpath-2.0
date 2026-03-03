@@ -124,6 +124,10 @@ export const billingController = {
       if (existing?.trialEndsAt) {
         return res.status(400).json({ message: 'Free trial already used' });
       }
+      // FIX M-9: Block trial for users who previously had a paid subscription
+      if (existing?.razorpaySubId) {
+        return res.status(400).json({ message: 'Free trial is only available for new users' });
+      }
 
       const now = new Date();
       const trialEnd = new Date(now);
