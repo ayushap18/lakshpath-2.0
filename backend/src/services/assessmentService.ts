@@ -243,6 +243,7 @@ export const assessmentService = {
     }
 
   const result = await prisma.$transaction(async (tx: Prisma.TransactionClient): Promise<AssessmentTransactionResult> => {
+
       const quizResult = await tx.quizResult.create({
         data: {
           userId: user.id,
@@ -389,7 +390,7 @@ export const assessmentService = {
       }
 
       return { quizResult, careerMatches, roadmap, goalContract };
-    });
+    }, { timeout: 15000 });
 
   const normalizedMatches = result.careerMatches.map((cm: CareerMatchRecord) => ({
       id: cm.id,
