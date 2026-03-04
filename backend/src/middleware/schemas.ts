@@ -31,7 +31,11 @@ export const profileSetupSchema = z.object({
   degree: z.string().max(100).optional(),
   branch: z.string().max(100).optional(),
   graduationYear: z.union([z.number().int().min(2000).max(2040), z.string()]).optional(),
-  githubUsername: z.string().max(39).regex(/^[a-zA-Z0-9-]*$/, 'Invalid GitHub username').optional().or(z.literal('')),
+  githubUsername: z.string().max(200).transform(val => {
+    // Extract username from full GitHub URL if provided
+    const match = val.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9-]+)\/?$/);
+    return match ? match[1] : val;
+  }).pipe(z.string().max(39).regex(/^[a-zA-Z0-9-]*$/, 'Invalid GitHub username')).optional().or(z.literal('')),
   linkedinUrl: z.string().max(500).optional().or(z.literal('')),
   bio: z.string().max(500).optional(),
   phone: z.string().max(20).optional(),

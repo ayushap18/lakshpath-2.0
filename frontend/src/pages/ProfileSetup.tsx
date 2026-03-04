@@ -275,7 +275,13 @@ const ProfileSetup = () => {
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B]">github.com/</span>
                     <input
                       value={form.githubUsername}
-                      onChange={e => set('githubUsername', e.target.value)}
+                      onChange={e => {
+                        let val = e.target.value;
+                        // Extract username if user pastes full GitHub URL
+                        const match = val.match(/(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9-]+)\/?$/);
+                        if (match) val = match[1];
+                        set('githubUsername', val);
+                      }}
                       placeholder="username"
                       className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl pl-[115px] pr-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors"
                     />
