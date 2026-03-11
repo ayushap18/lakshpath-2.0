@@ -250,6 +250,10 @@ export const insightsAPI = {
 export const chatAPI = {
   mentorRound: (payload: { userId: string; message: string; round?: 'career' | 'interview' | 'scholarship'; context?: Record<string, unknown>; }) =>
     api.post<{ reply: MentorChatResponse }>('/chat/mentor', payload),
+  getHistory: (round?: 'career' | 'interview' | 'scholarship', limit = 50) =>
+    api.get<{ messages: Array<{ id: string; role: string; content: string; round: string; metadata: string | null; createdAt: string }> }>(
+      `/chat/history${round ? `?round=${round}` : ''}${limit !== 50 ? `${round ? '&' : '?'}limit=${limit}` : ''}`,
+    ),
 };
 
 // Interview Practice API

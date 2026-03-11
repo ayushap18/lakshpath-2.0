@@ -25,6 +25,8 @@ const envSchema = z.object({
   RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
   RAZORPAY_PLAN_ID_PRO: z.string().optional(),
   RAZORPAY_PLAN_ID_PRO_YEARLY: z.string().optional(),
+  // ML microservice
+  ML_SERVICE_URL: z.string().default('http://localhost:8000'),
   // Auth
   BCRYPT_ROUNDS: z.coerce.number().default(12),
   // Email / SMTP

@@ -41,11 +41,16 @@ export interface SessionResult {
 /*  Browser Speech API helpers                                         */
 /* ------------------------------------------------------------------ */
 
-const SpeechRecognitionAPI =
-  (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+// Lazy-resolve Speech APIs so SSR/non-browser environments don't crash.
+const getSpeechRecognitionAPI = () =>
+  typeof window !== 'undefined'
+    ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null
+    : null;
 
-export const isSpeechSupported = !!SpeechRecognitionAPI;
-export const isSynthesisSupported = 'speechSynthesis' in window;
+export const isSpeechSupported = typeof window !== 'undefined' && !!(
+  (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+);
+export const isSynthesisSupported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
 /* ------------------------------------------------------------------ */
 /*  Hook                                                               */
@@ -138,8 +143,9 @@ export function useVoiceSession() {
   }, []);
 
   const startListening = useCallback(() => {
+    const SpeechRecognitionAPI = getSpeechRecognitionAPI();
     if (!SpeechRecognitionAPI) {
-      setError('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+      setError('Speech recognition is not supported in this browser. Please use Chrome or Edge for voice interviews.');
       return;
     }
 

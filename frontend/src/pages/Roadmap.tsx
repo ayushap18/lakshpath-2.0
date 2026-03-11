@@ -192,20 +192,24 @@ const Roadmap = () => {
   /* ---- Loading State ---- */
   if (loading || generating) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 gap-4">
-        <motion.div
-          className="w-10 h-10 rounded-full border-2 border-[#0da2e7]/30 border-t-[#0da2e7]"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
-        />
-        <motion.p
-          className="text-sm text-[#94A3B8]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 1.8, repeat: Infinity }}
-        >
-          {generating ? 'Generating your personalized roadmap...' : 'Charting your learning path...'}
-        </motion.p>
+      <div className="space-y-4 animate-pulse">
+        <div className="rounded-2xl p-6 h-28" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="h-5 w-56 rounded-lg bg-white/8 mb-3" />
+          <div className="h-3 w-80 rounded-lg bg-white/5" />
+        </div>
+        {[1,2,3,4].map(i => (
+          <div key={i} className="rounded-2xl p-5 flex gap-4 items-start" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="w-10 h-10 rounded-full bg-white/8 flex-shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 w-40 rounded bg-white/8" />
+              <div className="h-3 w-full rounded bg-white/5" />
+              <div className="h-3 w-3/4 rounded bg-white/5" />
+            </div>
+          </div>
+        ))}
+        {generating && (
+          <p className="text-center text-sm text-[#94A3B8] pt-2 animate-pulse">Generating your personalized roadmap…</p>
+        )}
       </div>
     );
   }

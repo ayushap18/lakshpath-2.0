@@ -49,6 +49,7 @@ model User {
   usageLogs             UsageLog[]
   referralsSent         Referral[]    @relation("referrer")
   referralsReceived     Referral[]    @relation("referred")
+  chatMessages          ChatMessage[]
   streakCount           Int           @default(0)
   lastActiveDate        DateTime?
   referralCode          String?       @unique
@@ -505,6 +506,23 @@ model LinkedInOptimization {
   status              String   @default("DRAFT") // 'DRAFT', 'APPLIED', 'ARCHIVED'
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
-  
+
+  @@index([userId, createdAt])
+}
+
+// ============================================
+// CHAT HISTORY
+// ============================================
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   // "user" | "assistant"
+  content   String   // raw text content
+  round     String   @default("career") // "career" | "interview" | "scholarship"
+  metadata  String?  // JSON: structured AI reply (actionPlan, followUps, etc.)
+  createdAt DateTime @default(now())
+
   @@index([userId, createdAt])
 }

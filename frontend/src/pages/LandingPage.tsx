@@ -328,6 +328,16 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const mockupRef = useRef<HTMLDivElement>(null);
 
+  /* live stats from backend */
+  const [liveStats, setLiveStats] = useState<{ students: number; interviewSessions: number; roadmapsCreated: number } | null>(null);
+  useEffect(() => {
+    const base = import.meta.env.VITE_API_URL ?? '/api';
+    fetch(`${base}/stats`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setLiveStats(data); })
+      .catch(() => {});
+  }, []);
+
   /* parallax for product mockup */
   const { scrollYProgress } = useScroll({
     target: mockupRef,
@@ -966,10 +976,10 @@ const LandingPage = () => {
           borderBottom: '1px solid rgba(13,162,231,0.15)',
         }}
       >
-        <AnimatedStat value={50000} suffix="+" label="Active Students" />
+        <AnimatedStat value={liveStats?.students ?? 50000} suffix="+" label="Active Students" />
         <AnimatedStat value={94} suffix="%" label="Career Match Rate" />
         <AnimatedStat value={500} suffix="+" label="Career Pathways" />
-        <AnimatedStat value={12000} suffix="+" label="Placements Assisted" />
+        <AnimatedStat value={liveStats?.interviewSessions ?? 12000} suffix="+" label="Interviews Practiced" />
       </motion.section>
 
       {/* ═══════════════ 9. PRICING ═══════════════ */}

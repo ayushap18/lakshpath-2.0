@@ -35,3 +35,11 @@ export const webhookLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: 'Too many webhook requests.' },
 });
+
+export const referralLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: isProd ? 5 : 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many referral redemption attempts, please try again later.' },
+});

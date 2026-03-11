@@ -1,6 +1,16 @@
+import * as Sentry from '@sentry/node';
 import env from '@config/env';
 import prisma from '@lib/prisma';
 import app from './app';
+
+// Initialise Sentry before anything else (no-op when DSN is unset)
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: env.NODE_ENV,
+    tracesSampleRate: env.NODE_ENV === 'production' ? 0.2 : 1.0,
+  });
+}
 
 const server = app.listen(env.PORT, () => {
   console.log(`LakshPath API listening on port ${env.PORT}`);

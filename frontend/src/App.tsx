@@ -8,6 +8,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import Icon from './components/ui/Icon'
 import { ToastProvider } from './contexts/ToastContext'
 import { SubscriptionProvider } from './contexts/SubscriptionContext'
+import { AuthProvider } from './contexts/AuthContext'
 import './App.css'
 
 // Lazy load all page components for code splitting
@@ -55,7 +56,7 @@ const PageLoader = () => (
 
 // Redirect logged-in users away from auth pages
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token'); // AuthContext not yet mounted here; safe localStorage read
 
   if (token) {
     return <Navigate to="/dashboard" replace />;
@@ -66,21 +67,25 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   useEffect(() => {
+    // Clear any token that is clearly expired (JWT exp claim is too far in the past).
+    // The server will 401 on first request anyway — this just avoids a stale redirect loop.
     const token = localStorage.getItem('token');
-    if (token && token.startsWith('mock-jwt-token-')) {
-      const tokenParts = token.split('-');
-      const timestamp = parseInt(tokenParts[tokenParts.length - 1]);
-      const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-
-      if (timestamp < weekAgo) {
-        localStorage.clear();
-        window.location.href = '/login';
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp && payload.exp * 1000 < Date.now()) {
+          localStorage.clear();
+          window.location.href = '/login';
+        }
+      } catch {
+        // Non-JWT token — leave it; the auth interceptor will handle 401
       }
     }
   }, []);
 
   return (
     <ErrorBoundary>
+    <AuthProvider>
     <ToastProvider>
     <SubscriptionProvider>
     <Router>
@@ -130,6 +135,7 @@ function App() {
     </Router>
     </SubscriptionProvider>
     </ToastProvider>
+    </AuthProvider>
     </ErrorBoundary>
   )
 }

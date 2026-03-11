@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { chatAPI } from '../services/api';
 import type { MentorChatResponse } from '../services/api';
 
@@ -10,12 +10,46 @@ interface ChatMessage {
   structured?: MentorChatResponse;
 }
 
-export const useChat = () => {
+export const useChat = (round?: 'career' | 'interview' | 'scholarship') => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const sendMessage = useCallback(async (message: string, round?: 'career' | 'interview' | 'scholarship') => {
+  // Load persisted history on mount
+  useEffect(() => {
+    let cancelled = false;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setHistoryLoading(false);
+      return;
+    }
+
+    chatAPI.getHistory(round)
+      .then((res) => {
+        if (cancelled) return;
+        const history: ChatMessage[] = res.data.messages.map((m) => ({
+          id: m.id,
+          role: m.role === 'assistant' ? 'mentor' : 'user',
+          content: m.content,
+          createdAt: m.createdAt,
+          structured: m.role === 'assistant' && m.metadata
+            ? (() => { try { return JSON.parse(m.metadata!); } catch { return undefined; } })()
+            : undefined,
+        }));
+        setMessages(history);
+      })
+      .catch(() => {
+        // Non-fatal: start with empty history
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [round]);
+
+  const sendMessage = useCallback(async (message: string, activeRound?: 'career' | 'interview' | 'scholarship') => {
     const userId = localStorage.getItem('userId') || 'demo';
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -28,7 +62,7 @@ export const useChat = () => {
     setError(null);
 
     try {
-      const res = await chatAPI.mentorRound({ userId, message, round });
+      const res = await chatAPI.mentorRound({ userId, message, round: activeRound ?? round });
       const reply = res.data.reply;
       const mentorMsg: ChatMessage = {
         id: `mentor-${Date.now()}`,
@@ -43,11 +77,11 @@ export const useChat = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [round]);
 
   const clearMessages = useCallback(() => {
     setMessages([]);
   }, []);
 
-  return { messages, loading, error, sendMessage, clearMessages };
+  return { messages, loading, historyLoading, error, sendMessage, clearMessages };
 };

@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import express, { Request, Response } from 'express';
 import cors, { CorsOptions } from 'cors';
 import compression from 'compression';
@@ -85,6 +86,9 @@ app.all('/api/*', (_req: Request, res: Response) => {
 
 // Error handler MUST be registered before the wildcard static file route
 // so that API errors (thrown by routes/services) are caught properly
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.expressErrorHandler());
+}
 app.use(errorHandler);
 
 // Serve frontend static files in all environments

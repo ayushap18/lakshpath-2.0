@@ -1,5 +1,6 @@
 import prisma from '@lib/prisma';
 import { geminiService } from './geminiService';
+import { mlScoreAnswer } from './mlService';
 import {
   InterviewQuestionGenerationRequest,
   InterviewAnswerEvaluationRequest,
@@ -189,20 +190,39 @@ export const interviewService = {
       throw new AppError('Session is not active', 400);
     }
 
-    // Evaluate answer using AI, fall back to demo evaluation
+    // Evaluate answer: ML score (fast) + Gemini feedback (rich), fall back to demo
     let evaluationParsed: any;
-    try {
-      const evaluation = await geminiService.evaluateInterviewAnswer({
+    const [mlScore, geminiEval] = await Promise.allSettled([
+      mlScoreAnswer({
+        question: question.questionText,
+        userAnswer: answer,
+        expectedAnswer: question.expectedAnswer || '',
+        questionType: question.questionType,
+      }),
+      geminiService.evaluateInterviewAnswer({
         questionText: question.questionText,
         questionType: question.questionType,
         userAnswer: answer,
         expectedAnswer: question.expectedAnswer || undefined,
-      });
-      evaluationParsed = evaluation.parsed;
-    } catch (error: any) {
-      console.warn('[InterviewService] AI evaluation failed, using demo:', error.message?.slice(0, 120));
+      }),
+    ]);
+
+    if (geminiEval.status === 'fulfilled') {
+      evaluationParsed = geminiEval.value.parsed;
+      // Blend Gemini score (70%) with ML score (30%) when ML succeeded
+      if (mlScore.status === 'fulfilled' && mlScore.value) {
+        evaluationParsed.score = Math.round(
+          evaluationParsed.score * 0.7 + mlScore.value.score * 0.3,
+        );
+      }
+    } else {
+      console.warn('[InterviewService] AI evaluation failed, using demo:', (geminiEval.reason as any)?.message?.slice(0, 120));
       const effortScore = Math.min(85, 50 + Math.floor(answer.length / 20));
       evaluationParsed = { ...DEMO_EVALUATION, score: effortScore };
+      // Even without Gemini, use ML score if available
+      if (mlScore.status === 'fulfilled' && mlScore.value) {
+        evaluationParsed.score = mlScore.value.score;
+      }
     }
 
     // Update question with answer and evaluation

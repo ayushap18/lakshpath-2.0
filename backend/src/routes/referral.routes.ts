@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 
 import { authenticate } from '@middleware/authenticate';
+import { referralLimiter } from '@middleware/rateLimiter';
 import prisma from '@lib/prisma';
 
 const router = Router();
@@ -74,7 +75,7 @@ router.get('/stats', authenticate, async (req: Request, res: Response, next: Nex
 });
 
 // Redeem referral code (called during registration)
-router.post('/redeem', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/redeem', referralLimiter, authenticate, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.user?.id) return res.status(401).json({ message: 'Not authenticated' });
     const { code } = req.body;

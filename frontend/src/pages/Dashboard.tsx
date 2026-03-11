@@ -77,13 +77,32 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
-        <motion.div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.1), rgba(139,92,246,0.08))', border: '1px solid rgba(13,162,231,0.15)' }} animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-          <Icon name="conversion_path" size={24} className="text-accent" />
-        </motion.div>
-        <div className="flex gap-1">
-          {[0, 1, 2].map(i => (<motion.div key={i} className="w-2 h-2 rounded-full bg-accent/40" animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }} transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }} />))}
+      <div className="space-y-5 animate-pulse">
+        {/* Hero skeleton */}
+        <div className="rounded-2xl p-6 h-32" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="h-5 w-48 rounded-lg bg-white/8 mb-3" />
+          <div className="h-4 w-72 rounded-lg bg-white/5" />
         </div>
+        {/* Stat card skeletons */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="rounded-2xl p-4 h-24" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="h-4 w-16 rounded bg-white/8 mb-2" />
+              <div className="h-7 w-12 rounded bg-white/6" />
+            </div>
+          ))}
+        </div>
+        {/* Content skeletons */}
+        {[1,2].map(i => (
+          <div key={i} className="rounded-2xl p-5 h-40" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="h-4 w-32 rounded bg-white/8 mb-4" />
+            <div className="space-y-2">
+              <div className="h-3 w-full rounded bg-white/5" />
+              <div className="h-3 w-4/5 rounded bg-white/5" />
+              <div className="h-3 w-3/5 rounded bg-white/5" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }

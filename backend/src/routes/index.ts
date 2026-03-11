@@ -23,6 +23,7 @@ import profileRouter from './profile.routes';
 import billingRouter from './billing.routes';
 import adminRouter from './admin.routes';
 import referralRouter from './referral.routes';
+import publicStatsRouter from './publicStats.routes';
 
 const router = Router();
 
@@ -48,5 +49,6 @@ router.use('/learning-enhanced', learningEnhancedRouter);
 router.use('/nsqf', nsqfRouter);
 router.use('/features', aiLimiter, featuresRouter);
 router.use('/profile', profileRouter);
+router.use('/stats', publicStatsRouter);
 
 export default router;

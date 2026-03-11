@@ -146,20 +146,42 @@ export const chatService = {
     const replySummary = parsedReply.headline ?? `AI mentor (${payload.round}) reply`;
 
     try {
-      await prisma.insight.create({
-        data: {
-          userId: payload.userId,
-          source: 'GEMINI',
-          prompt: rawPrompt || `Mentor chat: ${payload.message}`,
-          response: rawResponse || JSON.stringify(parsedReply),
-          summary: replySummary,
-          type: 'CHAT',
-          metadata: safeStringify({ message: payload.message, reply: parsedReply }),
-        },
-      });
+      await prisma.$transaction([
+        // Persist user message
+        prisma.chatMessage.create({
+          data: {
+            userId: payload.userId,
+            role: 'user',
+            content: payload.message,
+            round: payload.round,
+          },
+        }),
+        // Persist assistant reply
+        prisma.chatMessage.create({
+          data: {
+            userId: payload.userId,
+            role: 'assistant',
+            content: parsedReply.summary ?? replySummary,
+            round: payload.round,
+            metadata: safeStringify(parsedReply),
+          },
+        }),
+        // Keep existing Insight record for analytics
+        prisma.insight.create({
+          data: {
+            userId: payload.userId,
+            source: 'GEMINI',
+            prompt: rawPrompt || `Mentor chat: ${payload.message}`,
+            response: rawResponse || JSON.stringify(parsedReply),
+            summary: replySummary,
+            type: 'CHAT',
+            metadata: safeStringify({ message: payload.message, reply: parsedReply }),
+          },
+        }),
+      ]);
     } catch (error) {
       if (isForeignKeyConstraintError(error)) {
-        console.warn(`[chatService] Skipping insight persistence for missing user ${payload.userId}`);
+        console.warn(`[chatService] Skipping persistence for missing user ${payload.userId}`);
       } else {
         throw error;
       }

@@ -66,9 +66,9 @@ const floatingBob = {
 };
 
 const Chat = () => {
-  const { messages, loading, error, sendMessage, clearMessages } = useChat();
-  const [input, setInput] = useState('');
   const [round, setRound] = useState<Round>('career');
+  const { messages, loading, historyLoading, error, sendMessage, clearMessages } = useChat(round);
+  const [input, setInput] = useState('');
   const [inputFocused, setInputFocused] = useState(false);
   const messagesEnd = useRef<HTMLDivElement>(null);
 
@@ -207,7 +207,14 @@ const Chat = () => {
         variants={item}
         className="flex-1 overflow-y-auto space-y-4 px-1 scrollbar-thin scrollbar-thumb-white/5"
       >
-        {messages.length === 0 ? (
+        {historyLoading ? (
+          /* ── History loading skeleton ── */
+          <div className="flex flex-col gap-3 px-2 pt-4">
+            {[0.6, 0.4, 0.7].map((w, i) => (
+              <div key={i} className={`h-10 rounded-xl bg-white/5 animate-pulse ${i % 2 === 0 ? 'ml-auto' : ''}`} style={{ width: `${w * 100}%` }} />
+            ))}
+          </div>
+        ) : messages.length === 0 ? (
           /* ── Empty state ── */
           <motion.div
             className="flex flex-col items-center justify-center h-full text-center"

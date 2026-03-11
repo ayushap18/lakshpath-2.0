@@ -6,6 +6,7 @@ import {
   QuizAnswers,
 } from '@lib/careerEngine';
 import { geminiService } from './geminiService';
+import { mlRankCareers } from './mlService';
 import { AppError } from '@middleware/errorHandler';
 import { CareerExplanationResponse, RoadmapResponse, GoalSuccessCriteriaResponse } from '@shared-types/ai';
 import { safeStringify, safeParse } from '@utils/json';
@@ -157,7 +158,21 @@ export const assessmentService = {
     const payload = submitSchema.parse(input);
     const user = await ensureUser(payload.user, payload.demo);
 
+    // Try ML service first; fall back to local careerEngine
+    const mlResult = await mlRankCareers(payload.answers);
     const { parsed, topCareers } = generateCareerMatches(payload.answers as QuizAnswers);
+    if (mlResult?.topCareers?.length) {
+      // Merge ML scores into topCareers list when both agree on a title
+      const mlScoreMap = new Map(mlResult.topCareers.map(m => [m.title.toLowerCase(), m.matchScore]));
+      for (const career of topCareers) {
+        const mlScore = mlScoreMap.get(career.title.toLowerCase());
+        if (mlScore !== undefined) {
+          // Blend: 60% ML, 40% rule-based
+          career.matchScore = Math.round(mlScore * 0.6 + career.matchScore * 0.4);
+        }
+      }
+      topCareers.sort((a, b) => b.matchScore - a.matchScore);
+    }
     if (!topCareers.length) {
       throw new AppError('Unable to compute career matches', 400);
     }
