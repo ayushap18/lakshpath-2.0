@@ -5,6 +5,7 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import StatCard from '../components/ui/StatCard';
+import Skeleton, { SkeletonStatCard } from '../components/ui/Skeleton';
 import { useInterview } from '../hooks/useInterview';
 
 const TYPES = ['Technical', 'Behavioral', 'HR', 'System Design'];
@@ -130,8 +131,14 @@ const Interview = () => {
   /* ─── loading state ─── */
   if (loading && !activeSession) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+      <div className="space-y-6">
+        <Skeleton variant="text" width="40%" height={32} />
+        <div className="grid grid-cols-3 gap-4">
+          <SkeletonStatCard />
+          <SkeletonStatCard />
+          <SkeletonStatCard />
+        </div>
+        <Skeleton variant="rectangular" height={300} />
       </div>
     );
   }
@@ -159,7 +166,7 @@ const Interview = () => {
               </div>
 
               {/* Question counter */}
-              <p className="text-xs text-[#64748B] mb-2">
+              <p className="text-xs text-white/40 mb-2">
                 Question {questionIndex + 1} of {allQuestions.length}
               </p>
 
@@ -182,7 +189,7 @@ const Interview = () => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder={type === 'Technical' ? 'Write your code or solution here...' : 'Type your answer...'}
-                className={`flex-1 w-full bg-[#111827] border border-[#1E293B] rounded-xl p-4 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF]/50 resize-none transition-colors duration-200 ${
+                className={`flex-1 w-full bg-[#111827] border border-[#1E293B] rounded-xl p-4 text-white placeholder-white/40 outline-none focus:border-[#0066FF]/50 resize-none transition-colors duration-200 ${
                   type === 'Technical' ? 'font-mono text-sm' : ''
                 }`}
               />
@@ -222,7 +229,7 @@ const Interview = () => {
                   <h3 className="font-semibold text-white">STAR Analysis</h3>
                 </div>
                 {feedback.length === 0 ? (
-                  <p className="text-sm text-[#64748B]">Submit your first answer to see AI feedback here.</p>
+                  <p className="text-sm text-white/40">Submit your first answer to see AI feedback here.</p>
                 ) : (
                   <div className="space-y-3">
                     <AnimatePresence>
@@ -243,14 +250,14 @@ const Interview = () => {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-[#94A3B8]">
+                          <p className="text-sm text-white/50">
                             {typeof f.feedback === 'string' ? f.feedback : (f.feedback?.feedback || 'Answer evaluated.')}
                           </p>
                           {f.strengths && Array.isArray(f.strengths) && f.strengths.length > 0 && (
                             <div className="mt-2">
                               <p className="text-xs text-green-400 font-medium mb-1">Strengths</p>
                               {f.strengths.map((s: string, si: number) => (
-                                <p key={si} className="text-xs text-[#94A3B8]">+ {s}</p>
+                                <p key={si} className="text-xs text-white/50">+ {s}</p>
                               ))}
                             </div>
                           )}
@@ -258,7 +265,7 @@ const Interview = () => {
                             <div className="mt-2">
                               <p className="text-xs text-amber-400 font-medium mb-1">Improve</p>
                               {f.improvements.map((imp: string, ii: number) => (
-                                <p key={ii} className="text-xs text-[#94A3B8]">- {imp}</p>
+                                <p key={ii} className="text-xs text-white/50">- {imp}</p>
                               ))}
                             </div>
                           )}
@@ -282,7 +289,7 @@ const Interview = () => {
                       transition={{ duration: 0.6, ease: 'easeOut' }}
                     />
                   </div>
-                  <p className="text-xs text-[#94A3B8] whitespace-nowrap">{feedback.length}/{allQuestions.length}</p>
+                  <p className="text-xs text-white/50 whitespace-nowrap">{feedback.length}/{allQuestions.length}</p>
                 </div>
               </Card>
             </motion.div>
@@ -337,7 +344,7 @@ const Interview = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               {/* Interview type */}
               <div>
-                <label className="text-sm text-[#94A3B8] mb-2 block">Interview Type</label>
+                <label className="text-sm text-white/50 mb-2 block">Interview Type</label>
                 <div className="flex flex-wrap gap-2">
                   {TYPES.map((t) => (
                     <motion.button
@@ -354,7 +361,7 @@ const Interview = () => {
                       className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                         type === t
                           ? 'bg-[#0066FF] text-white shadow-lg shadow-[#0066FF]/25'
-                          : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:text-white'
+                          : 'bg-[#111827] text-white/50 border border-[#1E293B] hover:text-white'
                       }`}
                     >
                       {t}
@@ -365,7 +372,7 @@ const Interview = () => {
 
               {/* Difficulty */}
               <div>
-                <label className="text-sm text-[#94A3B8] mb-2 block">Difficulty</label>
+                <label className="text-sm text-white/50 mb-2 block">Difficulty</label>
                 <div className="flex gap-2">
                   {DIFFICULTIES.map((d) => (
                     <motion.button
@@ -382,7 +389,7 @@ const Interview = () => {
                       className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                         difficulty === d
                           ? 'bg-[#0066FF] text-white shadow-lg shadow-[#0066FF]/25'
-                          : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:text-white'
+                          : 'bg-[#111827] text-white/50 border border-[#1E293B] hover:text-white'
                       }`}
                     >
                       {d}
@@ -393,12 +400,12 @@ const Interview = () => {
 
               {/* Target role */}
               <div>
-                <label className="text-sm text-[#94A3B8] mb-2 block">Target Role (Optional)</label>
+                <label className="text-sm text-white/50 mb-2 block">Target Role (Optional)</label>
                 <input
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder="e.g., Frontend Developer"
-                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-2 text-white placeholder-[#64748B] outline-none text-sm focus:border-[#0066FF]/50 transition-colors duration-200"
+                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-2 text-white placeholder-white/40 outline-none text-sm focus:border-[#0066FF]/50 transition-colors duration-200"
                 />
               </div>
             </div>
@@ -441,7 +448,7 @@ const Interview = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{s.type || 'Interview'} &middot; {s.difficulty || 'Medium'}</p>
-                        <p className="text-xs text-[#64748B]">{new Date(s.createdAt).toLocaleDateString()}</p>
+                        <p className="text-xs text-white/40">{new Date(s.createdAt).toLocaleDateString()}</p>
                       </div>
                     </div>
                     <Badge variant={s.score >= 70 ? 'success' : s.score >= 40 ? 'warning' : 'error'}>

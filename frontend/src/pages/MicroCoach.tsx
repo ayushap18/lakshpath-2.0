@@ -4,6 +4,7 @@ import Icon from '../components/ui/Icon';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
+import Skeleton from '../components/ui/Skeleton';
 import { useAssessment } from '../hooks/useAssessment';
 import { assessmentAPI, learningEnhancedAPI } from '../services/api';
 
@@ -104,7 +105,7 @@ const AnimatedSkillBar = ({ value, color }: { value: number; color: string }) =>
 };
 
 const MicroCoach = () => {
-  const { results } = useAssessment();
+  const { results, loading } = useAssessment();
   const [tasks, setTasks] = useState<any[]>([]);
   const [generating, setGenerating] = useState(false);
   const [concept, setConcept] = useState('');
@@ -173,6 +174,20 @@ const MicroCoach = () => {
 
   const completedCount = tasks.filter((t) => t.completed).length;
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <Skeleton variant="text" width={200} height={28} />
+          <Skeleton variant="text" width={280} height={16} className="mt-2" />
+        </div>
+        <Skeleton variant="rectangular" height={120} className="rounded-2xl" />
+        <Skeleton variant="rectangular" height={120} className="rounded-2xl" />
+        <Skeleton variant="rectangular" height={120} className="rounded-2xl" />
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className="space-y-6"
@@ -183,7 +198,7 @@ const MicroCoach = () => {
       {/* Header */}
       <motion.div variants={itemVariants}>
         <h1 className="text-2xl font-bold text-white">Micro-Coach</h1>
-        <p className="text-[#94A3B8] mt-1">Daily learning tasks powered by AI</p>
+        <p className="text-white/50 mt-1">Daily learning tasks powered by AI</p>
       </motion.div>
 
       {/* Skill Snapshot */}
@@ -206,7 +221,7 @@ const MicroCoach = () => {
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-white">{skill.name}</span>
                     <motion.span
-                      className="text-xs text-[#64748B]"
+                      className="text-xs text-white/40"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 + i * 0.1 }}
@@ -242,7 +257,7 @@ const MicroCoach = () => {
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
               placeholder="Enter a concept to understand (e.g., REST APIs, Machine Learning)"
-              className="flex-1 bg-inset border border-white/5 rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none text-sm transition-shadow duration-300"
+              className="flex-1 bg-inset border border-white/5 rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none text-sm transition-shadow duration-300"
               whileFocus={{
                 boxShadow: '0 0 0 2px rgba(0,102,255,0.3), 0 0 20px rgba(0,102,255,0.1)',
                 borderColor: 'rgba(0,102,255,0.5)',
@@ -255,7 +270,7 @@ const MicroCoach = () => {
                   key={d}
                   onClick={() => setDepth(d)}
                   className={`px-3 py-2 rounded-xl text-xs font-medium capitalize transition-all ${
-                    depth === d ? 'bg-[#0066FF] text-white' : 'bg-inset text-[#64748B] border border-white/5'
+                    depth === d ? 'bg-[#0066FF] text-white' : 'bg-inset text-white/40 border border-white/5'
                   }`}
                   whileHover={{
                     scale: 1.05,
@@ -302,7 +317,7 @@ const MicroCoach = () => {
                     <p className="text-xs font-medium text-[#0066FF] mb-1">Key Points</p>
                     <ul className="list-disc list-inside space-y-1">
                       {explanation.keyPoints.map((kp: string, ki: number) => (
-                        <li key={ki} className="text-xs text-[#94A3B8]">{kp}</li>
+                        <li key={ki} className="text-xs text-white/50">{kp}</li>
                       ))}
                     </ul>
                   </div>
@@ -311,7 +326,7 @@ const MicroCoach = () => {
                   <div>
                     <p className="text-xs font-medium text-[#0066FF] mb-1">Analogies</p>
                     {explanation.analogies.map((a: string, ai: number) => (
-                      <p key={ai} className="text-xs text-[#94A3B8]">{a}</p>
+                      <p key={ai} className="text-xs text-white/50">{a}</p>
                     ))}
                   </div>
                 )}
@@ -329,7 +344,7 @@ const MicroCoach = () => {
             <div className="flex items-center gap-3">
               {tasks.length > 0 && (
                 <motion.span
-                  className="text-sm text-[#94A3B8]"
+                  className="text-sm text-white/50"
                   key={completedCount}
                   initial={{ scale: 1.3, color: '#0066FF' }}
                   animate={{ scale: 1, color: '#94A3B8' }}
@@ -424,7 +439,7 @@ const MicroCoach = () => {
                       {/* Task Title with Strikethrough Slide */}
                       <div className="relative inline-block">
                         <p className={`text-sm font-medium transition-colors duration-300 ${
-                          task.completed ? 'text-[#64748B]' : 'text-white'
+                          task.completed ? 'text-white/40' : 'text-white'
                         }`}>
                           {task.title}
                         </p>
@@ -437,7 +452,7 @@ const MicroCoach = () => {
                           />
                         )}
                       </div>
-                      <p className="text-xs text-[#64748B] mt-1">{task.description}</p>
+                      <p className="text-xs text-white/40 mt-1">{task.description}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Badge size="sm" variant="accent">{task.skill}</Badge>
                         {task.resourceUrl && (
@@ -468,9 +483,9 @@ const MicroCoach = () => {
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <Icon name="school" size={40} className="text-[#64748B] mx-auto mb-3" />
+                <Icon name="school" size={40} className="text-white/40 mx-auto mb-3" />
               </motion.div>
-              <p className="text-[#94A3B8] mb-4">No tasks yet. Generate AI-powered learning tasks based on your assessment.</p>
+              <p className="text-white/50 mb-4">No tasks yet. Generate AI-powered learning tasks based on your assessment.</p>
             </motion.div>
           )}
         </Card>
@@ -503,7 +518,7 @@ const MicroCoach = () => {
                   </motion.div>
                   <div>
                     <h3 className="font-semibold text-white">Next Best Action</h3>
-                    <p className="text-sm text-[#94A3B8] mt-1">{nextAction.action || nextAction.suggestion || JSON.stringify(nextAction)}</p>
+                    <p className="text-sm text-white/50 mt-1">{nextAction.action || nextAction.suggestion || JSON.stringify(nextAction)}</p>
                   </div>
                 </div>
               </Card>

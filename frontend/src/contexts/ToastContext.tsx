@@ -89,9 +89,9 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                 <Icon name={style.icon} size={20} style={{ color: style.iconColor }} className="flex-shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-white">{toast.title}</p>
-                  {toast.message && <p className="text-xs text-[#94A3B8] mt-0.5">{toast.message}</p>}
+                  {toast.message && <p className="text-xs text-white/50 mt-0.5">{toast.message}</p>}
                 </div>
-                <button className="text-[#64748B] hover:text-white transition-colors flex-shrink-0 mt-0.5">
+                <button className="text-white/40 hover:text-white transition-colors flex-shrink-0 mt-0.5">
                   <Icon name="close" size={16} />
                 </button>
               </motion.div>

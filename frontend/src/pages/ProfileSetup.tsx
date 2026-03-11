@@ -106,7 +106,7 @@ const ProfileSetup = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Set Up Your Tech Profile</h1>
-              <p className="text-xs text-[#94A3B8]">This powers your AI career analysis</p>
+              <p className="text-xs text-white/50">This powers your AI career analysis</p>
             </div>
           </div>
         </motion.div>
@@ -119,7 +119,7 @@ const ProfileSetup = () => {
                 className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${
                   i <= step
                     ? 'bg-[#0066FF] text-white'
-                    : 'bg-[#111827] text-[#64748B]'
+                    : 'bg-[#111827] text-white/40'
                 }`}
                 animate={i === step ? { scale: [1, 1.1, 1] } : {}}
                 transition={{ duration: 0.3 }}
@@ -134,7 +134,7 @@ const ProfileSetup = () => {
         </div>
 
         {/* Progress bar */}
-        <div className="w-full h-1.5 bg-white/5 rounded-full mb-8 overflow-hidden">
+        <div className="w-full h-1.5 bg-white/[0.04] rounded-full mb-8 overflow-hidden">
           <motion.div className="h-full rounded-full bg-[#0066FF]" animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
         </div>
 
@@ -145,48 +145,48 @@ const ProfileSetup = () => {
             {step === 0 && (
               <div className="space-y-5">
                 <h2 className="text-2xl font-bold text-white mb-1">Tell us about yourself</h2>
-                <p className="text-[#94A3B8] text-sm mb-6">We use this to personalize your AI career guidance.</p>
+                <p className="text-white/50 text-sm mb-6">We use this to personalize your AI career guidance.</p>
 
                 <div>
-                  <label className="text-sm text-[#94A3B8] mb-1 block">Full Name *</label>
+                  <label className="text-sm text-white/50 mb-1 block">Full Name *</label>
                   <input
                     value={form.name}
                     onChange={e => set('name', e.target.value)}
                     placeholder="Your full name"
-                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm text-[#94A3B8] mb-1 block">Age</label>
+                    <label className="text-sm text-white/50 mb-1 block">Age</label>
                     <input
                       type="number"
                       value={form.age}
                       onChange={e => set('age', e.target.value)}
                       placeholder="21"
-                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-[#94A3B8] mb-1 block">Phone (optional)</label>
+                    <label className="text-sm text-white/50 mb-1 block">Phone (optional)</label>
                     <input
                       value={form.phone}
                       onChange={e => set('phone', e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-sm text-[#94A3B8] mb-1 block">Short Bio (optional)</label>
+                  <label className="text-sm text-white/50 mb-1 block">Short Bio (optional)</label>
                   <textarea
                     value={form.bio}
                     onChange={e => set('bio', e.target.value)}
                     placeholder="Aspiring full-stack developer passionate about AI..."
                     rows={2}
-                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors resize-none"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors resize-none"
                   />
                 </div>
               </div>
@@ -196,21 +196,21 @@ const ProfileSetup = () => {
             {step === 1 && (
               <div className="space-y-5">
                 <h2 className="text-2xl font-bold text-white mb-1">Your Education</h2>
-                <p className="text-[#94A3B8] text-sm mb-6">Helps us match careers to your academic background.</p>
+                <p className="text-white/50 text-sm mb-6">Helps us match careers to your academic background.</p>
 
                 <div>
-                  <label className="text-sm text-[#94A3B8] mb-1 block">College / University</label>
+                  <label className="text-sm text-white/50 mb-1 block">College / University</label>
                   <input
                     value={form.college}
                     onChange={e => set('college', e.target.value)}
                     placeholder="IIT Delhi, VIT Vellore, etc."
-                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm text-[#94A3B8] mb-1 block">Degree</label>
+                    <label className="text-sm text-white/50 mb-1 block">Degree</label>
                     <select
                       value={form.degree}
                       onChange={e => set('degree', e.target.value)}
@@ -227,7 +227,7 @@ const ProfileSetup = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm text-[#94A3B8] mb-1 block">Branch</label>
+                    <label className="text-sm text-white/50 mb-1 block">Branch</label>
                     <select
                       value={form.branch}
                       onChange={e => set('branch', e.target.value)}
@@ -248,7 +248,7 @@ const ProfileSetup = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm text-[#94A3B8] mb-1 block">Graduation Year</label>
+                  <label className="text-sm text-white/50 mb-1 block">Graduation Year</label>
                   <select
                     value={form.graduationYear}
                     onChange={e => set('graduationYear', e.target.value)}
@@ -267,12 +267,12 @@ const ProfileSetup = () => {
             {step === 2 && (
               <div className="space-y-5">
                 <h2 className="text-2xl font-bold text-white mb-1">Connect Your Profiles</h2>
-                <p className="text-[#94A3B8] text-sm mb-6">Optional — AI will analyze your GitHub for a richer career profile.</p>
+                <p className="text-white/50 text-sm mb-6">Optional — AI will analyze your GitHub for a richer career profile.</p>
 
                 <div>
-                  <label className="text-sm text-[#94A3B8] mb-1 block">GitHub Username (optional)</label>
+                  <label className="text-sm text-white/50 mb-1 block">GitHub Username (optional)</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B]">github.com/</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">github.com/</span>
                     <input
                       value={form.githubUsername}
                       onChange={e => {
@@ -283,7 +283,7 @@ const ProfileSetup = () => {
                         set('githubUsername', val);
                       }}
                       placeholder="username"
-                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl pl-[115px] pr-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl pl-[115px] pr-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors"
                     />
                     {githubLoading && (
                       <motion.div
@@ -306,22 +306,22 @@ const ProfileSetup = () => {
                       <img src={githubPreview.avatarUrl} alt="" className="w-10 h-10 rounded-full" />
                       <div>
                         <p className="text-white font-semibold text-sm">{githubPreview.name || githubPreview.username}</p>
-                        <p className="text-[#64748B] text-xs">@{githubPreview.username}</p>
+                        <p className="text-white/40 text-xs">@{githubPreview.username}</p>
                       </div>
                       <Icon name="check_circle" size={18} className="text-green-500 ml-auto" />
                     </div>
                     <div className="grid grid-cols-3 gap-3 text-center">
-                      <div className="bg-white/5 rounded-lg p-2">
+                      <div className="bg-white/[0.04] rounded-lg p-2">
                         <p className="text-white font-bold text-lg">{githubPreview.publicRepos}</p>
-                        <p className="text-[#64748B] text-xs">Repos</p>
+                        <p className="text-white/40 text-xs">Repos</p>
                       </div>
-                      <div className="bg-white/5 rounded-lg p-2">
+                      <div className="bg-white/[0.04] rounded-lg p-2">
                         <p className="text-white font-bold text-lg">{githubPreview.totalStars}</p>
-                        <p className="text-[#64748B] text-xs">Stars</p>
+                        <p className="text-white/40 text-xs">Stars</p>
                       </div>
-                      <div className="bg-white/5 rounded-lg p-2">
+                      <div className="bg-white/[0.04] rounded-lg p-2">
                         <p className="text-white font-bold text-lg">{githubPreview.followers}</p>
-                        <p className="text-[#64748B] text-xs">Followers</p>
+                        <p className="text-white/40 text-xs">Followers</p>
                       </div>
                     </div>
                     {githubPreview.languages?.length > 0 && (
@@ -337,12 +337,12 @@ const ProfileSetup = () => {
                 )}
 
                 <div>
-                  <label className="text-sm text-[#94A3B8] mb-1 block">LinkedIn Profile URL (optional)</label>
+                  <label className="text-sm text-white/50 mb-1 block">LinkedIn Profile URL (optional)</label>
                   <input
                     value={form.linkedinUrl}
                     onChange={e => set('linkedinUrl', e.target.value)}
                     placeholder="https://linkedin.com/in/your-profile"
-                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors"
                   />
                 </div>
               </div>
@@ -352,7 +352,7 @@ const ProfileSetup = () => {
             {step === 3 && (
               <div className="space-y-5">
                 <h2 className="text-2xl font-bold text-white mb-1">Review Your Profile</h2>
-                <p className="text-[#94A3B8] text-sm mb-6">After this, our AI will analyze your profile and generate career insights.</p>
+                <p className="text-white/50 text-sm mb-6">After this, our AI will analyze your profile and generate career insights.</p>
 
                 <div className="space-y-3">
                   {[
@@ -371,11 +371,11 @@ const ProfileSetup = () => {
                       transition={{ delay: 0.05 }}
                       className="flex items-center gap-3 bg-[#111827] rounded-xl p-3"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center">
                         <Icon name={item.icon} size={18} className="text-[#0066FF]" />
                       </div>
                       <div>
-                        <p className="text-[#64748B] text-xs">{item.label}</p>
+                        <p className="text-white/40 text-xs">{item.label}</p>
                         <p className="text-white text-sm font-medium">{item.value}</p>
                       </div>
                     </motion.div>
@@ -446,12 +446,12 @@ const ProfileSetup = () => {
                 transition={{ delay: 0.4 + i * 0.1 }}
                 className="flex items-start gap-3"
               >
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
                   <Icon name={item.icon} size={16} className="text-[#0066FF]" />
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">{item.title}</p>
-                  <p className="text-[#64748B] text-xs">{item.desc}</p>
+                  <p className="text-white/40 text-xs">{item.desc}</p>
                 </div>
               </motion.div>
             ))}

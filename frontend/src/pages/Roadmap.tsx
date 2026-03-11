@@ -4,6 +4,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import ProgressBar from '../components/ui/ProgressBar';
 import Button from '../components/ui/Button';
+import Skeleton from '../components/ui/Skeleton';
 import { useRoadmap } from '../hooks/useRoadmap';
 
 /* ------------------------------------------------------------------ */
@@ -192,23 +193,44 @@ const Roadmap = () => {
   /* ---- Loading State ---- */
   if (loading || generating) {
     return (
-      <div className="space-y-4 animate-pulse">
-        <div className="rounded-2xl p-6 h-28" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <div className="h-5 w-56 rounded-lg bg-white/8 mb-3" />
-          <div className="h-3 w-80 rounded-lg bg-white/5" />
+      <div className="space-y-4">
+        {/* Header skeleton */}
+        <div className="rounded-2xl border border-white/[0.04] bg-white/[0.03] p-6">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <Skeleton variant="text" width={220} height={20} className="mb-2" />
+              <Skeleton variant="text" width={160} height={14} />
+            </div>
+            <Skeleton variant="rectangular" width={110} height={28} />
+          </div>
+          <Skeleton variant="rectangular" height={16} className="rounded-full" />
         </div>
-        {[1,2,3,4].map(i => (
-          <div key={i} className="rounded-2xl p-5 flex gap-4 items-start" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="w-10 h-10 rounded-full bg-white/8 flex-shrink-0" />
-            <div className="flex-1 space-y-2">
-              <div className="h-4 w-40 rounded bg-white/8" />
-              <div className="h-3 w-full rounded bg-white/5" />
-              <div className="h-3 w-3/4 rounded bg-white/5" />
+        {/* Phase card skeletons */}
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="rounded-2xl border border-white/[0.04] bg-white/[0.03] p-5">
+            <div className="flex items-center gap-4 mb-4">
+              <Skeleton variant="circular" width={48} height={48} />
+              <div className="flex-1">
+                <Skeleton variant="text" width={180} height={16} className="mb-1.5" />
+                <Skeleton variant="text" width={120} height={12} />
+              </div>
+              <Skeleton variant="rectangular" width={96} height={8} />
+            </div>
+            <div className="ml-6 pl-7 space-y-3">
+              {[1, 2, 3].map((j) => (
+                <div key={j} className="flex items-start gap-3">
+                  <Skeleton variant="circular" width={24} height={24} />
+                  <div className="flex-1">
+                    <Skeleton variant="text" width="70%" height={14} />
+                    <Skeleton variant="text" width="50%" height={12} className="mt-1" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}
         {generating && (
-          <p className="text-center text-sm text-[#94A3B8] pt-2 animate-pulse">Generating your personalized roadmap…</p>
+          <p className="text-center text-sm text-white/50 pt-2 animate-pulse">Generating your personalized roadmap…</p>
         )}
       </div>
     );
@@ -225,11 +247,11 @@ const Roadmap = () => {
       >
         <motion.div variants={floatVariants} animate="animate">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-[#0066FF]/20 border border-purple-500/20 flex items-center justify-center mb-5">
-            <Icon name="route" size={40} className="text-[#64748B]" />
+            <Icon name="route" size={40} className="text-white/40" />
           </div>
         </motion.div>
         <h2 className="text-xl font-bold text-white mb-2">No Roadmap Yet</h2>
-        <p className="text-[#94A3B8] mb-6 max-w-sm">
+        <p className="text-white/50 mb-6 max-w-sm">
           Take the career assessment to get a personalized roadmap, or generate a default full-stack developer roadmap.
         </p>
         <div className="flex gap-3">
@@ -295,7 +317,7 @@ const Roadmap = () => {
                 </motion.span>
                 <h1 className="text-2xl font-bold text-white">Learning Roadmap</h1>
               </div>
-              <p className="text-[#94A3B8]">{title}</p>
+              <p className="text-white/50">{title}</p>
             </div>
             <Badge variant="accent" size="md">
               {Math.round(progress)}% Complete
@@ -330,7 +352,7 @@ const Roadmap = () => {
             </div>
             {/* Percentage label beneath bar */}
             <div className="flex justify-between mt-1.5">
-              <span className="text-xs text-[#64748B]">Progress</span>
+              <span className="text-xs text-white/40">Progress</span>
               <span className="text-xs font-medium text-[#22D3EE]">
                 {Math.round(progress)}%
               </span>
@@ -386,7 +408,7 @@ const Roadmap = () => {
                           <h3 className="font-semibold text-white text-base">
                             {phase.name || phase.title}
                           </h3>
-                          <p className="text-xs text-[#64748B] mt-0.5">
+                          <p className="text-xs text-white/40 mt-0.5">
                             {phase.duration} &middot; {completedCount}/{milestones.length} done
                           </p>
                         </div>
@@ -473,13 +495,13 @@ const Roadmap = () => {
                               <div className="flex-1 min-w-0">
                                 <p
                                   className={`text-sm font-medium transition-colors duration-300 ${
-                                    done ? 'text-[#64748B] line-through' : 'text-white'
+                                    done ? 'text-white/40 line-through' : 'text-white'
                                   }`}
                                 >
                                   {m.title}
                                 </p>
                                 {m.description && (
-                                  <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">
+                                  <p className="text-xs text-white/40 mt-0.5 leading-relaxed">
                                     {m.description}
                                   </p>
                                 )}
@@ -509,7 +531,7 @@ const Roadmap = () => {
                                 )}
                               </div>
 
-                              <span className="text-xs text-[#64748B] flex-shrink-0 mt-0.5">
+                              <span className="text-xs text-white/40 flex-shrink-0 mt-0.5">
                                 {m.duration || m.estimatedTime}
                               </span>
                             </motion.div>

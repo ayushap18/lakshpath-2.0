@@ -4,6 +4,7 @@ import Icon from '../components/ui/Icon';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
+import Skeleton, { SkeletonStatCard } from '../components/ui/Skeleton';
 import { useMarket } from '../hooks/useMarket';
 
 /* ------------------------------------------------------------------ */
@@ -517,7 +518,7 @@ const StatPill = ({ icon, label, value, delay }: { icon: string; label: string; 
       <Icon name={icon} size={18} className="text-[#0066FF]" />
     </div>
     <div>
-      <p className="text-[11px] text-[#64748B] uppercase tracking-wider font-medium">{label}</p>
+      <p className="text-[11px] text-white/40 uppercase tracking-wider font-medium">{label}</p>
       <p className="text-sm font-bold text-white">{value}</p>
     </div>
   </motion.div>
@@ -537,7 +538,7 @@ const SectionTitle = ({ icon, title, subtitle }: { icon: string; title: string; 
     </div>
     <div>
       <h3 className="text-base font-semibold text-white">{title}</h3>
-      {subtitle && <p className="text-xs text-[#64748B]">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-white/40">{subtitle}</p>}
     </div>
   </motion.div>
 );
@@ -591,13 +592,15 @@ const Market = () => {
   /* ---- Loading state ---- */
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <motion.div
-          className="w-10 h-10 rounded-full border-[3px] border-[#0066FF]/20 border-t-[#0066FF]"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 0.85, repeat: Infinity, ease: 'linear' }}
-          style={{ boxShadow: '0 0 20px rgba(0,102,255,0.25), inset 0 0 10px rgba(0,102,255,0.1)' }}
-        />
+      <div className="space-y-6">
+        <div>
+          <Skeleton variant="text" width={240} height={28} />
+          <Skeleton variant="text" width={320} height={16} className="mt-2" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => <SkeletonStatCard key={i} />)}
+        </div>
+        <Skeleton variant="rectangular" height={300} className="rounded-2xl" />
       </div>
     );
   }
@@ -658,7 +661,7 @@ const Market = () => {
                   </span>
                 </Badge>
                 {liveTime && (
-                  <span className="text-[10px] text-[#64748B] font-medium">Updated {liveTime}</span>
+                  <span className="text-[10px] text-white/40 font-medium">Updated {liveTime}</span>
                 )}
               </motion.div>
               <motion.h1
@@ -672,7 +675,7 @@ const Market = () => {
                 </span>
               </motion.h1>
               <motion.p
-                className="text-sm text-[#94A3B8] max-w-md"
+                className="text-sm text-white/50 max-w-md"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -714,7 +717,7 @@ const Market = () => {
             className={`relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
               tab === t.id
                 ? 'text-white'
-                : 'bg-[#111827] border border-[#1E293B] text-[#94A3B8] hover:text-white'
+                : 'bg-[#111827] border border-[#1E293B] text-white/50 hover:text-white'
             }`}
             whileHover={{ y: -2, boxShadow: '0 4px 20px rgba(0,102,255,0.15)' }}
             whileTap={{ scale: 0.97 }}
@@ -759,7 +762,7 @@ const Market = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 260, damping: 24 }}
             >
-              <span className="text-xs text-[#64748B] mr-1">Filter:</span>
+              <span className="text-xs text-white/40 mr-1">Filter:</span>
               {[
                 { id: 'all', label: 'All Jobs' },
                 { id: 'high', label: 'High Match (80%+)' },
@@ -772,7 +775,7 @@ const Market = () => {
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     scoutFilter === f.id
                       ? 'bg-[#0066FF]/15 text-[#0066FF] border border-[#0066FF]/25'
-                      : 'bg-white/[0.03] text-[#94A3B8] border border-white/[0.06] hover:text-white'
+                      : 'bg-white/[0.03] text-white/50 border border-white/[0.06] hover:text-white'
                   }`}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
@@ -780,7 +783,7 @@ const Market = () => {
                   {f.label}
                 </motion.button>
               ))}
-              <span className="ml-auto text-xs text-[#64748B]">
+              <span className="ml-auto text-xs text-white/40">
                 {filteredJobs.length} opportunities
               </span>
             </motion.div>
@@ -817,14 +820,14 @@ const Market = () => {
                         </div>
                         <div>
                           <h3 className="font-semibold text-white text-sm leading-tight">{job.jobTitle}</h3>
-                          <p className="text-xs text-[#94A3B8] mt-0.5">{job.company}</p>
+                          <p className="text-xs text-white/50 mt-0.5">{job.company}</p>
                         </div>
                       </div>
                       <MatchScoreRing score={job.matchScore || 70} size={48} />
                     </div>
 
                     {/* Description */}
-                    <p className="text-xs text-[#94A3B8] mb-3 line-clamp-2 leading-relaxed">{job.summary}</p>
+                    <p className="text-xs text-white/50 mb-3 line-clamp-2 leading-relaxed">{job.summary}</p>
 
                     {/* Meta row */}
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
@@ -832,16 +835,16 @@ const Market = () => {
                         <Icon name="currency_rupee" size={12} />
                         {job.salary}
                       </span>
-                      <span className="flex items-center gap-1 text-[11px] text-[#94A3B8]">
+                      <span className="flex items-center gap-1 text-[11px] text-white/50">
                         <Icon name="location_on" size={12} />
                         {job.location}
                       </span>
-                      <span className="flex items-center gap-1 text-[11px] text-[#94A3B8]">
+                      <span className="flex items-center gap-1 text-[11px] text-white/50">
                         <Icon name="work" size={12} />
                         {job.experience || job.type || 'Full-time'}
                       </span>
                       {job.posted && (
-                        <span className="flex items-center gap-1 text-[11px] text-[#64748B]">
+                        <span className="flex items-center gap-1 text-[11px] text-white/40">
                           <Icon name="schedule" size={12} />
                           {job.posted}
                         </span>
@@ -900,7 +903,7 @@ const Market = () => {
                     >
                       <div className="flex items-center gap-1">
                         <Icon name="bolt" size={14} className="text-[#F59E0B]" />
-                        <span className="text-[10px] text-[#64748B]">AI Match Score</span>
+                        <span className="text-[10px] text-white/40">AI Match Score</span>
                       </div>
                       <Button variant="ghost" size="sm" className="text-xs">
                         View Details <Icon name="arrow_forward" size={14} />
@@ -912,9 +915,9 @@ const Market = () => {
             ) : (
               <Card className="text-center py-10">
                 <motion.div animate={floatAnimation}>
-                  <Icon name="work" size={40} className="text-[#64748B] mx-auto mb-3" />
+                  <Icon name="work" size={40} className="text-white/40 mx-auto mb-3" />
                 </motion.div>
-                <p className="text-[#94A3B8]">
+                <p className="text-white/50">
                   No matches found for this filter. Try adjusting your criteria.
                 </p>
               </Card>
@@ -949,7 +952,7 @@ const Market = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-white">Compare a Job Description</h2>
-                  <p className="text-xs text-[#64748B]">Paste any JD to see how your profile matches up</p>
+                  <p className="text-xs text-white/40">Paste any JD to see how your profile matches up</p>
                 </div>
               </motion.div>
 
@@ -957,35 +960,35 @@ const Market = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Job Title */}
                   <motion.div custom={0} variants={formFieldVariants} initial="hidden" animate="visible">
-                    <label className="text-sm text-[#94A3B8] mb-1.5 block font-medium">Job Title *</label>
+                    <label className="text-sm text-white/50 mb-1.5 block font-medium">Job Title *</label>
                     <input
                       value={jobTitle}
                       onChange={(e) => setJobTitle(e.target.value)}
                       placeholder="e.g., Frontend Developer"
-                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm"
+                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm"
                     />
                   </motion.div>
 
                   {/* Company */}
                   <motion.div custom={1} variants={formFieldVariants} initial="hidden" animate="visible">
-                    <label className="text-sm text-[#94A3B8] mb-1.5 block font-medium">Company</label>
+                    <label className="text-sm text-white/50 mb-1.5 block font-medium">Company</label>
                     <input
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="e.g., Google"
-                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm"
+                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm"
                     />
                   </motion.div>
                 </div>
 
                 {/* Job Description */}
                 <motion.div custom={2} variants={formFieldVariants} initial="hidden" animate="visible">
-                  <label className="text-sm text-[#94A3B8] mb-1.5 block font-medium">Job Description *</label>
+                  <label className="text-sm text-white/50 mb-1.5 block font-medium">Job Description *</label>
                   <textarea
                     value={jobDesc}
                     onChange={(e) => setJobDesc(e.target.value)}
                     placeholder="Paste the job description here..."
-                    className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none min-h-[140px] resize-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm leading-relaxed"
+                    className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none min-h-[140px] resize-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm leading-relaxed"
                   />
                 </motion.div>
 
@@ -1025,7 +1028,7 @@ const Market = () => {
                         <MatchScoreRing score={compareResult.overallScore} size={72} />
                         <div>
                           <h3 className="font-semibold text-white text-lg">Overall Match</h3>
-                          <p className="text-sm text-[#94A3B8]">{compareResult.summary || 'Analysis complete'}</p>
+                          <p className="text-sm text-white/50">{compareResult.summary || 'Analysis complete'}</p>
                         </div>
                       </div>
                     </Card>
@@ -1037,7 +1040,7 @@ const Market = () => {
 
                     {compareResult.summary && !compareResult.overallScore && (
                       <motion.p
-                        className="text-sm text-[#94A3B8] mb-4"
+                        className="text-sm text-white/50 mb-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.15 }}
@@ -1122,7 +1125,7 @@ const Market = () => {
                               transition={{ delay: 0.3 + i * 0.07, type: 'spring', stiffness: 280, damping: 22 }}
                             >
                               <Icon name="lightbulb" size={14} className="text-[#0066FF] mt-0.5 flex-shrink-0" />
-                              <span className="text-sm text-[#94A3B8]">{r}</span>
+                              <span className="text-sm text-white/50">{r}</span>
                             </motion.div>
                           ))}
                         </div>
@@ -1142,10 +1145,10 @@ const Market = () => {
               >
                 <Card className="text-center py-8">
                   <motion.div animate={floatAnimation}>
-                    <Icon name="compare_arrows" size={36} className="text-[#64748B] mx-auto mb-3" />
+                    <Icon name="compare_arrows" size={36} className="text-white/40 mx-auto mb-3" />
                   </motion.div>
-                  <p className="text-sm text-[#94A3B8] mb-1">Paste a job description above to get started</p>
-                  <p className="text-xs text-[#64748B]">
+                  <p className="text-sm text-white/50 mb-1">Paste a job description above to get started</p>
+                  <p className="text-xs text-white/40">
                     Our AI will analyze the JD against your profile and show skill matches, gaps, and recommendations
                   </p>
                 </Card>
@@ -1178,7 +1181,7 @@ const Market = () => {
                     <Icon name="auto_awesome" size={18} className="text-[#0066FF]" />
                     <h2 className="text-base font-semibold text-white">AI Market Brief</h2>
                   </div>
-                  <p className="text-sm text-[#94A3B8] leading-relaxed">
+                  <p className="text-sm text-white/50 leading-relaxed">
                     {brief.title || brief.deltaSummary || 'Latest market intelligence'}
                   </p>
                   {brief.recommendations && (
@@ -1192,7 +1195,7 @@ const Market = () => {
                           transition={{ delay: 0.2 + i * 0.07, type: 'spring', stiffness: 280, damping: 22 }}
                         >
                           <Icon name="lightbulb" size={14} className="text-[#0066FF] mt-0.5 flex-shrink-0" />
-                          <span className="text-sm text-[#94A3B8]">{r}</span>
+                          <span className="text-sm text-white/50">{r}</span>
                         </motion.div>
                       ))}
                     </div>
@@ -1265,17 +1268,17 @@ const Market = () => {
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-white">{comp.name}</h4>
-                        <span className="text-[10px] text-[#64748B]">{comp.type}</span>
+                        <span className="text-[10px] text-white/40">{comp.type}</span>
                       </div>
                       <Badge variant="success" size="sm" className="ml-auto">{comp.growth}</Badge>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="p-2 rounded-lg" style={{ background: 'rgba(15,23,42,0.4)' }}>
-                        <p className="text-[10px] text-[#64748B] mb-0.5">Open Roles</p>
+                        <p className="text-[10px] text-white/40 mb-0.5">Open Roles</p>
                         <p className="text-sm font-bold text-white">{comp.openPositions.toLocaleString()}</p>
                       </div>
                       <div className="p-2 rounded-lg" style={{ background: 'rgba(15,23,42,0.4)' }}>
-                        <p className="text-[10px] text-[#64748B] mb-0.5">Avg Package</p>
+                        <p className="text-[10px] text-white/40 mb-0.5">Avg Package</p>
                         <p className="text-sm font-bold text-[#10B981]">{comp.avgPackage}</p>
                       </div>
                     </div>
@@ -1332,15 +1335,15 @@ const Market = () => {
                       </div>
                       <div className="grid grid-cols-3 gap-2">
                         <div>
-                          <p className="text-[10px] text-[#64748B] mb-0.5">Growth</p>
+                          <p className="text-[10px] text-white/40 mb-0.5">Growth</p>
                           <p className="text-xs font-bold text-[#10B981]">{role.growth}</p>
                         </div>
                         <div>
-                          <p className="text-[10px] text-[#64748B] mb-0.5">Avg Salary</p>
+                          <p className="text-[10px] text-white/40 mb-0.5">Avg Salary</p>
                           <p className="text-xs font-bold text-white">{role.avgSalary}</p>
                         </div>
                         <div>
-                          <p className="text-[10px] text-[#64748B] mb-0.5">Openings</p>
+                          <p className="text-[10px] text-white/40 mb-0.5">Openings</p>
                           <p className="text-xs font-bold text-[#0066FF]">{role.openings}</p>
                         </div>
                       </div>
@@ -1381,7 +1384,7 @@ const Market = () => {
                     {INDUSTRY_BREAKDOWN.map((ind) => (
                       <div key={ind.name} className="flex items-center gap-1.5">
                         <div className="w-2 h-2 rounded-full" style={{ background: ind.color }} />
-                        <span className="text-[10px] text-[#64748B]">{ind.name.split(' ')[0]}</span>
+                        <span className="text-[10px] text-white/40">{ind.name.split(' ')[0]}</span>
                       </div>
                     ))}
                   </div>
@@ -1411,15 +1414,15 @@ const Market = () => {
                 <div className="flex items-center gap-4 mb-5">
                   <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded-sm bg-[#0066FF]" />
-                    <span className="text-[11px] text-[#94A3B8]">Fresher (0-2 yrs)</span>
+                    <span className="text-[11px] text-white/50">Fresher (0-2 yrs)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded-sm bg-[#7C3AED]" />
-                    <span className="text-[11px] text-[#94A3B8]">Mid (2-5 yrs)</span>
+                    <span className="text-[11px] text-white/50">Mid (2-5 yrs)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded-sm bg-[#10B981]" />
-                    <span className="text-[11px] text-[#94A3B8]">Senior (5+ yrs)</span>
+                    <span className="text-[11px] text-white/50">Senior (5+ yrs)</span>
                   </div>
                 </div>
 
@@ -1437,7 +1440,7 @@ const Market = () => {
 
                       {/* Fresher */}
                       <div className="flex items-center gap-3 mb-1.5">
-                        <span className="text-[10px] text-[#64748B] w-14 text-right">Fresher</span>
+                        <span className="text-[10px] text-white/40 w-14 text-right">Fresher</span>
                         <div className="flex-1">
                           <AnimatedBar value={data.fresherVal} maxValue={55} color="#0066FF" delay={i * 0.04} />
                         </div>
@@ -1446,7 +1449,7 @@ const Market = () => {
 
                       {/* Mid */}
                       <div className="flex items-center gap-3 mb-1.5">
-                        <span className="text-[10px] text-[#64748B] w-14 text-right">Mid</span>
+                        <span className="text-[10px] text-white/40 w-14 text-right">Mid</span>
                         <div className="flex-1">
                           <AnimatedBar value={data.midVal} maxValue={55} color="#7C3AED" delay={i * 0.04 + 0.1} />
                         </div>
@@ -1455,7 +1458,7 @@ const Market = () => {
 
                       {/* Senior */}
                       <div className="flex items-center gap-3">
-                        <span className="text-[10px] text-[#64748B] w-14 text-right">Senior</span>
+                        <span className="text-[10px] text-white/40 w-14 text-right">Senior</span>
                         <div className="flex-1">
                           <AnimatedBar value={data.seniorVal} maxValue={55} color="#10B981" delay={i * 0.04 + 0.2} />
                         </div>
@@ -1535,7 +1538,7 @@ const Market = () => {
                       </div>
                       <div>
                         <h4 className="text-sm font-bold text-white">{level.level}</h4>
-                        <span className="text-[10px] text-[#64748B]">{level.experience}</span>
+                        <span className="text-[10px] text-white/40">{level.experience}</span>
                       </div>
                     </div>
 
@@ -1543,14 +1546,14 @@ const Market = () => {
                       className="text-center py-3 rounded-lg mb-3"
                       style={{ background: `${level.color}08`, border: `1px solid ${level.color}12` }}
                     >
-                      <p className="text-[10px] text-[#64748B] mb-0.5">Salary Range</p>
+                      <p className="text-[10px] text-white/40 mb-0.5">Salary Range</p>
                       <p className="text-lg font-bold" style={{ color: level.color }}>{level.avgRange}</p>
                     </div>
 
-                    <p className="text-xs text-[#94A3B8] mb-3 leading-relaxed">{level.description}</p>
+                    <p className="text-xs text-white/50 mb-3 leading-relaxed">{level.description}</p>
 
                     <div className="mb-3">
-                      <p className="text-[10px] text-[#64748B] uppercase tracking-wider mb-1.5">Top Skills</p>
+                      <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5">Top Skills</p>
                       <div className="flex flex-wrap gap-1">
                         {level.topSkills.map((s) => (
                           <Badge key={s} variant="default" size="sm">{s}</Badge>
@@ -1563,7 +1566,7 @@ const Market = () => {
                       style={{ background: 'rgba(0,102,255,0.05)' }}
                     >
                       <Icon name="tips_and_updates" size={14} className="text-[#0066FF] mt-0.5 flex-shrink-0" />
-                      <p className="text-[11px] text-[#94A3B8] leading-relaxed">{level.tips}</p>
+                      <p className="text-[11px] text-white/50 leading-relaxed">{level.tips}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -1583,7 +1586,7 @@ const Market = () => {
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                       selectedCity === cs.city
                         ? 'text-white'
-                        : 'bg-white/[0.03] text-[#94A3B8] border border-white/[0.06] hover:text-white'
+                        : 'bg-white/[0.03] text-white/50 border border-white/[0.06] hover:text-white'
                     }`}
                     style={
                       selectedCity === cs.city
@@ -1639,7 +1642,7 @@ const Market = () => {
                           </div>
                           <div>
                             <h4 className="text-sm font-semibold text-white">{cs.city}</h4>
-                            <span className="text-[10px] text-[#64748B]">COL: {cs.costOfLiving}</span>
+                            <span className="text-[10px] text-white/40">COL: {cs.costOfLiving}</span>
                           </div>
                         </div>
                         {isSelected && (
@@ -1657,7 +1660,7 @@ const Market = () => {
                         className="text-center py-2.5 rounded-lg mb-3"
                         style={{ background: `${cs.color}08`, border: `1px solid ${cs.color}10` }}
                       >
-                        <p className="text-[10px] text-[#64748B] mb-0.5">Avg Tech Salary</p>
+                        <p className="text-[10px] text-white/40 mb-0.5">Avg Tech Salary</p>
                         <p className="text-lg font-bold" style={{ color: cs.color }}>{cs.avgSalary}</p>
                       </div>
 
@@ -1667,7 +1670,7 @@ const Market = () => {
                       </div>
 
                       <div>
-                        <p className="text-[10px] text-[#64748B] uppercase tracking-wider mb-1.5">Top Companies</p>
+                        <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1.5">Top Companies</p>
                         <div className="flex flex-wrap gap-1">
                           {cs.topCompanies.map((c) => (
                             <Badge key={c} variant="default" size="sm">{c}</Badge>
@@ -1705,7 +1708,7 @@ const Market = () => {
                               </div>
                               <div>
                                 <h3 className="text-base font-semibold text-white">{city.city} Tech Ecosystem</h3>
-                                <p className="text-xs text-[#64748B]">Role-wise salary breakdown</p>
+                                <p className="text-xs text-white/40">Role-wise salary breakdown</p>
                               </div>
                             </div>
 
@@ -1722,10 +1725,10 @@ const Market = () => {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: ri * 0.05 }}
                                   >
-                                    <Icon name={role.icon} size={16} className="text-[#94A3B8]" />
+                                    <Icon name={role.icon} size={16} className="text-white/50" />
                                     <div className="flex-1 min-w-0">
                                       <p className="text-xs font-medium text-white truncate">{role.role}</p>
-                                      <p className="text-[10px] text-[#64748B]">Mid-level avg</p>
+                                      <p className="text-[10px] text-white/40">Mid-level avg</p>
                                     </div>
                                     <span className="text-sm font-bold" style={{ color: city.color }}>
                                       {adjustedMid.toFixed(1)} LPA

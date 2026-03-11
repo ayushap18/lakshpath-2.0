@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import Icon from '../components/ui/Icon';
+import Skeleton from '../components/ui/Skeleton';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
@@ -504,7 +505,7 @@ export default function AICodeInterview() {
                   className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-medium transition-all ${
                     selectedCompany === c.id
                       ? 'border-accent/50 bg-accent/10 text-accent'
-                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/10 hover:bg-white/[0.04]'
+                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/[0.06] hover:bg-white/[0.04]'
                   }`}>
                   <Icon name={c.icon} size={18} style={{ color: c.color }} />
                   {c.label}
@@ -525,7 +526,7 @@ export default function AICodeInterview() {
                   className={`flex-1 px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
                     selectedDifficulty === d.id
                       ? 'border-accent/50 bg-accent/10 text-accent'
-                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/10'
+                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/[0.06]'
                   }`}>
                   <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: d.color }} />
                   {d.label}
@@ -543,7 +544,7 @@ export default function AICodeInterview() {
                   className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
                     selectedLanguage === l.id
                       ? 'border-accent/50 bg-accent/10 text-accent'
-                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/10'
+                      : 'border-white/5 bg-white/[0.02] text-secondary hover:border-white/[0.06]'
                   }`}>
                   {l.label}
                 </motion.button>
@@ -652,7 +653,7 @@ export default function AICodeInterview() {
             ].map(check => (
               <div key={check.label} className="flex items-center gap-3">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                  check.ready ? 'bg-emerald-500/10' : 'bg-white/5'
+                  check.ready ? 'bg-emerald-500/10' : 'bg-white/[0.04]'
                 }`}>
                   <Icon name={check.ready ? 'check_circle' : 'hourglass_top'}
                     size={18} className={check.ready ? 'text-emerald-400' : 'text-tertiary animate-spin'} />
@@ -762,7 +763,7 @@ export default function AICodeInterview() {
               </div>
 
               {/* User Camera */}
-              <div className="relative w-36 rounded-xl overflow-hidden border border-white/10 bg-black shrink-0">
+              <div className="relative w-36 rounded-xl overflow-hidden border border-white/[0.06] bg-black shrink-0">
                 <video ref={proctoring.videoRef} autoPlay playsInline muted
                   className="w-full h-full object-cover" style={{ transform: 'scaleX(-1)' }} />
                 <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/60 rounded-full px-1.5 py-0.5">
@@ -781,11 +782,9 @@ export default function AICodeInterview() {
 
             {/* Question Content */}
             {isFetchingQuestion || !currentQ ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                  <Icon name="hourglass_top" size={32} className="text-accent animate-spin mx-auto mb-2" />
-                  <p className="text-secondary text-sm">Generating question...</p>
-                </div>
+              <div className="space-y-5">
+                <Skeleton variant="rectangular" height={200} className="rounded-2xl" />
+                <Skeleton variant="rectangular" height={300} className="rounded-2xl" />
               </div>
             ) : (
               <>

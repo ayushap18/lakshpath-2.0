@@ -5,6 +5,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import ProgressBar from '../components/ui/ProgressBar';
+import Skeleton from '../components/ui/Skeleton';
 import { featuresAPI, profileAPI } from '../services/api';
 
 /* ── Animation Variants ── */
@@ -334,7 +335,7 @@ const RadarChart = ({ dimensions, size = 220 }: { dimensions: SkillDimension[]; 
           cy={point.y}
           r="4"
           fill={dimensions[i].color}
-          stroke="#0F172A"
+          stroke="#030712"
           strokeWidth="2"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -366,18 +367,21 @@ const CareerDNA = () => {
   const userName = localStorage.getItem('userName') || 'Student';
   const [activeTab, setActiveTab] = useState<'overview' | 'details'>('overview');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [aiData, setAiData] = useState<any>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [profileAnalysis, setProfileAnalysis] = useState<any>(null);
 
   // Load profile analysis + saved Career DNA on mount
   useEffect(() => {
-    profileAPI.getAnalysis().then(res => {
-      if (res.data?.parsed) setProfileAnalysis(res.data.parsed);
-    }).catch(() => {});
-    featuresAPI.getCareerDNA().then(res => {
-      if (res.data?.data) setAiData(res.data.data);
-    }).catch(() => {});
+    Promise.allSettled([
+      profileAPI.getAnalysis().then(res => {
+        if (res.data?.parsed) setProfileAnalysis(res.data.parsed);
+      }),
+      featuresAPI.getCareerDNA().then(res => {
+        if (res.data?.data) setAiData(res.data.data);
+      }),
+    ]).finally(() => setIsLoading(false));
   }, []);
 
   const handleGenerateWithAI = async () => {
@@ -414,6 +418,43 @@ const CareerDNA = () => {
     return [...SKILL_DIMENSIONS].sort((a, b) => b.score - a.score).slice(0, 3);
   }, [dimensions, strengths]);
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6 max-w-5xl">
+        {/* Header skeleton */}
+        <div className="rounded-2xl p-6 md:p-8 border border-white/[0.04]" style={{ background: '#030712' }}>
+          <div className="flex items-center gap-2 mb-4">
+            <Skeleton variant="rectangular" width={40} height={40} />
+            <Skeleton variant="text" width={160} height={20} />
+          </div>
+          <Skeleton variant="text" width="50%" height={28} className="mb-2" />
+          <Skeleton variant="text" width="80%" height={14} />
+          <Skeleton variant="text" width="60%" height={14} className="mt-2" />
+        </div>
+        {/* DNA card skeleton */}
+        <Skeleton variant="rectangular" height={320} />
+        {/* Dimension grid skeleton */}
+        <div>
+          <Skeleton variant="text" width={200} height={20} className="mb-4" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} variant="rectangular" height={180} />
+            ))}
+          </div>
+        </div>
+        {/* Personality traits skeleton */}
+        <Skeleton variant="rectangular" height={260} />
+        {/* Career paths skeleton */}
+        <div>
+          <Skeleton variant="text" width={200} height={20} className="mb-4" />
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} variant="rectangular" height={100} className="mb-3" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <motion.div variants={container} initial="hidden" animate="visible" className="space-y-6 max-w-5xl">
       {/* ───────────────────────── SECTION 1: Header ───────────────────────── */}
@@ -421,7 +462,7 @@ const CareerDNA = () => {
         <div
           className="rounded-2xl p-6 md:p-8 relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, rgba(0,102,255,0.08), rgba(124,58,237,0.05), rgba(15,23,42,0.9))',
+            background: 'linear-gradient(135deg, rgba(0,102,255,0.08), rgba(124,58,237,0.05), rgba(3,7,18,0.9))',
             border: '1px solid rgba(0,102,255,0.1)',
           }}
         >
@@ -501,7 +542,7 @@ const CareerDNA = () => {
                   className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                     activeTab === tab
                       ? 'text-white'
-                      : 'text-muted hover:text-secondary'
+                      : 'bg-white/[0.03] text-muted hover:text-secondary'
                   }`}
                   style={
                     activeTab === tab
@@ -511,7 +552,6 @@ const CareerDNA = () => {
                           boxShadow: '0 0 20px rgba(0,102,255,0.1)',
                         }
                       : {
-                          background: 'rgba(255,255,255,0.03)',
                           border: '1px solid rgba(255,255,255,0.05)',
                         }
                   }
@@ -664,9 +704,8 @@ const CareerDNA = () => {
                     {idealRoles.map((role: any, i: number) => (
                       <motion.div
                         key={role}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03]"
                         style={{
-                          background: 'rgba(255,255,255,0.03)',
                           border: '1px solid rgba(255,255,255,0.06)',
                         }}
                         initial={{ opacity: 0, x: 12 }}
@@ -869,7 +908,7 @@ const CareerDNA = () => {
                     style={{
                       background: trait.color,
                       boxShadow: `0 0 10px ${trait.color}60, 0 0 20px ${trait.color}30`,
-                      border: '2px solid rgba(15,23,42,0.8)',
+                      border: '2px solid rgba(3,7,18,0.8)',
                     }}
                     initial={{ left: '50%' }}
                     animate={{ left: `${trait.value}%` }}
@@ -990,9 +1029,8 @@ const CareerDNA = () => {
                           {career.tags.map((tag: any) => (
                             <span
                               key={tag}
-                              className="text-[10px] px-2 py-0.5 rounded-md font-medium text-secondary"
+                              className="text-[10px] px-2 py-0.5 rounded-md font-medium text-secondary bg-white/[0.03]"
                               style={{
-                                background: 'rgba(255,255,255,0.03)',
                                 border: '1px solid rgba(255,255,255,0.06)',
                               }}
                             >
@@ -1111,7 +1149,7 @@ const CareerDNA = () => {
                       className="absolute top-1/2 w-3 h-3 rounded-full -translate-y-1/2 -translate-x-1/2"
                       style={{
                         background: rank.color,
-                        border: '2px solid rgba(15,23,42,0.9)',
+                        border: '2px solid rgba(3,7,18,0.9)',
                         boxShadow: `0 0 6px ${rank.color}60`,
                       }}
                       initial={{ left: '0%' }}
@@ -1156,7 +1194,7 @@ const CareerDNA = () => {
         <div
           className="rounded-2xl p-6 relative overflow-hidden text-center"
           style={{
-            background: 'linear-gradient(135deg, rgba(0,102,255,0.06), rgba(124,58,237,0.04), rgba(15,23,42,0.8))',
+            background: 'linear-gradient(135deg, rgba(0,102,255,0.06), rgba(124,58,237,0.04), rgba(3,7,18,0.8))',
             border: '1px solid rgba(0,102,255,0.08)',
           }}
         >

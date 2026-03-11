@@ -4,6 +4,7 @@ import Icon from '../components/ui/Icon';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
+import Skeleton from '../components/ui/Skeleton';
 import ProgressBar from '../components/ui/ProgressBar';
 import Input from '../components/ui/Input';
 import StatCard from '../components/ui/StatCard';
@@ -223,6 +224,7 @@ const ResumeBuilder = () => {
   const [downloadLoading, setDownloadLoading] = useState(false);
   const [showAiSuggestions, setShowAiSuggestions] = useState(false);
   const [atsScore, setAtsScore] = useState(42);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const [resumeData, setResumeData] = useState<ResumeData>({
     personal: {
@@ -313,6 +315,8 @@ const ResumeBuilder = () => {
     const newScore = computeAtsScore();
     setAtsScore(newScore);
   }, [computeAtsScore]);
+
+  useEffect(() => { setPageLoading(false); }, []);
 
   /* ─── Handlers ─── */
 
@@ -592,6 +596,18 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
   /* ──────────────────────────────────────────────────────────────────────────
      RENDER
   ────────────────────────────────────────────────────────────────────────── */
+
+  if (pageLoading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <Skeleton variant="text" width={220} height={28} />
+          <Skeleton variant="text" width={300} height={16} className="mt-2" />
+        </div>
+        <Skeleton variant="rectangular" height={400} className="rounded-2xl" />
+      </div>
+    );
+  }
 
   return (
     <motion.div variants={container} initial="hidden" animate="visible" className="space-y-6 pb-12">

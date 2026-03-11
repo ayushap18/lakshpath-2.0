@@ -4,6 +4,7 @@ import Icon from '../components/ui/Icon';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import Skeleton from '../components/ui/Skeleton';
 import ProgressBar from '../components/ui/ProgressBar';
 import StatCard from '../components/ui/StatCard';
 import { featuresAPI } from '../services/api';
@@ -521,6 +522,9 @@ const PlacementPrep = () => {
     currentLevel: '',
     weakAreas: [] as string[],
   });
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => { setPageLoading(false); }, []);
 
   const COMPANY_OPTIONS = ['TCS', 'Infosys', 'Wipro', 'Cognizant', 'Amazon', 'Google', 'Microsoft', 'Flipkart', 'Razorpay', 'Swiggy', 'Zomato', 'Other'];
   const LEVEL_OPTIONS = ['Beginner — Just starting prep', 'Intermediate — Some practice done', 'Advanced — Mock tests ongoing', 'Expert — Appeared for placements'];
@@ -532,6 +536,20 @@ const PlacementPrep = () => {
     setSetupComplete(true);
   };
 
+  if (pageLoading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <Skeleton variant="text" width={240} height={28} />
+          <Skeleton variant="text" width={300} height={16} className="mt-2" />
+        </div>
+        <Skeleton variant="rectangular" height={120} className="rounded-2xl" />
+        <Skeleton variant="rectangular" height={120} className="rounded-2xl" />
+        <Skeleton variant="rectangular" height={120} className="rounded-2xl" />
+      </div>
+    );
+  }
+
   if (!setupComplete) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-2xl mx-auto py-8 px-4">
@@ -540,7 +558,7 @@ const PlacementPrep = () => {
             <Icon name="school" size={28} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Set Up Placement Prep</h1>
-          <p className="text-[#94A3B8] text-sm">Tell us about your placement goals so we can personalize your prep.</p>
+          <p className="text-white/50 text-sm">Tell us about your placement goals so we can personalize your prep.</p>
         </div>
 
         <div className="w-full h-1.5 bg-white/5 rounded-full mb-8 overflow-hidden">
@@ -562,7 +580,7 @@ const PlacementPrep = () => {
                       className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                         setupData.targetCompanies.includes(c)
                           ? 'bg-[#0066FF]/20 border-[#0066FF]/50 text-[#0066FF]'
-                          : 'bg-white/5 border-white/10 text-[#94A3B8]'
+                          : 'bg-white/5 border-white/10 text-white/50'
                       } border`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -582,7 +600,7 @@ const PlacementPrep = () => {
                       className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                         setupData.targetRole === r
                           ? 'bg-[#0066FF]/20 border-[#0066FF]/50 text-white'
-                          : 'bg-white/5 border-white/10 text-[#94A3B8]'
+                          : 'bg-white/5 border-white/10 text-white/50'
                       } border`}
                       whileTap={{ scale: 0.98 }}
                     >{r}</motion.button>
@@ -601,7 +619,7 @@ const PlacementPrep = () => {
                       className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                         setupData.currentLevel === l
                           ? 'bg-[#7C3AED]/20 border-[#7C3AED]/50 text-white'
-                          : 'bg-white/5 border-white/10 text-[#94A3B8]'
+                          : 'bg-white/5 border-white/10 text-white/50'
                       } border`}
                       whileTap={{ scale: 0.98 }}
                     >{l}</motion.button>
@@ -622,7 +640,7 @@ const PlacementPrep = () => {
                       className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                         setupData.weakAreas.includes(a)
                           ? 'bg-[#F59E0B]/20 border-[#F59E0B]/50 text-[#F59E0B]'
-                          : 'bg-white/5 border-white/10 text-[#94A3B8]'
+                          : 'bg-white/5 border-white/10 text-white/50'
                       } border`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}

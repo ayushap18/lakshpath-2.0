@@ -187,7 +187,7 @@ const Login = () => {
             <br />
             <span className="gradient-text-multi">Career Companion</span>
           </h1>
-          <p className="text-[15px] text-[#94A3B8] leading-relaxed max-w-[400px]">
+          <p className="text-[15px] text-white/50 leading-relaxed max-w-[400px]">
             Join 50,000+ students building their future with personalized career guidance.
           </p>
 
@@ -206,7 +206,7 @@ const Login = () => {
                 }}
               >
                 <Icon name={f.icon} size={16} className="flex-shrink-0" style={{ color: f.color }} />
-                <span className="text-xs font-medium text-[#94A3B8]">{f.label}</span>
+                <span className="text-xs font-medium text-white/50">{f.label}</span>
               </motion.div>
             ))}
           </div>
@@ -228,10 +228,10 @@ const Login = () => {
               <Icon key={i} name="star" size={14} className="text-[#F59E0B]" filled />
             ))}
           </div>
-          <p className="text-sm text-[#94A3B8] italic leading-relaxed">
+          <p className="text-sm text-white/50 italic leading-relaxed">
             "LakshPath changed how I think about my career. The AI assessment was scarily accurate!"
           </p>
-          <p className="text-xs text-[#64748B] mt-2">-- Priya S., IIT Delhi</p>
+          <p className="text-xs text-white/40 mt-2">-- Priya S., IIT Delhi</p>
         </motion.div>
       </motion.div>
 
@@ -248,7 +248,7 @@ const Login = () => {
           {/* Header */}
           <motion.div variants={itemVariants} className="mb-8">
             <h1 className="text-[26px] font-bold text-white">Welcome back</h1>
-            <p className="text-[14px] text-[#94A3B8] mt-1.5">Sign in to continue your career journey</p>
+            <p className="text-[14px] text-white/50 mt-1.5">Sign in to continue your career journey</p>
           </motion.div>
 
           {/* Error */}
@@ -312,7 +312,7 @@ const Login = () => {
           {/* Divider */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 mb-5">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#1E293B] to-transparent" />
-            <span className="text-[12px] text-[#64748B]">or sign in with</span>
+            <span className="text-[12px] text-white/40">or sign in with</span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#1E293B] to-transparent" />
           </motion.div>
 
@@ -365,7 +365,7 @@ const Login = () => {
             >
               <div className="space-y-4 pt-4">
                 <div>
-                  <label className="text-sm text-[#94A3B8] block mb-1.5">Email</label>
+                  <label className="text-sm text-white/50 block mb-1.5">Email</label>
                   <input
                     type="email"
                     placeholder="you@example.com"
@@ -376,7 +376,7 @@ const Login = () => {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-sm text-[#94A3B8]">Password</label>
+                    <label className="text-sm text-white/50">Password</label>
                     <button
                       type="button"
                       onClick={() => { setForgotMode(true); setForgotEmail(email); setError(''); }}
@@ -415,7 +415,7 @@ const Login = () => {
           )}
 
           {/* Sign Up Link */}
-          <motion.p variants={itemVariants} className="text-center text-sm text-[#64748B] mt-6">
+          <motion.p variants={itemVariants} className="text-center text-sm text-white/40 mt-6">
             Don't have an account?{' '}
             <Link to="/register" className="text-accent hover:text-accent-light font-semibold transition-colors">
               Sign up free
@@ -450,7 +450,7 @@ const Login = () => {
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-[#1a1a2e] rounded-2xl p-8 max-w-md mx-4 border border-white/10 shadow-2xl"
+              className="bg-[#1a1a2e] rounded-2xl p-8 max-w-md mx-4 border border-white/[0.06] shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {forgotSent ? (
@@ -493,7 +493,7 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => { setForgotMode(false); setError(''); }}
-                      className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 text-white/60 hover:bg-white/5 text-sm"
+                      className="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.06] text-white/60 hover:bg-white/[0.04] text-sm"
                     >
                       Cancel
                     </button>

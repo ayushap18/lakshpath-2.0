@@ -327,7 +327,7 @@ const Sidebar = () => {
                           <div
                             className="px-3 py-1.5 rounded-lg text-xs font-medium text-white"
                             style={{
-                              background: 'linear-gradient(135deg, #111827, #0F172A)',
+                              background: 'linear-gradient(135deg, #111827, #0C1222)',
                               border: '1px solid rgba(255,255,255,0.08)',
                               boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
                             }}
@@ -415,7 +415,7 @@ const Sidebar = () => {
                 <div
                   className="px-3 py-1.5 rounded-lg text-xs font-medium text-white"
                   style={{
-                    background: 'linear-gradient(135deg, #111827, #0F172A)',
+                    background: 'linear-gradient(135deg, #111827, #0C1222)',
                     border: '1px solid rgba(255,255,255,0.08)',
                     boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
                   }}

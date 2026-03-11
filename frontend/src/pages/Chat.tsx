@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Icon from '../components/ui/Icon';
 import Button from '../components/ui/Button';
 import ChatBubble from '../components/ui/ChatBubble';
+import Skeleton from '../components/ui/Skeleton';
 import { useChat } from '../hooks/useChat';
 
 type Round = 'career' | 'interview' | 'scholarship';
@@ -136,12 +137,12 @@ const Chat = () => {
                 />
               </motion.span>
             </div>
-            <p className="text-sm text-[#94A3B8] mt-0.5">
+            <p className="text-sm text-white/50 mt-0.5">
               Your intelligent career guide &mdash; always ready to help
             </p>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#64748B]">
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-white/40">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -162,7 +163,7 @@ const Chat = () => {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                 isActive
                   ? 'bg-[#0066FF] text-white'
-                  : 'bg-[#111827] border border-white/5 text-[#94A3B8] hover:text-white hover:bg-white/5'
+                  : 'bg-[#111827] border border-white/5 text-white/50 hover:text-white hover:bg-white/5'
               }`}
               whileHover={{
                 y: -2,
@@ -211,7 +212,7 @@ const Chat = () => {
           /* ── History loading skeleton ── */
           <div className="flex flex-col gap-3 px-2 pt-4">
             {[0.6, 0.4, 0.7].map((w, i) => (
-              <div key={i} className={`h-10 rounded-xl bg-white/5 animate-pulse ${i % 2 === 0 ? 'ml-auto' : ''}`} style={{ width: `${w * 100}%` }} />
+              <Skeleton key={i} variant="rectangular" width={`${w * 100}%`} height={40} className={i % 2 === 0 ? 'ml-auto' : ''} />
             ))}
           </div>
         ) : messages.length === 0 ? (
@@ -266,7 +267,7 @@ const Chat = () => {
               AI Mentor
             </motion.h3>
             <motion.p
-              className="text-[#94A3B8] max-w-md mb-8 leading-relaxed"
+              className="text-white/50 max-w-md mb-8 leading-relaxed"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 }}
@@ -285,7 +286,7 @@ const Chat = () => {
                 <motion.button
                   key={q}
                   onClick={() => setInput(q)}
-                  className="bg-[#111827] border border-white/5 px-4 py-2.5 rounded-xl text-sm text-[#94A3B8] hover:text-white transition-colors"
+                  className="bg-[#111827] border border-white/5 px-4 py-2.5 rounded-xl text-sm text-white/50 hover:text-white transition-colors"
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -379,7 +380,7 @@ const Chat = () => {
                                 <p className="font-medium text-white">
                                   {step.title}
                                 </p>
-                                <p className="text-[#94A3B8]">{step.detail}</p>
+                                <p className="text-white/50">{step.detail}</p>
                               </motion.div>
                             ))}
                           </motion.div>
@@ -445,7 +446,7 @@ const Chat = () => {
                 ))}
               </div>
               <motion.span
-                className="text-sm text-[#64748B]"
+                className="text-sm text-white/40"
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               >
@@ -501,7 +502,7 @@ const Chat = () => {
           onFocus={() => setInputFocused(true)}
           onBlur={() => setInputFocused(false)}
           placeholder={`Ask about ${round}...`}
-          className="flex-1 bg-transparent text-white placeholder-[#64748B] outline-none text-sm"
+          className="flex-1 bg-transparent text-white placeholder-white/40 outline-none text-sm"
           disabled={loading}
         />
 

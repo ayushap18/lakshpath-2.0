@@ -7,6 +7,7 @@ import Badge from '../components/ui/Badge';
 import ProgressBar from '../components/ui/ProgressBar';
 import Input from '../components/ui/Input';
 import StatCard from '../components/ui/StatCard';
+import Skeleton, { SkeletonStatCard } from '../components/ui/Skeleton';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { linkedinAPI } from '../services/api';
 
@@ -292,20 +293,15 @@ const Portfolio = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
-        <motion.div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.1), rgba(124,58,237,0.08))', border: '1px solid rgba(0,102,255,0.15)' }}
-          animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-          <Icon name="work_history" size={24} className="text-accent" />
-        </motion.div>
-        <div className="flex gap-1">
-          {[0, 1, 2].map(i => (
-            <motion.div key={i} className="w-2 h-2 rounded-full bg-accent/40"
-              animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
-              transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }} />
-          ))}
+      <div className="space-y-5">
+        <div>
+          <Skeleton variant="text" width={260} height={28} />
+          <Skeleton variant="text" width={180} height={16} className="mt-2" />
         </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2].map(i => <SkeletonStatCard key={i} />)}
+        </div>
+        <Skeleton variant="rectangular" height={300} className="rounded-2xl" />
       </div>
     );
   }

@@ -497,7 +497,7 @@ const NSQF = () => {
             NSQF Vocational Pathways
           </span>
         </h1>
-        <p className="text-[#94A3B8] mt-2 text-base max-w-2xl">
+        <p className="text-white/50 mt-2 text-base max-w-2xl">
           Explore National Skills Qualification Framework pathways aligned to your goals.
         </p>
       </motion.div>
@@ -524,7 +524,7 @@ const NSQF = () => {
                     <Icon name={stat.icon} size={24} style={{ color: stat.color }} />
                   </div>
                   <div className="text-2xl font-extrabold text-white">{stat.value}</div>
-                  <div className="text-xs text-[#94A3B8] font-medium leading-tight">{stat.label}</div>
+                  <div className="text-xs text-white/50 font-medium leading-tight">{stat.label}</div>
                 </div>
               </Card>
             </motion.div>
@@ -541,7 +541,7 @@ const NSQF = () => {
 
             {/* Education Level */}
             <div>
-              <label className="text-sm text-[#94A3B8] mb-2 block font-medium">Education Level</label>
+              <label className="text-sm text-white/50 mb-2 block font-medium">Education Level</label>
               <div className="flex flex-wrap gap-2">
                 {EDUCATION_LEVELS.map((l) => (
                   <motion.button
@@ -553,7 +553,7 @@ const NSQF = () => {
                     className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                       education === l
                         ? 'bg-[#0066FF] text-white shadow-[0_2px_12px_rgba(0,102,255,0.35)]'
-                        : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:border-[#0066FF]/30'
+                        : 'bg-[#111827] text-white/50 border border-[#1E293B] hover:border-[#0066FF]/30'
                     }`}
                   >
                     {l}
@@ -564,7 +564,7 @@ const NSQF = () => {
 
             {/* NSQF Range Sliders */}
             <div>
-              <label className="text-sm text-[#94A3B8] mb-2 block font-medium">
+              <label className="text-sm text-white/50 mb-2 block font-medium">
                 NSQF Level:{' '}
                 <motion.span
                   key={`cur-${currentLevel}`}
@@ -587,7 +587,7 @@ const NSQF = () => {
               <div className="flex items-center gap-4">
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-[#64748B]">Current</span>
+                    <span className="text-xs text-white/40">Current</span>
                     <motion.span
                       key={`cur-badge-${currentLevel}`}
                       initial={{ scale: 0.7, opacity: 0 }}
@@ -609,7 +609,7 @@ const NSQF = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-[#64748B]">Target</span>
+                    <span className="text-xs text-white/40">Target</span>
                     <motion.span
                       key={`tgt-badge-${targetLevel}`}
                       initial={{ scale: 0.7, opacity: 0 }}
@@ -634,7 +634,7 @@ const NSQF = () => {
 
             {/* Interest Chips */}
             <div>
-              <label className="text-sm text-[#94A3B8] mb-2 block font-medium">Interests</label>
+              <label className="text-sm text-white/50 mb-2 block font-medium">Interests</label>
               <div className="flex flex-wrap gap-2">
                 {INTEREST_OPTIONS.map((i) => {
                   const selected = interests.includes(i);
@@ -651,7 +651,7 @@ const NSQF = () => {
                       whileTap={{ scale: 0.93 }}
                       transition={chipSpring}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
-                        selected ? 'text-[#0066FF]' : 'text-[#64748B]'
+                        selected ? 'text-[#0066FF]' : 'text-white/40'
                       }`}
                     >
                       {selected && (
@@ -674,16 +674,16 @@ const NSQF = () => {
             {/* Location + Learning Mode */}
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-[#94A3B8] mb-2 block font-medium">Location</label>
+                <label className="text-sm text-white/50 mb-2 block font-medium">Location</label>
                 <input
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="e.g., Delhi, Mumbai"
-                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-2.5 text-white placeholder-[#64748B] outline-none text-sm focus:border-[#0066FF]/50 transition-colors duration-200"
+                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-2.5 text-white placeholder-white/40 outline-none text-sm focus:border-[#0066FF]/50 transition-colors duration-200"
                 />
               </div>
               <div>
-                <label className="text-sm text-[#94A3B8] mb-2 block font-medium">Learning Mode</label>
+                <label className="text-sm text-white/50 mb-2 block font-medium">Learning Mode</label>
                 <div className="flex gap-2">
                   {LEARNING_MODES.map((m) => {
                     const active = learningMode === m.value;
@@ -697,7 +697,7 @@ const NSQF = () => {
                         className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                           active
                             ? 'bg-[#0066FF] text-white shadow-[0_2px_12px_rgba(0,102,255,0.35)]'
-                            : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:border-[#0066FF]/30'
+                            : 'bg-[#111827] text-white/50 border border-[#1E293B] hover:border-[#0066FF]/30'
                         }`}
                       >
                         <motion.span
@@ -844,7 +844,7 @@ const NSQF = () => {
                             <h4 className="font-medium text-white">
                               {step.title || step.certification || `Level ${step.level}`}
                             </h4>
-                            <p className="text-sm text-[#94A3B8] mt-1">
+                            <p className="text-sm text-white/50 mt-1">
                               {step.description || step.details}
                             </p>
                             {step.duration && (
@@ -886,7 +886,7 @@ const NSQF = () => {
                           </div>
                           <div>
                             <p className="text-sm font-medium text-white">{c.title || c.name}</p>
-                            <p className="text-xs text-[#64748B]">
+                            <p className="text-xs text-white/40">
                               {c.platform} &middot; {c.duration}
                             </p>
                           </div>
@@ -943,7 +943,7 @@ const NSQF = () => {
                       {animatedScore}%
                     </motion.div>
                     <div className="flex-1">
-                      <div className="w-full bg-white/5 rounded-full overflow-hidden h-4">
+                      <div className="w-full bg-white/[0.04] rounded-full overflow-hidden h-4">
                         <motion.div
                           className="h-4 rounded-full bg-gradient-to-r from-[#0066FF] to-[#22D3EE]"
                           initial={{ width: '0%' }}
@@ -952,8 +952,8 @@ const NSQF = () => {
                         />
                       </div>
                       <div className="flex justify-between mt-1.5">
-                        <span className="text-xs text-[#64748B]">0</span>
-                        <span className="text-xs text-[#64748B]">100</span>
+                        <span className="text-xs text-white/40">0</span>
+                        <span className="text-xs text-white/40">100</span>
                       </div>
                     </div>
                   </div>
@@ -1011,7 +1011,7 @@ const NSQF = () => {
                   className={`rounded-xl p-4 border cursor-pointer transition-colors duration-200 ${
                     isInRange
                       ? 'bg-[#0066FF]/[0.06] border-[#0066FF]/20'
-                      : 'bg-[#0F172A]/60 border-white/[0.04]'
+                      : 'bg-[#0C1222]/60 border-white/[0.04]'
                   }`}
                   whileHover={{
                     y: -2,
@@ -1036,7 +1036,7 @@ const NSQF = () => {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-xs text-[#64748B] mt-0.5">{lvl.education}</p>
+                      <p className="text-xs text-white/40 mt-0.5">{lvl.education}</p>
 
                       <AnimatePresence>
                         {isExpanded && (
@@ -1047,11 +1047,11 @@ const NSQF = () => {
                             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
                             className="overflow-hidden"
                           >
-                            <p className="text-xs text-[#94A3B8] mt-3 leading-relaxed">
+                            <p className="text-xs text-white/50 mt-3 leading-relaxed">
                               {lvl.description}
                             </p>
                             <div className="mt-3">
-                              <p className="text-[10px] uppercase tracking-wider text-[#64748B] font-semibold mb-1.5">Typical Roles</p>
+                              <p className="text-[10px] uppercase tracking-wider text-white/40 font-semibold mb-1.5">Typical Roles</p>
                               <div className="flex flex-wrap gap-1.5">
                                 {lvl.roles.map((role) => (
                                   <Badge key={role} variant="default" size="sm">
@@ -1072,7 +1072,7 @@ const NSQF = () => {
                       animate={{ rotate: isExpanded ? 180 : 0 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                     >
-                      <Icon name="expand_more" size={18} className="text-[#64748B]" />
+                      <Icon name="expand_more" size={18} className="text-white/40" />
                     </motion.div>
                   </div>
                 </motion.div>
@@ -1111,7 +1111,7 @@ const NSQF = () => {
                   variants={cardItem}
                   layout
                   onClick={() => setExpandedSector(isExpanded ? null : idx)}
-                  className="rounded-xl p-4 border border-white/[0.04] bg-[#0F172A]/60 cursor-pointer"
+                  className="rounded-xl p-4 border border-white/[0.04] bg-[#0C1222]/60 cursor-pointer"
                   whileHover={{
                     y: -3,
                     borderColor: `${sector.color}40`,
@@ -1137,7 +1137,7 @@ const NSQF = () => {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-[#64748B]">Jobs Available</span>
+                      <span className="text-[11px] text-white/40">Jobs Available</span>
                       <span className="text-xs font-semibold text-white">{sector.jobs}</span>
                     </div>
                     <div className="w-full h-1.5 rounded-full overflow-hidden bg-white/[0.04]">
@@ -1150,7 +1150,7 @@ const NSQF = () => {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-[#64748B]">Salary Range</span>
+                      <span className="text-[11px] text-white/40">Salary Range</span>
                       <span className="text-xs font-semibold text-[#10B981]">{sector.salary}</span>
                     </div>
                   </div>
@@ -1165,7 +1165,7 @@ const NSQF = () => {
                         className="overflow-hidden"
                       >
                         <div className="mt-3 pt-3 border-t border-white/[0.06]">
-                          <p className="text-[10px] uppercase tracking-wider text-[#64748B] font-semibold mb-2">Top Roles</p>
+                          <p className="text-[10px] uppercase tracking-wider text-white/40 font-semibold mb-2">Top Roles</p>
                           <div className="space-y-1.5">
                             {sector.topRoles.map((role) => (
                               <div key={role} className="flex items-center gap-2">
@@ -1173,7 +1173,7 @@ const NSQF = () => {
                                   className="w-1.5 h-1.5 rounded-full shrink-0"
                                   style={{ backgroundColor: sector.color }}
                                 />
-                                <span className="text-xs text-[#94A3B8]">{role}</span>
+                                <span className="text-xs text-white/50">{role}</span>
                               </div>
                             ))}
                           </div>
@@ -1187,7 +1187,7 @@ const NSQF = () => {
                       animate={{ rotate: isExpanded ? 180 : 0 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                     >
-                      <Icon name="expand_more" size={16} className="text-[#64748B]" />
+                      <Icon name="expand_more" size={16} className="text-white/40" />
                     </motion.div>
                   </div>
                 </motion.div>
@@ -1226,7 +1226,7 @@ const NSQF = () => {
                   variants={cardItem}
                   layout
                   onClick={() => setExpandedScheme(isExpanded ? null : idx)}
-                  className="rounded-xl p-4 border border-white/[0.04] bg-[#0F172A]/60 cursor-pointer"
+                  className="rounded-xl p-4 border border-white/[0.04] bg-[#0C1222]/60 cursor-pointer"
                   whileHover={{
                     y: -2,
                     borderColor: `${scheme.color}30`,
@@ -1248,7 +1248,7 @@ const NSQF = () => {
                         </Badge>
                       </div>
                       <h4 className="text-sm font-medium text-white mt-1.5 leading-snug">{scheme.fullName}</h4>
-                      <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">{scheme.description}</p>
+                      <p className="text-xs text-white/50 mt-1 line-clamp-2">{scheme.description}</p>
 
                       <AnimatePresence>
                         {isExpanded && (
@@ -1261,19 +1261,19 @@ const NSQF = () => {
                           >
                             <div className="mt-3 pt-3 border-t border-white/[0.06]">
                               <div className="mb-3">
-                                <p className="text-[10px] uppercase tracking-wider text-[#64748B] font-semibold mb-1">Eligibility</p>
+                                <p className="text-[10px] uppercase tracking-wider text-white/40 font-semibold mb-1">Eligibility</p>
                                 <p className="text-xs text-[#0066FF] flex items-center gap-1">
                                   <Icon name="verified_user" size={13} />
                                   {scheme.eligibility}
                                 </p>
                               </div>
                               <div className="mb-3">
-                                <p className="text-[10px] uppercase tracking-wider text-[#64748B] font-semibold mb-1.5">Key Benefits</p>
+                                <p className="text-[10px] uppercase tracking-wider text-white/40 font-semibold mb-1.5">Key Benefits</p>
                                 <div className="space-y-1.5">
                                   {scheme.benefits.map((benefit) => (
                                     <div key={benefit} className="flex items-center gap-2">
                                       <Icon name="check_circle" size={13} className="text-[#10B981] shrink-0" />
-                                      <span className="text-xs text-[#94A3B8]">{benefit}</span>
+                                      <span className="text-xs text-white/50">{benefit}</span>
                                     </div>
                                   ))}
                                 </div>
@@ -1292,7 +1292,7 @@ const NSQF = () => {
                       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                       className="shrink-0"
                     >
-                      <Icon name="expand_more" size={18} className="text-[#64748B]" />
+                      <Icon name="expand_more" size={18} className="text-white/40" />
                     </motion.div>
                   </div>
                 </motion.div>
@@ -1329,7 +1329,7 @@ const NSQF = () => {
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                   activeCertSector === idx
                     ? 'text-white shadow-[0_2px_12px_rgba(0,102,255,0.25)]'
-                    : 'bg-[#0F172A]/60 text-[#64748B] border border-white/[0.04] hover:border-white/[0.1]'
+                    : 'bg-[#0C1222]/60 text-white/40 border border-white/[0.04] hover:border-white/[0.1]'
                 }`}
                 style={
                   activeCertSector === idx
@@ -1362,7 +1362,7 @@ const NSQF = () => {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 24, delay: ci * 0.06 }}
-                    className="rounded-xl p-4 border border-white/[0.04] bg-[#0F172A]/60"
+                    className="rounded-xl p-4 border border-white/[0.04] bg-[#0C1222]/60"
                     whileHover={{
                       y: -2,
                       borderColor: `${sectorColor}30`,
@@ -1377,15 +1377,15 @@ const NSQF = () => {
                         {isFree ? 'Free' : 'Paid'}
                       </Badge>
                     </div>
-                    <p className="text-xs text-[#64748B] mb-3">{cert.provider}</p>
+                    <p className="text-xs text-white/40 mb-3">{cert.provider}</p>
                     <div className="flex items-center gap-4 flex-wrap">
                       <div className="flex items-center gap-1">
-                        <Icon name="schedule" size={13} className="text-[#64748B]" />
-                        <span className="text-[11px] text-[#94A3B8]">{cert.duration}</span>
+                        <Icon name="schedule" size={13} className="text-white/40" />
+                        <span className="text-[11px] text-white/50">{cert.duration}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Icon name="payments" size={13} className="text-[#64748B]" />
-                        <span className="text-[11px] text-[#94A3B8]">{cert.cost}</span>
+                        <Icon name="payments" size={13} className="text-white/40" />
+                        <span className="text-[11px] text-white/50">{cert.cost}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Icon name="stairs" size={13} style={{ color: sectorColor }} />
@@ -1413,7 +1413,7 @@ const NSQF = () => {
             </div>
             <div>
               <h3 className="text-sm font-semibold text-white mb-1">About NSQF</h3>
-              <p className="text-xs text-[#94A3B8] leading-relaxed">
+              <p className="text-xs text-white/50 leading-relaxed">
                 The National Skills Qualifications Framework (NSQF) is a competency-based framework
                 that organizes all qualifications according to a series of levels of knowledge, skills,
                 and aptitude. These levels, graded from 1 to 10, are defined in terms of learning
@@ -1488,7 +1488,7 @@ function SchemeCard({ scheme }: { scheme: any }) {
     >
       <div style={{ transform: 'translateZ(20px)' }}>
         <h4 className="font-medium text-white text-sm">{scheme.name || scheme.title}</h4>
-        <p className="text-xs text-[#94A3B8] mt-1">{scheme.description}</p>
+        <p className="text-xs text-white/50 mt-1">{scheme.description}</p>
         {scheme.eligibility && (
           <p className="text-xs text-[#0066FF] mt-2 flex items-center gap-1">
             <Icon name="verified" size={12} />

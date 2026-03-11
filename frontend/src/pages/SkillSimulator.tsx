@@ -714,14 +714,14 @@ const RoleCard = ({
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-bold text-white leading-tight">{role.title}</h3>
-          <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed line-clamp-2">
+          <p className="text-xs text-white/40 mt-0.5 leading-relaxed line-clamp-2">
             {role.description}
           </p>
           <div className="flex items-center gap-2 mt-2">
             <Badge variant={role.demand === 'Very High' ? 'success' : 'accent'} size="sm">
               {role.demand} Demand
             </Badge>
-            <span className="text-[10px] text-[#64748B]">{role.avgSalary}</span>
+            <span className="text-[10px] text-white/40">{role.avgSalary}</span>
           </div>
         </div>
         {isSelected && (
@@ -760,7 +760,7 @@ const SkillSlider = ({
     <div className="flex items-center gap-4 py-2.5">
       <div className="w-44 flex-shrink-0">
         <p className="text-sm text-white font-medium truncate">{skill.name}</p>
-        <p className="text-[10px] text-[#64748B]">{skill.category}</p>
+        <p className="text-[10px] text-white/40">{skill.category}</p>
       </div>
       <div className="flex-1 relative">
         <div className="w-full h-2 rounded-full bg-white/[0.04] relative overflow-hidden">
@@ -803,8 +803,8 @@ const SkillSlider = ({
         <span className="text-xs font-bold" style={{ color: gapColor }}>
           {skill.currentLevel}
         </span>
-        <span className="text-[10px] text-[#64748B]">/</span>
-        <span className="text-xs text-[#94A3B8]">{skill.requiredLevel}</span>
+        <span className="text-[10px] text-white/40">/</span>
+        <span className="text-xs text-white/50">{skill.requiredLevel}</span>
         {met ? (
           <Icon name="check_circle" size={14} style={{ color: '#10B981' }} filled />
         ) : (
@@ -1052,7 +1052,7 @@ const LearningPathItem = ({
                 {config.label}
               </Badge>
             </div>
-            <p className="text-xs text-[#64748B] mt-0.5">
+            <p className="text-xs text-white/40 mt-0.5">
               Gap: {gap.gap} points &middot; ~{gap.estimatedHours} hours to close
             </p>
           </div>
@@ -1074,7 +1074,7 @@ const LearningPathItem = ({
               animate={{ rotate: expanded ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <Icon name="expand_more" size={20} className="text-[#64748B]" />
+              <Icon name="expand_more" size={20} className="text-white/40" />
             </motion.div>
           </div>
         </button>
@@ -1090,7 +1090,7 @@ const LearningPathItem = ({
             >
               <div className="px-4 pb-4 pt-0">
                 <div className="border-t border-white/[0.06] pt-3 space-y-2.5">
-                  <p className="text-xs text-[#94A3B8] font-medium mb-2">
+                  <p className="text-xs text-white/50 font-medium mb-2">
                     Recommended Resources
                   </p>
                   {gap.resources.map((resource, ri) => (
@@ -1113,7 +1113,7 @@ const LearningPathItem = ({
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-white truncate">{resource.name}</p>
-                        <p className="text-[10px] text-[#64748B]">
+                        <p className="text-[10px] text-white/40">
                           {resource.platform} &middot; {resource.duration}
                         </p>
                       </div>
@@ -1188,7 +1188,7 @@ const RoleComparison = ({
               </div>
               <div>
                 <p className="text-sm font-bold text-white">{roleA.title}</p>
-                <p className="text-xs text-[#64748B]">Your match</p>
+                <p className="text-xs text-white/40">Your match</p>
               </div>
             </div>
             <div className="text-3xl font-extrabold text-white mb-2">{matchA}%</div>
@@ -1206,7 +1206,7 @@ const RoleComparison = ({
               </div>
               <div>
                 <p className="text-sm font-bold text-white">{roleB.title}</p>
-                <p className="text-xs text-[#64748B]">Your match</p>
+                <p className="text-xs text-white/40">Your match</p>
               </div>
             </div>
             <div className="text-3xl font-extrabold text-white mb-2">{matchB}%</div>
@@ -1223,7 +1223,7 @@ const RoleComparison = ({
             <h4 className="text-sm font-bold text-white">
               Shared Skills ({sharedSkills.length})
             </h4>
-            <span className="text-xs text-[#64748B]">
+            <span className="text-xs text-white/40">
               Skills that transfer between both roles
             </span>
           </div>
@@ -1252,13 +1252,13 @@ const RoleComparison = ({
                 uniqueToA.map((skill) => (
                   <div key={skill.name} className="flex items-center justify-between">
                     <span className="text-xs text-[#CBD5E1]">{skill.name}</span>
-                    <span className="text-[10px] text-[#64748B]">
+                    <span className="text-[10px] text-white/40">
                       Req: {skill.requiredLevel}
                     </span>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-[#64748B] italic">
+                <p className="text-xs text-white/40 italic">
                   All skills overlap with the other role
                 </p>
               )}
@@ -1278,13 +1278,13 @@ const RoleComparison = ({
                 uniqueToB.map((skill) => (
                   <div key={skill.name} className="flex items-center justify-between">
                     <span className="text-xs text-[#CBD5E1]">{skill.name}</span>
-                    <span className="text-[10px] text-[#64748B]">
+                    <span className="text-[10px] text-white/40">
                       Req: {skill.requiredLevel}
                     </span>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-[#64748B] italic">
+                <p className="text-xs text-white/40 italic">
                   All skills overlap with the other role
                 </p>
               )}
@@ -1320,7 +1320,7 @@ const AnalysisLoader = () => (
         animate={{ rotate: -360 }}
         transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
       />
-      <div className="absolute inset-4 rounded-full bg-[#0F172A] flex items-center justify-center">
+      <div className="absolute inset-4 rounded-full bg-[#0C1222] flex items-center justify-center">
         <Icon name="psychology" size={20} className="text-[#0066FF]" />
       </div>
     </div>
@@ -1332,7 +1332,7 @@ const AnalysisLoader = () => (
       >
         Analyzing your skill gaps...
       </motion.p>
-      <p className="text-xs text-[#64748B]">
+      <p className="text-xs text-white/40">
         Comparing your profile against role requirements
       </p>
     </div>
@@ -1538,7 +1538,7 @@ const SkillSimulator = () => {
                   <h1 className="text-2xl font-extrabold text-white tracking-tight">
                     Skill Gap Simulator
                   </h1>
-                  <p className="text-sm text-[#94A3B8]">
+                  <p className="text-sm text-white/50">
                     Pick any target role and see exactly what skills you need to get there
                   </p>
                 </div>
@@ -1688,7 +1688,7 @@ const SkillSimulator = () => {
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                       activeSection === section.id
                         ? 'bg-[#0066FF]/15 text-[#0066FF] shadow-sm'
-                        : 'text-[#64748B] hover:text-white hover:bg-white/[0.04]'
+                        : 'text-white/40 hover:text-white hover:bg-white/[0.04]'
                     }`}
                   >
                     <Icon name={section.icon} size={16} />
@@ -1720,7 +1720,7 @@ const SkillSimulator = () => {
                             Self-Assessment for {selectedRole.title}
                           </h3>
                         </div>
-                        <p className="text-xs text-[#64748B]">
+                        <p className="text-xs text-white/40">
                           Drag sliders to adjust your skill levels
                         </p>
                       </div>
@@ -1729,19 +1729,19 @@ const SkillSimulator = () => {
                       <div className="flex items-center gap-4 mb-4 pb-3 border-b border-white/[0.06]">
                         <div className="flex items-center gap-1.5">
                           <div className="w-3 h-1.5 rounded-full bg-[#10B981]" />
-                          <span className="text-[10px] text-[#64748B]">Met / Exceeded</span>
+                          <span className="text-[10px] text-white/40">Met / Exceeded</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <div className="w-3 h-1.5 rounded-full bg-[#F59E0B]" />
-                          <span className="text-[10px] text-[#64748B]">Almost There</span>
+                          <span className="text-[10px] text-white/40">Almost There</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <div className="w-3 h-1.5 rounded-full bg-[#EF4444]" />
-                          <span className="text-[10px] text-[#64748B]">Significant Gap</span>
+                          <span className="text-[10px] text-white/40">Significant Gap</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <div className="w-3 h-0.5 rounded-full bg-white/40" />
-                          <span className="text-[10px] text-[#64748B]">Required Level</span>
+                          <span className="text-[10px] text-white/40">Required Level</span>
                         </div>
                       </div>
 
@@ -1753,9 +1753,9 @@ const SkillSimulator = () => {
                               <Icon
                                 name={categoryIcons[category] || 'category'}
                                 size={16}
-                                className="text-[#64748B]"
+                                className="text-white/40"
                               />
-                              <h4 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider">
+                              <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider">
                                 {category}
                               </h4>
                               <div className="flex-1 h-px bg-white/[0.04]" />
@@ -1805,11 +1805,11 @@ const SkillSimulator = () => {
                               className="w-3 h-2 rounded-sm"
                               style={{ background: selectedRole.color }}
                             />
-                            <span className="text-[10px] text-[#94A3B8]">Your Level</span>
+                            <span className="text-[10px] text-white/50">Your Level</span>
                           </div>
                           <div className="flex items-center gap-1.5">
                             <div className="w-3 h-2 rounded-sm border border-white/20 border-dashed" />
-                            <span className="text-[10px] text-[#94A3B8]">Required Level</span>
+                            <span className="text-[10px] text-white/50">Required Level</span>
                           </div>
                         </div>
                       </div>
@@ -1857,7 +1857,7 @@ const SkillSimulator = () => {
                             <span className="text-xl font-extrabold text-white">
                               {summaryStats.readiness}%
                             </span>
-                            <span className="text-[9px] text-[#64748B]">Ready</span>
+                            <span className="text-[9px] text-white/40">Ready</span>
                           </div>
                         </div>
                         <div className="space-y-2">
@@ -1923,15 +1923,15 @@ const SkillSimulator = () => {
                   <motion.div variants={item} className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5">
                       <div className="w-2 h-2 rounded-full bg-[#EF4444]" />
-                      <span className="text-[10px] text-[#64748B]">Critical (50%+ gap)</span>
+                      <span className="text-[10px] text-white/40">Critical (50%+ gap)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-2 h-2 rounded-full bg-[#F59E0B]" />
-                      <span className="text-[10px] text-[#64748B]">Important (25-50% gap)</span>
+                      <span className="text-[10px] text-white/40">Important (25-50% gap)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-2 h-2 rounded-full bg-[#10B981]" />
-                      <span className="text-[10px] text-[#64748B]">Nice to Have (&lt;25% gap)</span>
+                      <span className="text-[10px] text-white/40">Nice to Have (&lt;25% gap)</span>
                     </div>
                   </motion.div>
 
@@ -1957,7 +1957,7 @@ const SkillSimulator = () => {
                           </div>
                           <div>
                             <p className="text-sm font-bold text-white">Total Learning Investment</p>
-                            <p className="text-xs text-[#64748B]">
+                            <p className="text-xs text-white/40">
                               Based on closing all identified gaps
                             </p>
                           </div>
@@ -1966,7 +1966,7 @@ const SkillSimulator = () => {
                           <p className="text-lg font-extrabold text-white">
                             {gapAnalysis.reduce((sum, g) => sum + g.estimatedHours, 0)} hours
                           </p>
-                          <p className="text-xs text-[#64748B]">
+                          <p className="text-xs text-white/40">
                             ~{summaryStats.estimatedWeeks} weeks at 15 hrs/week
                           </p>
                         </div>
@@ -1977,19 +1977,19 @@ const SkillSimulator = () => {
                           <p className="text-lg font-bold text-[#EF4444]">
                             {gapAnalysis.filter((g) => g.priority === 'critical').length}
                           </p>
-                          <p className="text-[10px] text-[#64748B]">Critical Skills</p>
+                          <p className="text-[10px] text-white/40">Critical Skills</p>
                         </div>
                         <div className="text-center p-3 rounded-xl bg-warning/5 border border-warning/10">
                           <p className="text-lg font-bold text-[#F59E0B]">
                             {gapAnalysis.filter((g) => g.priority === 'important').length}
                           </p>
-                          <p className="text-[10px] text-[#64748B]">Important Skills</p>
+                          <p className="text-[10px] text-white/40">Important Skills</p>
                         </div>
                         <div className="text-center p-3 rounded-xl bg-success/5 border border-success/10">
                           <p className="text-lg font-bold text-[#10B981]">
                             {gapAnalysis.filter((g) => g.priority === 'nice-to-have' || g.gap <= 0).length}
                           </p>
-                          <p className="text-[10px] text-[#64748B]">On Track</p>
+                          <p className="text-[10px] text-white/40">On Track</p>
                         </div>
                       </div>
                     </Card>
@@ -2018,11 +2018,11 @@ const SkillSimulator = () => {
                             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                           >
                             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0066FF]/15 to-[#7C3AED]/15 border border-[#0066FF]/20 flex items-center justify-center mb-4">
-                              <Icon name="compare_arrows" size={32} className="text-[#64748B]" />
+                              <Icon name="compare_arrows" size={32} className="text-white/40" />
                             </div>
                           </motion.div>
                           <h3 className="text-lg font-bold text-white mb-1">Compare Roles</h3>
-                          <p className="text-sm text-[#94A3B8] max-w-md mb-4">
+                          <p className="text-sm text-white/50 max-w-md mb-4">
                             You have <span className="text-white font-medium">{selectedRole.title}</span> selected.
                             Now click on another role card above to compare them side by side.
                           </p>
@@ -2059,13 +2059,13 @@ const SkillSimulator = () => {
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0066FF]/15 to-[#7C3AED]/15 border border-[#0066FF]/15 flex items-center justify-center mb-5">
-                  <Icon name="psychology" size={40} className="text-[#64748B]" />
+                  <Icon name="psychology" size={40} className="text-white/40" />
                 </div>
               </motion.div>
               <h2 className="text-xl font-bold text-white mb-2">
                 What role do you want to explore?
               </h2>
-              <p className="text-sm text-[#94A3B8] max-w-md">
+              <p className="text-sm text-white/50 max-w-md">
                 Select a target role from the cards above or type a custom role. Our simulator will
                 analyze your skill gaps and create a personalized learning path to get you there.
               </p>

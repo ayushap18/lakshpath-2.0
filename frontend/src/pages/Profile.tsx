@@ -8,6 +8,7 @@ import Badge from '../components/ui/Badge';
 import StatCard from '../components/ui/StatCard';
 import Avatar from '../components/ui/Avatar';
 import ProgressBar from '../components/ui/ProgressBar';
+import Skeleton from '../components/ui/Skeleton';
 import { useProfile } from '../hooks/useProfile';
 import { userAPI, profileAPI, authAPI } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
@@ -142,20 +143,16 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
-        <motion.div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.1), rgba(124,58,237,0.08))', border: '1px solid rgba(0,102,255,0.15)' }}
-          animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <Icon name="person" size={24} className="text-accent" />
-        </motion.div>
-        <div className="flex gap-1">
-          {[0, 1, 2].map(i => (
-            <motion.div key={i} className="w-2 h-2 rounded-full bg-accent/40" animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }} transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }} />
-          ))}
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Skeleton variant="circular" width={80} height={80} />
+          <div>
+            <Skeleton variant="text" width={180} height={24} />
+            <Skeleton variant="text" width={220} height={16} className="mt-2" />
+          </div>
         </div>
+        <Skeleton variant="rectangular" height={200} className="rounded-2xl" />
+        <Skeleton variant="rectangular" height={200} className="rounded-2xl" />
       </div>
     );
   }
@@ -175,7 +172,7 @@ const Profile = () => {
   const xpNeeded = streakData?.xpNeeded || 100;
   const xpInLevel = streakData?.xpInLevel || 0;
 
-  const inputClass = "w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors text-sm";
+  const inputClass = "w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 outline-none focus:border-[#0066FF] transition-colors text-sm";
 
   return (
     <motion.div className="space-y-5 max-w-4xl" variants={containerVariants} initial="hidden" animate="visible">
@@ -380,16 +377,16 @@ const Profile = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">Full Name</label>
+                    <label className="text-xs text-white/50 mb-1.5 block font-medium">Full Name</label>
                     <input value={settings.name} onChange={e => setSettings(s => ({ ...s, name: e.target.value }))} placeholder="Your full name" className={inputClass} />
                   </div>
                   <div>
-                    <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">Phone</label>
+                    <label className="text-xs text-white/50 mb-1.5 block font-medium">Phone</label>
                     <input value={settings.phone} onChange={e => setSettings(s => ({ ...s, phone: e.target.value }))} placeholder="+91 98765 43210" className={inputClass} />
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">Bio</label>
+                  <label className="text-xs text-white/50 mb-1.5 block font-medium">Bio</label>
                   <textarea value={settings.bio} onChange={e => setSettings(s => ({ ...s, bio: e.target.value }))} placeholder="Tell us about yourself..." rows={2} className={`${inputClass} resize-none`} />
                 </div>
               </div>
@@ -404,12 +401,12 @@ const Profile = () => {
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">College / University</label>
+                  <label className="text-xs text-white/50 mb-1.5 block font-medium">College / University</label>
                   <input value={settings.college} onChange={e => setSettings(s => ({ ...s, college: e.target.value }))} placeholder="IIT Delhi, VIT Vellore, etc." className={inputClass} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">Degree</label>
+                    <label className="text-xs text-white/50 mb-1.5 block font-medium">Degree</label>
                     <select value={settings.degree} onChange={e => setSettings(s => ({ ...s, degree: e.target.value }))} className={inputClass}>
                       <option value="">Select degree</option>
                       <option value="B.Tech">B.Tech / BE</option>
@@ -423,7 +420,7 @@ const Profile = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">Branch</label>
+                    <label className="text-xs text-white/50 mb-1.5 block font-medium">Branch</label>
                     <select value={settings.branch} onChange={e => setSettings(s => ({ ...s, branch: e.target.value }))} className={inputClass}>
                       <option value="">Select branch</option>
                       <option value="CSE">Computer Science (CSE)</option>
@@ -438,7 +435,7 @@ const Profile = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">Graduation Year</label>
+                    <label className="text-xs text-white/50 mb-1.5 block font-medium">Graduation Year</label>
                     <select value={settings.graduationYear} onChange={e => setSettings(s => ({ ...s, graduationYear: e.target.value }))} className={inputClass}>
                       <option value="">Select year</option>
                       {[2024, 2025, 2026, 2027, 2028, 2029].map(y => <option key={y} value={y}>{y}</option>)}
@@ -473,9 +470,9 @@ const Profile = () => {
                     )}
                   </div>
                   <div>
-                    <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">GitHub Username</label>
+                    <label className="text-xs text-white/50 mb-1.5 block font-medium">GitHub Username</label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B] text-sm">github.com/</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-sm">github.com/</span>
                       <input value={settings.githubUsername} onChange={e => setSettings(s => ({ ...s, githubUsername: e.target.value }))} placeholder="username" className={`${inputClass} pl-[108px]`} />
                     </div>
                   </div>
@@ -498,7 +495,7 @@ const Profile = () => {
                     )}
                   </div>
                   <div>
-                    <label className="text-xs text-[#94A3B8] mb-1.5 block font-medium">LinkedIn Profile URL</label>
+                    <label className="text-xs text-white/50 mb-1.5 block font-medium">LinkedIn Profile URL</label>
                     <input value={settings.linkedinUrl} onChange={e => setSettings(s => ({ ...s, linkedinUrl: e.target.value }))} placeholder="https://linkedin.com/in/your-profile" className={inputClass} />
                   </div>
                 </div>

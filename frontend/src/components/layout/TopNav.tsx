@@ -120,7 +120,7 @@ const TopNav = () => {
                 exit={{ opacity: 0, y: 8, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
                 className="absolute right-0 top-12 w-80 max-h-96 overflow-y-auto rounded-xl z-50"
-                style={{ background: 'linear-gradient(135deg, #111827, #0F172A)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
+                style={{ background: 'linear-gradient(135deg, #111827, #0C1222)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
               >
                 <div className="p-4 border-b border-white/5">
                   <div className="flex items-center justify-between">
@@ -188,7 +188,7 @@ const TopNav = () => {
                 exit={{ opacity: 0, y: 8, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
                 className="absolute right-0 top-12 w-64 rounded-xl z-50 overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, #111827, #0F172A)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
+                style={{ background: 'linear-gradient(135deg, #111827, #0C1222)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
               >
                 <div className="p-4 border-b border-white/5">
                   <div className="flex items-center gap-3">

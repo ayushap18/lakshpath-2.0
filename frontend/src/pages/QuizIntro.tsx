@@ -197,7 +197,7 @@ const QuizIntro = () => {
             { icon: 'groups', label: '50K+ Assessed' },
           ].map((trust) => (
             <div key={trust.label} className="flex items-center gap-1.5">
-              <Icon name={trust.icon} size={14} style={{ color: '#64748B' }} />
+              <Icon name={trust.icon} size={14} className="text-white/40" />
               <span className="text-[11px] text-muted">{trust.label}</span>
             </div>
           ))}

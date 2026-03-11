@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Icon from '../components/ui/Icon';
 import Button from '../components/ui/Button';
 import { assessmentAPI } from '../services/api';
+import Skeleton from '../components/ui/Skeleton';
 
 interface QuestionDef {
   id: string;
@@ -129,43 +130,6 @@ const AnimatedPercentage = ({ value }: { value: number }) => {
   return <span>{display}%</span>;
 };
 
-/* ───── Pulsing Ring Component for Submitting ───── */
-const PulsingRing = ({ delay, size }: { delay: number; size: number }) => (
-  <motion.div
-    className="absolute rounded-full border-2 border-[#0066FF]"
-    style={{ width: size, height: size }}
-    initial={{ opacity: 0.6, scale: 0.8 }}
-    animate={{
-      opacity: [0.6, 0],
-      scale: [0.8, 2.2],
-    }}
-    transition={{
-      duration: 2.2,
-      delay,
-      repeat: Infinity,
-      ease: 'easeOut',
-    }}
-  />
-);
-
-/* ───── Orbiting Dot Component ───── */
-const OrbitDot = ({ delay, radius, duration }: { delay: number; radius: number; duration: number }) => (
-  <motion.div
-    className="absolute w-2 h-2 rounded-full bg-[#0066FF]"
-    style={{ top: '50%', left: '50%', marginTop: -4, marginLeft: -4 }}
-    animate={{
-      x: [radius, 0, -radius, 0, radius],
-      y: [0, -radius, 0, radius, 0],
-      opacity: [0.9, 0.5, 0.9, 0.5, 0.9],
-    }}
-    transition={{
-      duration,
-      delay,
-      repeat: Infinity,
-      ease: 'linear',
-    }}
-  />
-);
 
 const Assessment = () => {
   const navigate = useNavigate();
@@ -247,65 +211,35 @@ const Assessment = () => {
     return (
       <div className="min-h-screen bg-navy flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          className="text-center relative"
+          className="w-full max-w-3xl px-6 md:px-10 lg:px-16 space-y-6"
         >
-          {/* Pulsing Rings */}
-          <div className="relative flex items-center justify-center mb-8" style={{ width: 120, height: 120, margin: '0 auto' }}>
-            <PulsingRing delay={0} size={80} />
-            <PulsingRing delay={0.5} size={80} />
-            <PulsingRing delay={1.0} size={80} />
-            <PulsingRing delay={1.5} size={80} />
-
-            {/* Orbiting Dots */}
-            <OrbitDot delay={0} radius={45} duration={3} />
-            <OrbitDot delay={0.75} radius={45} duration={3} />
-            <OrbitDot delay={1.5} radius={45} duration={3} />
-            <OrbitDot delay={2.25} radius={45} duration={3} />
-
-            {/* Center spinner */}
-            <motion.div
-              className="w-16 h-16 border-4 border-[#0066FF]/30 border-t-[#0066FF] rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
-            />
+          {/* Header skeleton */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Skeleton variant="text" width="35%" height={14} />
+              <Skeleton variant="text" width={48} height={14} />
+            </div>
+            <Skeleton variant="rectangular" height={8} className="rounded-full" />
           </div>
 
-          <motion.h2
-            className="text-2xl font-bold text-white mb-2"
-            animate={{ opacity: [1, 0.7, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            Analyzing Your Responses
-          </motion.h2>
-          <motion.p
-            className="text-[#94A3B8]"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            Gemini AI is finding your perfect career matches...
-          </motion.p>
+          {/* Question title skeleton */}
+          <Skeleton variant="text" width="70%" height={28} />
 
-          {/* Animated progress dots */}
-          <div className="flex justify-center gap-2 mt-4">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="w-2 h-2 rounded-full bg-[#0066FF]"
-                animate={{
-                  scale: [1, 1.5, 1],
-                  opacity: [0.4, 1, 0.4],
-                }}
-                transition={{
-                  duration: 1.2,
-                  delay: i * 0.3,
-                  repeat: Infinity,
-                }}
-              />
-            ))}
+          {/* Question card skeleton */}
+          <Skeleton variant="card" height={240} />
+
+          {/* Analyzing indicator */}
+          <div className="text-center pt-4">
+            <motion.p
+              className="text-white/50 text-sm"
+              animate={{ opacity: [1, 0.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              Gemini AI is analyzing your responses...
+            </motion.p>
           </div>
         </motion.div>
       </div>
@@ -324,7 +258,7 @@ const Assessment = () => {
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-[#94A3B8]">Question {current + 1} of {QUESTIONS.length}</span>
+            <span className="text-sm text-white/50">Question {current + 1} of {QUESTIONS.length}</span>
             <motion.span
               className="text-sm text-[#0066FF] font-medium"
               key={progressPercent}
@@ -383,7 +317,7 @@ const Assessment = () => {
                       className={`w-full text-left px-5 py-4 rounded-xl border transition-colors ${
                         answer === opt
                           ? 'bg-[#0066FF]/10 border-[#0066FF] text-white'
-                          : 'bg-[#111827] border-[#1E293B] text-[#94A3B8] hover:text-white'
+                          : 'bg-[#111827] border-[#1E293B] text-white/50 hover:text-white'
                       }`}
                       whileHover={{
                         y: -2,
@@ -415,7 +349,7 @@ const Assessment = () => {
                         className={`px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                           selected
                             ? 'bg-[#0066FF]/10 border-[#0066FF] text-white'
-                            : 'bg-[#111827] border-[#1E293B] text-[#94A3B8] hover:border-white/20'
+                            : 'bg-[#111827] border-[#1E293B] text-white/50 hover:border-white/20'
                         }`}
                         whileHover={{
                           scale: 1.05,
@@ -463,7 +397,7 @@ const Assessment = () => {
                       className={`w-14 h-14 rounded-xl border text-lg font-bold transition-colors ${
                         answer === n
                           ? 'bg-[#0066FF] border-[#0066FF] text-white'
-                          : 'bg-[#111827] border-[#1E293B] text-[#94A3B8] hover:border-white/20'
+                          : 'bg-[#111827] border-[#1E293B] text-white/50 hover:border-white/20'
                       }`}
                       whileHover={{
                         scale: 1.1,
@@ -484,7 +418,7 @@ const Assessment = () => {
                   value={answer || ''}
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder="Type your answer..."
-                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl p-4 text-white placeholder-[#64748B] outline-none min-h-[120px] resize-none transition-shadow duration-300"
+                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl p-4 text-white placeholder-white/40 outline-none min-h-[120px] resize-none transition-shadow duration-300"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
@@ -602,11 +536,11 @@ const Assessment = () => {
                   animate={{ rotate: [0, 5, -5, 0] }}
                   transition={{ duration: 4, repeat: Infinity }}
                 >
-                  <Icon name="psychology" size={24} className="text-[#64748B]" />
+                  <Icon name="psychology" size={24} className="text-white/40" />
                 </motion.div>
               </motion.div>
-              <p className="text-sm text-[#64748B]">AI is analyzing your responses...</p>
-              <p className="text-xs text-[#64748B] mt-1">Patterns will appear as you answer</p>
+              <p className="text-sm text-white/40">AI is analyzing your responses...</p>
+              <p className="text-xs text-white/40 mt-1">Patterns will appear as you answer</p>
             </motion.div>
           ) : (
             <AnimatePresence>
@@ -656,7 +590,7 @@ const Assessment = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <p className="text-xs text-[#64748B]">
+          <p className="text-xs text-white/40">
             Progress: {Object.keys(answers).length}/{QUESTIONS.length} questions answered
           </p>
           <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mt-2">

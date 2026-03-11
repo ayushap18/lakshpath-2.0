@@ -66,7 +66,7 @@ function AnimatedStat({ value, suffix = '', label }: { value: number; suffix?: s
       <span ref={ref} className="text-[36px] font-extrabold text-[#0066FF] text-glow-lg">
         {count.toLocaleString()}{suffix}
       </span>
-      <span className="text-sm font-medium text-[#94A3B8]">{label}</span>
+      <span className="text-sm font-medium text-white/50">{label}</span>
     </motion.div>
   );
 }
@@ -115,7 +115,7 @@ function Feature3DCard({ f, index }: { f: typeof CORE_FEATURES[0]; index: number
       <h3 className="text-xl font-semibold text-white" style={{ transform: 'translateZ(12px)' }}>
         {f.title}
       </h3>
-      <p className="text-[15px] text-[#94A3B8] leading-[1.6]">{f.desc}</p>
+      <p className="text-[15px] text-white/50 leading-[1.6]">{f.desc}</p>
 
       {/* Top edge light */}
       <div className="pointer-events-none absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
@@ -170,16 +170,16 @@ function PricingCard3D({ p, onNavigate }: { p: typeof PRICING[0]; onNavigate: (p
 
       <div className="flex items-end gap-1">
         <span className="text-[40px] font-extrabold text-white">{p.price}</span>
-        {p.period && <span className="text-[15px] text-[#64748B] mb-1">{p.period}</span>}
+        {p.period && <span className="text-[15px] text-white/40 mb-1">{p.period}</span>}
       </div>
 
-      <p className="text-sm text-[#94A3B8] leading-[1.5]">{p.desc}</p>
+      <p className="text-sm text-white/50 leading-[1.5]">{p.desc}</p>
 
       <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)' }} />
 
       <ul className="flex flex-col gap-3">
         {p.features.map((feat) => (
-          <li key={feat} className="text-sm text-[#94A3B8] flex items-center gap-2">
+          <li key={feat} className="text-sm text-white/50 flex items-center gap-2">
             <Icon name="check" size={16} className="text-[#10B981]" />
             {feat}
           </li>
@@ -192,7 +192,7 @@ function PricingCard3D({ p, onNavigate }: { p: typeof PRICING[0]; onNavigate: (p
         onClick={() => p.cta.startsWith('mailto:') ? window.location.href = p.cta : onNavigate(p.cta)}
         className={`w-full py-3.5 rounded-[10px] text-[15px] font-semibold transition-all duration-300 relative overflow-hidden ${
           p.highlighted
-            ? 'bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white glow-accent-sm'
+            ? 'bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white glow-accent-sm'
             : 'border border-[#64748B] text-white hover:border-white'
         }`}
       >
@@ -259,7 +259,7 @@ const SECONDARY_FEATURES = [
 const PRICING = [
   {
     label: 'Free',
-    labelColor: 'text-[#94A3B8]',
+    labelColor: 'text-white/50',
     price: '\u20B90',
     period: '/month',
     desc: 'Perfect for getting started with career exploration.',
@@ -282,7 +282,7 @@ const PRICING = [
   },
   {
     label: 'Institution',
-    labelColor: 'text-[#94A3B8]',
+    labelColor: 'text-white/50',
     price: 'Custom',
     period: '',
     desc: 'For colleges & training centers managing student cohorts.',
@@ -381,7 +381,7 @@ const LandingPage = () => {
             <button
               key={link}
               onClick={() => scrollTo(link.toLowerCase().replace(/\s+/g, '-'))}
-              className="text-[15px] font-medium text-[#94A3B8] hover:text-white transition-colors duration-200 relative group"
+              className="text-[15px] font-medium text-white/50 hover:text-white transition-colors duration-200 relative group"
             >
               {link}
               <span className="absolute bottom-[-4px] left-0 w-0 h-[1px] bg-[#0066FF]/60 transition-all duration-300 group-hover:w-full" />
@@ -396,7 +396,7 @@ const LandingPage = () => {
               whileHover={{ scale: 1.03, boxShadow: '0 0 24px rgba(0,102,255,0.3)' }}
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate('/dashboard')}
-              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
             >
               <span className="absolute inset-0 pointer-events-none" style={{
                 background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)',
@@ -409,7 +409,7 @@ const LandingPage = () => {
             <>
               <button
                 onClick={() => navigate('/login')}
-                className="px-5 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:border-[#94A3B8] transition-all duration-200 glass-card"
+                className="px-5 py-2.5 rounded-lg border border-white/[0.06] text-white text-sm font-medium hover:border-[#94A3B8] transition-all duration-200 glass-card"
               >
                 Log In
               </button>
@@ -417,7 +417,7 @@ const LandingPage = () => {
                 whileHover={{ scale: 1.03, boxShadow: '0 0 24px rgba(0,102,255,0.3)' }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => navigate('/register')}
-                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
+                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
               >
                 <span className="absolute inset-0 pointer-events-none" style={{
                   background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)',
@@ -552,7 +552,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, type: 'spring', stiffness: 80, damping: 20 }}
-          className="text-center text-[16px] md:text-[18px] text-[#94A3B8] max-w-[680px] leading-[1.6] relative z-10 px-4"
+          className="text-center text-[16px] md:text-[18px] text-white/50 max-w-[680px] leading-[1.6] relative z-10 px-4"
         >
           LakshPath uses AI to help CS & engineering students discover their ideal tech career, build
           targeted skill roadmaps, ace placement interviews, and land roles at top companies like Google, Amazon, and TCS.
@@ -569,7 +569,7 @@ const LandingPage = () => {
             whileHover={{ scale: 1.05, boxShadow: '0 0 50px rgba(0,102,255,0.4), 0 0 100px rgba(0,102,255,0.15)' }}
             whileTap={{ scale: 0.97 }}
             onClick={() => navigate('/register')}
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
+            className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
           >
             <span className="absolute inset-0 pointer-events-none" style={{
               background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%)',
@@ -582,9 +582,9 @@ const LandingPage = () => {
           <motion.button
             whileHover={{ scale: 1.05, borderColor: 'rgba(255,255,255,0.3)' }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-2 px-8 py-4 rounded-xl glass-card text-[#94A3B8] text-[16px] font-medium hover:text-white transition-all duration-300"
+            className="flex items-center gap-2 px-8 py-4 rounded-xl glass-card text-white/50 text-[16px] font-medium hover:text-white transition-all duration-300"
           >
-            <Icon name="play_arrow" size={18} className="text-[#94A3B8]" />
+            <Icon name="play_arrow" size={18} className="text-white/50" />
             Watch Demo
           </motion.button>
         </motion.div>
@@ -594,7 +594,7 @@ const LandingPage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8, duration: 0.8 }}
-          className="text-sm text-[#64748B] relative z-10"
+          className="text-sm text-white/40 relative z-10"
         >
           Trusted by 50,000+ students across India
         </motion.p>
@@ -620,7 +620,7 @@ const LandingPage = () => {
             <div
               className="w-full h-full"
               style={{
-                background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #0066FF12 80%, #0F172A 100%)',
+                background: 'linear-gradient(135deg, #0C1222 0%, #1E293B 40%, #0066FF12 80%, #0C1222 100%)',
               }}
             >
               <div className="w-full h-full relative overflow-hidden">
@@ -628,7 +628,7 @@ const LandingPage = () => {
                   <span className="w-3 h-3 rounded-full bg-[#EF4444]/60" />
                   <span className="w-3 h-3 rounded-full bg-[#F59E0B]/60" />
                   <span className="w-3 h-3 rounded-full bg-[#10B981]/60" />
-                  <span className="ml-4 text-xs text-[#64748B]">lakshpath.app/dashboard</span>
+                  <span className="ml-4 text-xs text-white/40">lakshpath.app/dashboard</span>
                 </div>
                 <div className="absolute top-20 left-6 w-48 bottom-6 rounded-lg bg-[#111827]/40" />
                 <div className="absolute top-20 left-60 right-6 bottom-6 flex flex-col gap-4 p-4">
@@ -661,7 +661,7 @@ const LandingPage = () => {
               opacity: 0.08,
               maskImage: 'linear-gradient(to top, transparent, black)',
               WebkitMaskImage: 'linear-gradient(to top, transparent, black)',
-              background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #0066FF12 80%, #0F172A 100%)',
+              background: 'linear-gradient(135deg, #0C1222 0%, #1E293B 40%, #0066FF12 80%, #0C1222 100%)',
             }}
           />
 
@@ -713,7 +713,7 @@ const LandingPage = () => {
       >
         <motion.span
           variants={itemVariants}
-          className="text-xs font-semibold text-[#64748B] tracking-[2px]"
+          className="text-xs font-semibold text-white/40 tracking-[2px]"
         >
           EMPOWERING STUDENTS AT
         </motion.span>
@@ -760,7 +760,7 @@ const LandingPage = () => {
           </motion.h2>
           <motion.p
             variants={itemVariants}
-            className="text-center text-[17px] text-[#94A3B8] leading-[1.6] max-w-[620px]"
+            className="text-center text-[17px] text-white/50 leading-[1.6] max-w-[620px]"
           >
             From AI-powered assessments to real-time job market intelligence, LakshPath gives you
             the tools to make confident career decisions.
@@ -815,7 +815,7 @@ const LandingPage = () => {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={sectionVariants}
-        className="flex flex-col items-center gap-8 md:gap-12 px-5 py-12 md:p-20 bg-[#0F172A] relative z-10"
+        className="flex flex-col items-center gap-8 md:gap-12 px-5 py-12 md:p-20 bg-[#0C1222] relative z-10"
       >
         <div className="flex flex-col items-center gap-4 max-w-[600px]">
           <motion.div
@@ -907,7 +907,7 @@ const LandingPage = () => {
                 >
                   {s.title}
                 </h3>
-                <p className="text-sm text-[#94A3B8] leading-[1.6]">{s.desc}</p>
+                <p className="text-sm text-white/50 leading-[1.6]">{s.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -957,7 +957,7 @@ const LandingPage = () => {
               </motion.div>
               <div className="flex flex-col gap-1.5">
                 <h3 className="text-[16px] font-semibold text-white">{f.title}</h3>
-                <p className="text-sm text-[#94A3B8] leading-[1.5]">{f.desc}</p>
+                <p className="text-sm text-white/50 leading-[1.5]">{f.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -1008,7 +1008,7 @@ const LandingPage = () => {
           </motion.h2>
           <motion.p
             variants={itemVariants}
-            className="text-center text-[17px] text-[#94A3B8]"
+            className="text-center text-[17px] text-white/50"
           >
             Start free. Upgrade when you are ready to accelerate.
           </motion.p>
@@ -1029,7 +1029,7 @@ const LandingPage = () => {
         whileInView="visible"
         viewport={{ once: true, margin: '-100px' }}
         variants={sectionVariants}
-        className="flex flex-col items-center gap-8 md:gap-12 px-5 py-12 md:p-20 bg-[#0F172A] relative z-10"
+        className="flex flex-col items-center gap-8 md:gap-12 px-5 py-12 md:p-20 bg-[#0C1222] relative z-10"
       >
         <motion.h2
           variants={itemVariants}
@@ -1072,7 +1072,7 @@ const LandingPage = () => {
                   &ldquo;
                 </span>
               </div>
-              <p className="text-[15px] text-[#94A3B8] leading-[1.6]">{t.quote}</p>
+              <p className="text-[15px] text-white/50 leading-[1.6]">{t.quote}</p>
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white"
@@ -1085,7 +1085,7 @@ const LandingPage = () => {
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-semibold text-white">{t.name}</span>
-                  <span className="text-[13px] text-[#64748B]">{t.role}</span>
+                  <span className="text-[13px] text-white/40">{t.role}</span>
                 </div>
               </div>
             </motion.div>
@@ -1112,7 +1112,7 @@ const LandingPage = () => {
         </motion.h2>
         <motion.p
           variants={itemVariants}
-          className="text-center text-[17px] text-[#94A3B8] leading-[1.6] max-w-[560px]"
+          className="text-center text-[17px] text-white/50 leading-[1.6] max-w-[560px]"
         >
           Join 50,000+ students who are building their future with AI-powered career guidance. Start
           your free assessment today.
@@ -1122,7 +1122,7 @@ const LandingPage = () => {
             whileHover={{ scale: 1.06, boxShadow: '0 0 50px rgba(0,102,255,0.4), 0 0 100px rgba(0,102,255,0.15)' }}
             whileTap={{ scale: 0.96 }}
             onClick={() => navigate('/register')}
-            className="px-9 py-4 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
+            className="px-9 py-4 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
           >
             <span className="absolute inset-0 pointer-events-none" style={{
               background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%)',
@@ -1133,7 +1133,7 @@ const LandingPage = () => {
             <span className="relative z-[1]">Get Started Free</span>
           </motion.button>
         </motion.div>
-        <motion.p variants={itemVariants} className="text-[13px] text-[#64748B]">
+        <motion.p variants={itemVariants} className="text-[13px] text-white/40">
           No credit card required &nbsp;&bull;&nbsp; Free forever basic plan
         </motion.p>
       </motion.section>
@@ -1148,7 +1148,7 @@ const LandingPage = () => {
               <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#0066FF] to-[#22D3EE] glow-accent-sm" />
               <span className="text-[18px] font-bold text-white">LakshPath</span>
             </div>
-            <p className="text-sm text-[#64748B] leading-[1.5]">
+            <p className="text-sm text-white/40 leading-[1.5]">
               AI-powered career guidance for the next generation of India's workforce.
             </p>
           </div>
@@ -1161,7 +1161,7 @@ const LandingPage = () => {
                 {col.links.map((link) => (
                   <span
                     key={link}
-                    className="text-sm text-[#64748B] hover:text-[#94A3B8] transition-colors cursor-pointer relative group"
+                    className="text-sm text-white/40 hover:text-white/50 transition-colors cursor-pointer relative group"
                   >
                     {link}
                     <span className="absolute bottom-[-2px] left-0 w-0 h-[1px] bg-[#0066FF]/50 transition-all duration-300 group-hover:w-full" />
@@ -1182,14 +1182,14 @@ const LandingPage = () => {
 
         {/* bottom */}
         <div className="flex items-center justify-between flex-wrap gap-4">
-          <span className="text-[13px] text-[#64748B]">
+          <span className="text-[13px] text-white/40">
             &copy; {new Date().getFullYear()} LakshPath. All rights reserved.
           </span>
           <div className="flex items-center gap-4">
             {['X', 'in', 'ig', 'yt'].map((s) => (
               <span
                 key={s}
-                className="text-[13px] text-[#64748B] hover:text-white transition-colors cursor-pointer font-medium"
+                className="text-[13px] text-white/40 hover:text-white transition-colors cursor-pointer font-medium"
               >
                 {s === 'X' ? '\ud835\udd4f' : s === 'in' ? 'LinkedIn' : s === 'ig' ? 'Instagram' : 'YouTube'}
               </span>

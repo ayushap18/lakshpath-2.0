@@ -171,7 +171,7 @@ const Register = () => {
             <br />
             <span className="gradient-text-multi">Transformation Today</span>
           </h1>
-          <p className="text-base text-[#94A3B8] leading-relaxed max-w-[420px]">
+          <p className="text-base text-white/50 leading-relaxed max-w-[420px]">
             Create your free account and get instant access to AI career guidance trusted by 50,000+ students.
           </p>
 
@@ -195,7 +195,7 @@ const Register = () => {
                 >
                   <span style={{ color: item.color }}><Icon name={item.icon} size={16} /></span>
                 </div>
-                <span className="text-sm text-[#94A3B8]">{item.text}</span>
+                <span className="text-sm text-white/50">{item.text}</span>
               </motion.div>
             ))}
           </div>
@@ -226,7 +226,7 @@ const Register = () => {
                 <p className={`text-xl font-extrabold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
                   {stat.value}
                 </p>
-                <p className="text-[10px] text-[#64748B] mt-0.5">{stat.label}</p>
+                <p className="text-[10px] text-white/40 mt-0.5">{stat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -244,10 +244,10 @@ const Register = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4 }}
         >
-          <p className="text-sm text-[#94A3B8] italic leading-relaxed">
+          <p className="text-sm text-white/50 italic leading-relaxed">
             "LakshPath's AI assessment was scarily accurate — it knew my strengths before I did."
           </p>
-          <p className="text-xs text-[#64748B] mt-2">— Rahul V., BITS Pilani</p>
+          <p className="text-xs text-white/40 mt-2">— Rahul V., BITS Pilani</p>
         </motion.div>
       </motion.div>
 
@@ -264,7 +264,7 @@ const Register = () => {
         >
           <motion.div variants={itemVariants} className="mb-7">
             <h1 className="text-[28px] font-bold text-white">Create your account</h1>
-            <p className="text-[15px] text-[#94A3B8] mt-2">Get started in under 2 minutes</p>
+            <p className="text-[15px] text-white/50 mt-2">Get started in under 2 minutes</p>
           </motion.div>
 
           {searchParams.get('plan') === 'pro' && (
@@ -320,7 +320,7 @@ const Register = () => {
           {/* Divider */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 mb-4">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#1E293B] to-transparent" />
-            <span className="text-[13px] text-[#64748B]">or</span>
+            <span className="text-[13px] text-white/40">or</span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#1E293B] to-transparent" />
           </motion.div>
 
@@ -329,7 +329,7 @@ const Register = () => {
             <motion.div variants={itemVariants} className="space-y-4 mb-5">
               <div className="flex gap-3">
                 <div className="flex-1">
-                  <label className="text-sm text-[#94A3B8] block mb-1.5">First name</label>
+                  <label className="text-sm text-white/50 block mb-1.5">First name</label>
                   <input
                     placeholder="Priya"
                     value={form.firstName}
@@ -338,7 +338,7 @@ const Register = () => {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="text-sm text-[#94A3B8] block mb-1.5">Last name</label>
+                  <label className="text-sm text-white/50 block mb-1.5">Last name</label>
                   <input
                     placeholder="Sharma"
                     value={form.lastName}
@@ -348,7 +348,7 @@ const Register = () => {
                 </div>
               </div>
               <div>
-                <label className="text-sm text-[#94A3B8] block mb-1.5">Email</label>
+                <label className="text-sm text-white/50 block mb-1.5">Email</label>
                 <input
                   type="email"
                   placeholder="priya@example.com"
@@ -358,7 +358,7 @@ const Register = () => {
                 />
               </div>
               <div>
-                <label className="text-sm text-[#94A3B8] block mb-1.5">Password</label>
+                <label className="text-sm text-white/50 block mb-1.5">Password</label>
                 <input
                   type="password"
                   placeholder="Min. 8 characters"
@@ -402,12 +402,12 @@ const Register = () => {
           </form>
 
           {/* Terms */}
-          <motion.p variants={itemVariants} className="text-center text-xs text-[#64748B] mt-4 leading-relaxed">
+          <motion.p variants={itemVariants} className="text-center text-xs text-white/40 mt-4 leading-relaxed">
             By signing up, you agree to our Terms of Service and Privacy Policy.
           </motion.p>
 
           {/* Sign In Link */}
-          <motion.p variants={itemVariants} className="text-center text-sm text-[#64748B] mt-4">
+          <motion.p variants={itemVariants} className="text-center text-sm text-white/40 mt-4">
             Already have an account?{' '}
             <Link to="/login" className="text-accent hover:text-accent-light font-semibold transition-colors">
               Sign in
