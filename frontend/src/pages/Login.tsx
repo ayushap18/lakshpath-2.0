@@ -114,19 +114,19 @@ const Login = () => {
   };
 
   const FEATURES = [
-    { icon: 'psychology', label: 'AI Career Assessment', color: '#0da2e7' },
-    { icon: 'conversion_path', label: 'Personalized Roadmap', color: '#8B5CF6' },
+    { icon: 'psychology', label: 'AI Career Assessment', color: '#0066FF' },
+    { icon: 'conversion_path', label: 'Personalized Roadmap', color: '#7C3AED' },
     { icon: 'record_voice_over', label: 'Interview Practice', color: '#10B981' },
     { icon: 'query_stats', label: 'Market Intelligence', color: '#F59E0B' },
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A0F1C] flex">
+    <div className="min-h-screen bg-[#030712] flex">
       {/* ─── Left Brand Panel ─── */}
       <motion.div
         className="hidden lg:flex w-[580px] flex-col justify-between p-12 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(200deg, #0B1628 0%, #0d2847 40%, rgba(13,162,231,0.08) 100%)',
+          background: 'linear-gradient(200deg, #0B1628 0%, #0d2847 40%, rgba(0,102,255,0.08) 100%)',
         }}
         initial={{ x: -60, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -135,13 +135,13 @@ const Login = () => {
         {/* Aurora gradient orbs */}
         <motion.div
           className="absolute top-16 right-8 w-72 h-72 rounded-full opacity-[0.07]"
-          style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }}
           animate={{ y: [0, -20, 0], scale: [1, 1.12, 1] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           className="absolute bottom-28 left-6 w-48 h-48 rounded-full opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }}
           animate={{ y: [0, 15, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -166,8 +166,8 @@ const Login = () => {
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, #0da2e7, #22D3EE)',
-              boxShadow: '0 0 20px rgba(13,162,231,0.3)',
+              background: 'linear-gradient(135deg, #0066FF, #22D3EE)',
+              boxShadow: '0 0 20px rgba(0,102,255,0.3)',
             }}
           >
             <Icon name="conversion_path" size={18} className="text-white" />
@@ -216,7 +216,7 @@ const Login = () => {
         <motion.div
           className="relative z-10 rounded-xl p-4"
           style={{
-            background: 'linear-gradient(145deg, rgba(30,41,59,0.3), rgba(15,23,42,0.2))',
+            background: 'linear-gradient(145deg, rgba(17,24,39,0.3), rgba(15,23,42,0.2))',
             border: '1px solid rgba(255,255,255,0.04)',
           }}
           initial={{ opacity: 0 }}
@@ -275,20 +275,20 @@ const Login = () => {
               disabled={demoLoading}
               className="w-full py-3.5 rounded-xl text-white font-semibold text-[15px] flex items-center justify-center gap-2.5 relative overflow-hidden disabled:opacity-60"
               style={{
-                background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1))',
-                border: '1px solid rgba(13,162,231,0.25)',
-                boxShadow: '0 0 24px rgba(13,162,231,0.1), inset 0 1px 0 rgba(255,255,255,0.06)',
+                background: 'linear-gradient(135deg, rgba(0,102,255,0.15), rgba(124,58,237,0.1))',
+                border: '1px solid rgba(0,102,255,0.25)',
+                boxShadow: '0 0 24px rgba(0,102,255,0.1), inset 0 1px 0 rgba(255,255,255,0.06)',
               }}
               whileHover={{
                 y: -1,
-                boxShadow: '0 0 36px rgba(13,162,231,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
-                borderColor: 'rgba(13,162,231,0.4)',
+                boxShadow: '0 0 36px rgba(0,102,255,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
+                borderColor: 'rgba(0,102,255,0.4)',
               }}
               whileTap={{ scale: 0.98 }}
             >
               {/* Shimmer effect */}
               <span className="absolute inset-0 pointer-events-none" style={{
-                background: 'linear-gradient(105deg, transparent 40%, rgba(13,162,231,0.06) 50%, transparent 60%)',
+                background: 'linear-gradient(105deg, transparent 40%, rgba(0,102,255,0.06) 50%, transparent 60%)',
                 backgroundSize: '250% 100%',
                 animation: 'shimmer 4s ease-in-out infinite',
               }} />
@@ -398,9 +398,9 @@ const Login = () => {
                   type="submit"
                   disabled={loading}
                   className="w-full py-3 rounded-xl bg-accent text-white font-semibold text-sm disabled:opacity-50 relative overflow-hidden"
-                  whileHover={{ y: -1, boxShadow: '0 8px 28px rgba(13,162,231,0.35)' }}
+                  whileHover={{ y: -1, boxShadow: '0 8px 28px rgba(0,102,255,0.35)' }}
                   whileTap={{ scale: 0.98 }}
-                  style={{ boxShadow: '0 4px 16px rgba(13,162,231,0.25)' }}
+                  style={{ boxShadow: '0 4px 16px rgba(0,102,255,0.25)' }}
                 >
                   {loading ? (
                     <motion.span
@@ -433,7 +433,7 @@ const Login = () => {
               Encrypted
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-muted">
-              <Icon name="verified" size={14} className="text-[#8B5CF6]" />
+              <Icon name="verified" size={14} className="text-[#7C3AED]" />
               Trusted by 50K+
             </div>
           </motion.div>

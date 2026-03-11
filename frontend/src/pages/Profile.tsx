@@ -15,8 +15,8 @@ import { useSubscription } from '../contexts/SubscriptionContext';
 
 const BADGE_COLORS: Record<string, string> = {
   COMMON: '#94A3B8',
-  RARE: '#0da2e7',
-  EPIC: '#8B5CF6',
+  RARE: '#0066FF',
+  EPIC: '#7C3AED',
   LEGENDARY: '#F59E0B',
 };
 
@@ -145,7 +145,7 @@ const Profile = () => {
       <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
         <motion.div
           className="w-12 h-12 rounded-2xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.1), rgba(139,92,246,0.08))', border: '1px solid rgba(13,162,231,0.15)' }}
+          style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.1), rgba(124,58,237,0.08))', border: '1px solid rgba(0,102,255,0.15)' }}
           animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
@@ -175,20 +175,20 @@ const Profile = () => {
   const xpNeeded = streakData?.xpNeeded || 100;
   const xpInLevel = streakData?.xpInLevel || 0;
 
-  const inputClass = "w-full bg-[#1E293B] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors text-sm";
+  const inputClass = "w-full bg-[#111827] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors text-sm";
 
   return (
     <motion.div className="space-y-5 max-w-4xl" variants={containerVariants} initial="hidden" animate="visible">
       {/* Banner Header */}
       <motion.div variants={itemVariants}>
-        <div className="rounded-2xl relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.12), rgba(139,92,246,0.08), rgba(15,23,42,0.9))', border: '1px solid rgba(13,162,231,0.1)' }}>
+        <div className="rounded-2xl relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.12), rgba(124,58,237,0.08), rgba(15,23,42,0.9))', border: '1px solid rgba(0,102,255,0.1)' }}>
           <div className="absolute inset-0 dot-pattern opacity-20 pointer-events-none" />
-          <motion.div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-[0.06] pointer-events-none" style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
+          <motion.div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-[0.06] pointer-events-none" style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }} animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
 
-          <div className="h-24 relative" style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1), rgba(34,211,238,0.08))' }}>
+          <div className="h-24 relative" style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.15), rgba(124,58,237,0.1), rgba(34,211,238,0.08))' }}>
             <div className="absolute top-4 right-4 flex items-center gap-2">
               {[
-                { label: 'Level', value: String(level), icon: 'stars', color: '#8B5CF6' },
+                { label: 'Level', value: String(level), icon: 'stars', color: '#7C3AED' },
                 { label: 'XP', value: String(xp), icon: 'bolt', color: '#F59E0B' },
                 { label: 'Streak', value: `${streak}d`, icon: 'local_fire_department', color: '#EF4444' },
               ].map((stat) => (
@@ -204,18 +204,18 @@ const Profile = () => {
           <div className="relative px-6 pb-6 -mt-10">
             <div className="flex items-end gap-5">
               <motion.div className="relative flex-shrink-0" animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-                <div className="rounded-2xl p-[3px]" style={{ background: 'linear-gradient(135deg, #0da2e7, #8B5CF6, #22D3EE)', boxShadow: '0 8px 32px rgba(13,162,231,0.3)' }}>
+                <div className="rounded-2xl p-[3px]" style={{ background: 'linear-gradient(135deg, #0066FF, #7C3AED, #22D3EE)', boxShadow: '0 8px 32px rgba(0,102,255,0.3)' }}>
                   <div className="rounded-[13px] bg-navy p-[2px]">
                     <Avatar name={userName} size="xl" />
                   </div>
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#10B981', border: '3px solid #0A0F1C', boxShadow: '0 0 8px rgba(16,185,129,0.4)' }} />
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#10B981', border: '3px solid #030712', boxShadow: '0 0 8px rgba(16,185,129,0.4)' }} />
               </motion.div>
 
               <div className="flex-1 pb-1">
                 {editing ? (
                   <div className="flex items-center gap-3">
-                    <motion.input value={newName} onChange={(e) => setNewName(e.target.value)} className="bg-inset border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-[#0da2e7]" placeholder="New name" autoFocus />
+                    <motion.input value={newName} onChange={(e) => setNewName(e.target.value)} className="bg-inset border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-[#0066FF]" placeholder="New name" autoFocus />
                     <Button variant="primary" size="sm" onClick={handleSave} loading={saving}>Save</Button>
                     <Button variant="ghost" size="sm" onClick={() => setEditing(false)}>Cancel</Button>
                   </div>
@@ -291,7 +291,7 @@ const Profile = () => {
                   <div className="flex items-end gap-2 h-28">
                     {weekDays.map((day, i) => (
                       <div key={day} className="flex-1 flex flex-col items-center gap-2">
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: `${activityData[i]}%`, opacity: 1 }} transition={{ delay: 0.5 + i * 0.06, duration: 0.5, ease: 'easeOut' }} className="w-full rounded-t-lg min-h-[4px]" style={{ background: i === new Date().getDay() - 1 ? 'linear-gradient(180deg, #0da2e7, rgba(13,162,231,0.4))' : 'linear-gradient(180deg, rgba(13,162,231,0.3), rgba(13,162,231,0.08))' }} />
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: `${activityData[i]}%`, opacity: 1 }} transition={{ delay: 0.5 + i * 0.06, duration: 0.5, ease: 'easeOut' }} className="w-full rounded-t-lg min-h-[4px]" style={{ background: i === new Date().getDay() - 1 ? 'linear-gradient(180deg, #0066FF, rgba(0,102,255,0.4))' : 'linear-gradient(180deg, rgba(0,102,255,0.3), rgba(0,102,255,0.08))' }} />
                         <span className="text-[10px] text-muted">{day}</span>
                       </div>
                     ))}
@@ -341,7 +341,7 @@ const Profile = () => {
               <Card glass>
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}><Icon name="workspace_premium" size={16} style={{ color: '#8B5CF6' }} /></div>
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(124,58,237,0.1)' }}><Icon name="workspace_premium" size={16} style={{ color: '#7C3AED' }} /></div>
                     <h3 className="text-[15px] font-bold text-white">All Badges</h3>
                   </div>
                   <span className="text-xs text-muted">{earnedCount} of {totalBadges} earned</span>
@@ -398,7 +398,7 @@ const Profile = () => {
             {/* Education */}
             <Card glass>
               <div className="flex items-center gap-2 mb-5">
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}><Icon name="school" size={16} style={{ color: '#8B5CF6' }} /></div>
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(124,58,237,0.1)' }}><Icon name="school" size={16} style={{ color: '#7C3AED' }} /></div>
                 <h3 className="text-[15px] font-bold text-white">Education</h3>
               </div>
 
@@ -508,15 +508,15 @@ const Profile = () => {
             {/* Subscription Management */}
             <Card glass>
               <div className="flex items-center gap-2 mb-5">
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}><Icon name="workspace_premium" size={16} style={{ color: '#8B5CF6' }} /></div>
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(124,58,237,0.1)' }}><Icon name="workspace_premium" size={16} style={{ color: '#7C3AED' }} /></div>
                 <h3 className="text-[15px] font-bold text-white">Subscription</h3>
               </div>
 
               <div className="p-4 rounded-xl" style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: isProUser ? 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(99,102,241,0.15))' : 'rgba(255,255,255,0.05)' }}>
-                      <Icon name={isProUser ? 'diamond' : 'person'} size={20} style={{ color: isProUser ? '#8B5CF6' : '#94A3B8' }} />
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: isProUser ? 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(99,102,241,0.15))' : 'rgba(255,255,255,0.05)' }}>
+                      <Icon name={isProUser ? 'diamond' : 'person'} size={20} style={{ color: isProUser ? '#7C3AED' : '#94A3B8' }} />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-white">{plan} Plan</p>
@@ -570,7 +570,7 @@ const Profile = () => {
                 ) : (
                   <div className="space-y-3">
                     <p className="text-sm text-muted">Upgrade to Pro for unlimited AI features, code interviewer, resume builder, and more.</p>
-                    <button onClick={handleUpgrade} className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all">
+                    <button onClick={handleUpgrade} className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white font-semibold text-sm hover:shadow-lg hover:shadow-[#0066FF]/25 transition-all">
                       Upgrade to Pro — {'\u20B9'}499/mo
                     </button>
                   </div>

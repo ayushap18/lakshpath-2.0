@@ -19,12 +19,12 @@ const ChatBubble = ({ role, children, timestamp, className = '' }: ChatBubblePro
         style={
           isUser
             ? {
-                background: 'rgba(13,162,231,0.12)',
-                border: '1px solid rgba(13,162,231,0.2)',
+                background: 'rgba(0,102,255,0.12)',
+                border: '1px solid rgba(0,102,255,0.2)',
               }
             : {
-                background: 'linear-gradient(135deg, #0da2e7, #8B5CF6)',
-                boxShadow: '0 4px 12px rgba(13,162,231,0.3)',
+                background: 'linear-gradient(135deg, #0066FF, #7C3AED)',
+                boxShadow: '0 4px 12px rgba(0,102,255,0.3)',
               }
         }
       >
@@ -39,7 +39,7 @@ const ChatBubble = ({ role, children, timestamp, className = '' }: ChatBubblePro
             className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2"
             style={{
               background: '#10B981',
-              borderColor: '#0A0F1C',
+              borderColor: '#030712',
               boxShadow: '0 0 6px rgba(16,185,129,0.4)',
             }}
           />
@@ -54,11 +54,11 @@ const ChatBubble = ({ role, children, timestamp, className = '' }: ChatBubblePro
         style={
           isUser
             ? {
-                background: 'linear-gradient(135deg, #0da2e7, #0b8ec9)',
-                boxShadow: '0 4px 16px rgba(13,162,231,0.25), inset 0 1px 0 rgba(255,255,255,0.1)',
+                background: 'linear-gradient(135deg, #0066FF, #0b8ec9)',
+                boxShadow: '0 4px 16px rgba(0,102,255,0.25), inset 0 1px 0 rgba(255,255,255,0.1)',
               }
             : {
-                background: 'linear-gradient(145deg, rgba(30,41,59,0.6), rgba(15,23,42,0.4))',
+                background: 'linear-gradient(145deg, rgba(17,24,39,0.6), rgba(15,23,42,0.4))',
                 border: '1px solid rgba(255,255,255,0.06)',
                 boxShadow: '0 2px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)',
               }

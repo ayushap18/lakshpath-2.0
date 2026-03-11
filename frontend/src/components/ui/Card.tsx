@@ -65,7 +65,7 @@ const Card = ({
     <motion.div
       ref={ref}
       className={`rounded-2xl border border-white/[0.06] ${padding} transition-all duration-300 relative overflow-hidden ${
-        !glass ? 'bg-[#1E293B]' : ''
+        !glass ? 'bg-[#111827]' : ''
       } ${hover ? 'cursor-pointer' : ''} ${onClick ? 'cursor-pointer' : ''} ${className}`}
       onClick={onClick}
       onMouseMove={handleMouseMove}
@@ -74,10 +74,10 @@ const Card = ({
         transformStyle: tilt ? 'preserve-3d' : undefined,
         transform: tilt ? `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)` : undefined,
         boxShadow: glow
-          ? `${depthShadow}, 0 0 30px rgba(13,162,231,0.15)`
+          ? `${depthShadow}, 0 0 30px rgba(0,102,255,0.15)`
           : depthShadow,
         ...(glass ? {
-          background: 'linear-gradient(145deg, rgba(30,41,59,0.45), rgba(15,23,42,0.35))',
+          background: 'linear-gradient(145deg, rgba(17,24,39,0.5), rgba(11,17,32,0.4))',
           backdropFilter: 'blur(32px) saturate(1.5)',
           WebkitBackdropFilter: 'blur(32px) saturate(1.5)',
         } : {}),
@@ -86,8 +86,8 @@ const Card = ({
         hover
           ? {
               y: -4,
-              boxShadow: `0 20px 60px -15px rgba(13,162,231,0.2), 0 0 50px -10px rgba(13,162,231,0.1), inset 0 1px 0 rgba(255,255,255,0.08)`,
-              borderColor: 'rgba(13, 162, 231, 0.25)',
+              boxShadow: `0 20px 60px -15px rgba(0,102,255,0.2), 0 0 50px -10px rgba(0,102,255,0.1), inset 0 1px 0 rgba(255,255,255,0.08)`,
+              borderColor: 'rgba(0, 102, 255, 0.25)',
             }
           : undefined
       }

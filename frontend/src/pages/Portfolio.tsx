@@ -42,8 +42,8 @@ const PLATFORMS: Platform[] = [
     id: 'github',
     label: 'GitHub',
     icon: 'code',
-    color: '#0da2e7',
-    bgColor: 'rgba(13,162,231,0.08)',
+    color: '#0066FF',
+    bgColor: 'rgba(0,102,255,0.08)',
     desc: 'Analyze repos, code quality, contributions & tech stack',
     inputLabel: 'GitHub Username',
     inputPlaceholder: 'e.g., octocat',
@@ -64,8 +64,8 @@ const PLATFORMS: Platform[] = [
     id: 'resume',
     label: 'Resume / CV',
     icon: 'description',
-    color: '#8B5CF6',
-    bgColor: 'rgba(139,92,246,0.08)',
+    color: '#7C3AED',
+    bgColor: 'rgba(124,58,237,0.08)',
     desc: 'AI analysis of your resume formatting, content & ATS score',
     inputLabel: 'Paste Resume Text',
     inputPlaceholder: 'Paste your resume content here...',
@@ -294,7 +294,7 @@ const Portfolio = () => {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
         <motion.div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.1), rgba(139,92,246,0.08))', border: '1px solid rgba(13,162,231,0.15)' }}
+          style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.1), rgba(124,58,237,0.08))', border: '1px solid rgba(0,102,255,0.15)' }}
           animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
           <Icon name="work_history" size={24} className="text-accent" />
@@ -315,10 +315,10 @@ const Portfolio = () => {
       {/* ── Header with Combined Score ── */}
       <motion.div variants={item}>
         <div className="rounded-2xl p-6 relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.06), rgba(139,92,246,0.04), rgba(15,23,42,0.8))', border: '1px solid rgba(13,162,231,0.08)' }}>
+          style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.06), rgba(124,58,237,0.04), rgba(15,23,42,0.8))', border: '1px solid rgba(0,102,255,0.08)' }}>
           <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
           <motion.div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-[0.04] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }} />
 
           <div className="relative z-[1] flex items-center justify-between flex-wrap gap-4">
             <div>
@@ -337,11 +337,11 @@ const Portfolio = () => {
                       animate={{ strokeDashoffset: 2 * Math.PI * 32 * (1 - combinedScore / 100) }}
                       transition={{ duration: 1.5, ease: 'easeOut' }}
                       transform="rotate(-90 40 40)"
-                      style={{ filter: 'drop-shadow(0 0 6px rgba(13,162,231,0.4))' }} />
+                      style={{ filter: 'drop-shadow(0 0 6px rgba(0,102,255,0.4))' }} />
                     <defs>
                       <linearGradient id="portfolioGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#0da2e7" />
-                        <stop offset="100%" stopColor="#8B5CF6" />
+                        <stop offset="0%" stopColor="#0066FF" />
+                        <stop offset="100%" stopColor="#7C3AED" />
                       </linearGradient>
                     </defs>
                   </svg>
@@ -371,7 +371,7 @@ const Portfolio = () => {
               onClick={() => { setActivePlatform(p.id); setPlatformError(null); }}
               className={`relative flex flex-col items-center gap-2.5 p-4 rounded-2xl border overflow-hidden group transition-all duration-200 ${
                 isActive ? 'border-white/[0.1]' : 'border-white/[0.04] hover:border-white/[0.08]'}`}
-              style={{ background: isActive ? `linear-gradient(145deg, ${p.color}12, rgba(15,23,42,0.6))` : 'linear-gradient(145deg, rgba(30,41,59,0.4), rgba(15,23,42,0.3))' }}
+              style={{ background: isActive ? `linear-gradient(145deg, ${p.color}12, rgba(15,23,42,0.6))` : 'linear-gradient(145deg, rgba(17,24,39,0.4), rgba(15,23,42,0.3))' }}
               whileHover={{ y: -3, boxShadow: `0 12px 32px rgba(0,0,0,0.2), 0 0 20px ${p.color}10` }}
               whileTap={{ scale: 0.97 }}
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
@@ -415,7 +415,7 @@ const Portfolio = () => {
                 <textarea value={resumeText} onChange={(e) => setResumeText(e.target.value)}
                   placeholder="Paste your resume text here... (Education, Experience, Skills, Projects, etc.)"
                   rows={6}
-                  className="w-full bg-inset border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white placeholder-muted outline-none resize-none transition-all duration-200 focus:border-[#8B5CF6]/40 focus:shadow-[0_0_0_3px_rgba(139,92,246,0.1)]" />
+                  className="w-full bg-inset border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white placeholder-muted outline-none resize-none transition-all duration-200 focus:border-[#7C3AED]/40 focus:shadow-[0_0_0_3px_rgba(124,58,237,0.1)]" />
                 <div className="absolute bottom-3 right-3 text-[10px] text-muted">
                   {resumeText.split(/\s+/).filter(Boolean).length} words
                 </div>
@@ -791,7 +791,7 @@ const Portfolio = () => {
                   <motion.div variants={item}>
                     <Card glass>
                       <div className="flex items-center gap-2 mb-4">
-                        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(13,162,231,0.1)' }}>
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(0,102,255,0.1)' }}>
                           <Icon name="sell" size={16} className="text-accent" />
                         </div>
                         <h3 className="text-[15px] font-bold text-white">ATS Keywords</h3>
@@ -841,8 +841,8 @@ const Portfolio = () => {
                 <motion.div variants={item}>
                   <Card glass>
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}>
-                        <Icon name="bar_chart" size={16} style={{ color: '#8B5CF6' }} />
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(124,58,237,0.1)' }}>
+                        <Icon name="bar_chart" size={16} style={{ color: '#7C3AED' }} />
                       </div>
                       <h3 className="text-[15px] font-bold text-white">Resume Scores</h3>
                     </div>
@@ -992,7 +992,7 @@ const Portfolio = () => {
                   <Card glass>
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(13,162,231,0.1)' }}>
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(0,102,255,0.1)' }}>
                           <Icon name="auto_awesome" size={16} className="text-accent" />
                         </div>
                         <h3 className="text-[15px] font-bold text-white">AI Recommendations</h3>
@@ -1047,9 +1047,9 @@ const Portfolio = () => {
       {platformsAnalyzed >= 2 && (
         <motion.div variants={item}>
           <div className="rounded-2xl p-5 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(13,162,231,0.12)' }}>
+            style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.08), rgba(124,58,237,0.05))', border: '1px solid rgba(0,102,255,0.12)' }}>
             <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-[0.06] pointer-events-none"
-              style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} />
+              style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }} />
             <div className="relative z-[1]">
               <div className="flex items-center gap-2 mb-3">
                 <Icon name="insights" size={18} className="text-accent" />

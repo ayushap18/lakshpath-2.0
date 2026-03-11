@@ -63,7 +63,7 @@ function AnimatedStat({ value, suffix = '', label }: { value: number; suffix?: s
       whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300 } }}
       className="flex flex-col items-center gap-1"
     >
-      <span ref={ref} className="text-[36px] font-extrabold text-[#0da2e7] text-glow-lg">
+      <span ref={ref} className="text-[36px] font-extrabold text-[#0066FF] text-glow-lg">
         {count.toLocaleString()}{suffix}
       </span>
       <span className="text-sm font-medium text-[#94A3B8]">{label}</span>
@@ -96,7 +96,7 @@ function Feature3DCard({ f, index }: { f: typeof CORE_FEATURES[0]; index: number
       animate={{ rotateX: tilt.x, rotateY: tilt.y }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       style={{ transformStyle: 'preserve-3d', perspective: 900 }}
-      className="glass-card border-gradient rounded-2xl p-8 flex flex-col gap-5 cursor-default transition-all duration-300 hover:shadow-[0_0_40px_rgba(13,162,231,0.12)]"
+      className="glass-card border-gradient rounded-2xl p-8 flex flex-col gap-5 cursor-default transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,102,255,0.12)]"
     >
       {/* Floating icon with animated gradient bg */}
       <motion.div
@@ -160,7 +160,7 @@ function PricingCard3D({ p, onNavigate }: { p: typeof PRICING[0]; onNavigate: (p
         <motion.span
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="self-start px-3 py-1 rounded-full bg-gradient-to-r from-[#0da2e7] to-[#22D3EE] text-white text-[11px] font-bold glow-accent-sm"
+          className="self-start px-3 py-1 rounded-full bg-gradient-to-r from-[#0066FF] to-[#22D3EE] text-white text-[11px] font-bold glow-accent-sm"
         >
           {p.badge}
         </motion.span>
@@ -187,12 +187,12 @@ function PricingCard3D({ p, onNavigate }: { p: typeof PRICING[0]; onNavigate: (p
       </ul>
 
       <motion.button
-        whileHover={{ scale: 1.04, boxShadow: p.highlighted ? '0 0 30px rgba(13,162,231,0.3)' : undefined }}
+        whileHover={{ scale: 1.04, boxShadow: p.highlighted ? '0 0 30px rgba(0,102,255,0.3)' : undefined }}
         whileTap={{ scale: 0.97 }}
         onClick={() => p.cta.startsWith('mailto:') ? window.location.href = p.cta : onNavigate(p.cta)}
         className={`w-full py-3.5 rounded-[10px] text-[15px] font-semibold transition-all duration-300 relative overflow-hidden ${
           p.highlighted
-            ? 'bg-gradient-to-r from-[#0da2e7] to-[#0b8ecc] text-white glow-accent-sm'
+            ? 'bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white glow-accent-sm'
             : 'border border-[#64748B] text-white hover:border-white'
         }`}
       >
@@ -219,8 +219,8 @@ const NAV_LINKS = ['Features', 'How It Works', 'Pricing', 'Testimonials'];
 const CORE_FEATURES = [
   {
     icon: 'psychology',
-    iconColor: '#0da2e7',
-    iconBg: 'bg-[#0da2e720]',
+    iconColor: '#0066FF',
+    iconBg: 'bg-[#0066FF20]',
     title: 'Tech Career Assessment',
     desc: 'AI-powered assessment that maps your coding skills, technical aptitude, and interests to recommend the best tech career paths — from Full Stack to AI/ML to DevOps.',
   },
@@ -233,8 +233,8 @@ const CORE_FEATURES = [
   },
   {
     icon: 'mic',
-    iconColor: '#8B5CF6',
-    iconBg: 'bg-[#8B5CF620]',
+    iconColor: '#7C3AED',
+    iconBg: 'bg-[#7C3AED20]',
     title: 'Placement Interview Prep',
     desc: 'Practice technical, HR, and system design interviews with AI. Get feedback on DSA solutions, STAR-method answers, and coding patterns used by FAANG.',
   },
@@ -248,8 +248,8 @@ const STEPS = [
 ];
 
 const SECONDARY_FEATURES = [
-  { icon: 'fingerprint', color: '#0da2e7', bg: '#0da2e715', title: 'Career DNA Card', desc: 'Get your unique career identity card with AI-analyzed strengths, personality traits, and ideal career matches.' },
-  { icon: 'description', color: '#8B5CF6', bg: '#8B5CF615', title: 'AI Resume Builder', desc: 'Build ATS-optimized resumes with AI suggestions, live preview, and multiple professional templates.' },
+  { icon: 'fingerprint', color: '#0066FF', bg: '#0066FF15', title: 'Career DNA Card', desc: 'Get your unique career identity card with AI-analyzed strengths, personality traits, and ideal career matches.' },
+  { icon: 'description', color: '#7C3AED', bg: '#7C3AED15', title: 'AI Resume Builder', desc: 'Build ATS-optimized resumes with AI suggestions, live preview, and multiple professional templates.' },
   { icon: 'psychology', color: '#F59E0B', bg: '#F59E0B15', title: 'Skill Gap Simulator', desc: 'Pick any target role and instantly see your skill gaps with a personalized learning path to get there.' },
   { icon: 'school', color: '#EF4444', bg: '#EF444415', title: 'Placement Prep Hub', desc: 'Company-specific prep packs for TCS, Infosys, Amazon & more with daily practice and mock tests.' },
   { icon: 'work_history', color: '#10B981', bg: '#10B98115', title: 'Portfolio Analysis Hub', desc: 'Analyze your GitHub, LinkedIn, Resume & Website with AI-powered insights across platforms.' },
@@ -270,7 +270,7 @@ const PRICING = [
   },
   {
     label: 'Pro',
-    labelColor: 'text-[#0da2e7]',
+    labelColor: 'text-[#0066FF]',
     price: '\u20B9499',
     period: '/month',
     desc: 'For serious learners ready to accelerate their career.',
@@ -354,7 +354,7 @@ const LandingPage = () => {
   const headlineWords = ['Your', 'Tech', 'Career,', '\n', 'Powered', 'by', 'AI'];
 
   return (
-    <div className="min-h-screen bg-[#0A0F1C] font-['Inter',sans-serif] overflow-x-hidden relative">
+    <div className="min-h-screen bg-[#030712] font-['Inter',sans-serif] overflow-x-hidden relative">
 
       {/* ═══════════════ NOISE OVERLAY ═══════════════ */}
       <div className="noise-overlay fixed inset-0 pointer-events-none z-[60]" />
@@ -369,7 +369,7 @@ const LandingPage = () => {
       >
         {/* logo */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0da2e7] to-[#22D3EE] flex items-center justify-center glow-accent-sm">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0066FF] to-[#22D3EE] flex items-center justify-center glow-accent-sm">
             <Icon name="conversion_path" size={18} className="text-white" />
           </div>
           <span className="text-xl font-bold text-white tracking-tight">LakshPath</span>
@@ -384,7 +384,7 @@ const LandingPage = () => {
               className="text-[15px] font-medium text-[#94A3B8] hover:text-white transition-colors duration-200 relative group"
             >
               {link}
-              <span className="absolute bottom-[-4px] left-0 w-0 h-[1px] bg-[#0da2e7]/60 transition-all duration-300 group-hover:w-full" />
+              <span className="absolute bottom-[-4px] left-0 w-0 h-[1px] bg-[#0066FF]/60 transition-all duration-300 group-hover:w-full" />
             </button>
           ))}
         </div>
@@ -393,10 +393,10 @@ const LandingPage = () => {
         <div className="flex items-center gap-3">
           {localStorage.getItem('token') ? (
             <motion.button
-              whileHover={{ scale: 1.03, boxShadow: '0 0 24px rgba(13,162,231,0.3)' }}
+              whileHover={{ scale: 1.03, boxShadow: '0 0 24px rgba(0,102,255,0.3)' }}
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate('/dashboard')}
-              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0da2e7] to-[#0b8ecc] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
             >
               <span className="absolute inset-0 pointer-events-none" style={{
                 background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)',
@@ -414,10 +414,10 @@ const LandingPage = () => {
                 Log In
               </button>
               <motion.button
-                whileHover={{ scale: 1.03, boxShadow: '0 0 24px rgba(13,162,231,0.3)' }}
+                whileHover={{ scale: 1.03, boxShadow: '0 0 24px rgba(0,102,255,0.3)' }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => navigate('/register')}
-                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0da2e7] to-[#0b8ecc] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
+                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-sm font-semibold transition-all duration-200 glow-accent-sm relative overflow-hidden"
               >
                 <span className="absolute inset-0 pointer-events-none" style={{
                   background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)',
@@ -437,13 +437,13 @@ const LandingPage = () => {
         {/* Aurora gradient orbs */}
         <motion.div
           className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full opacity-[0.06]"
-          style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }}
           animate={{ y: [0, -25, 0], x: [0, 15, 0], scale: [1, 1.1, 1] }}
           transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           className="absolute top-20 right-1/4 w-[400px] h-[400px] rounded-full opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }}
           animate={{ y: [0, 20, 0], x: [0, -20, 0], scale: [1, 1.08, 1] }}
           transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -457,7 +457,7 @@ const LandingPage = () => {
         {/* Morphing blob */}
         <div
           className="absolute top-1/4 left-1/3 w-72 h-72 opacity-[0.06] animate-morph"
-          style={{ background: 'linear-gradient(135deg, #0da2e7, #8B5CF6, #22D3EE)', filter: 'blur(50px)' }}
+          style={{ background: 'linear-gradient(135deg, #0066FF, #7C3AED, #22D3EE)', filter: 'blur(50px)' }}
         />
 
         {/* Grid pattern overlay */}
@@ -472,13 +472,13 @@ const LandingPage = () => {
 
         {/* Floating 3D geometric decorations */}
         <motion.div
-          className="absolute top-28 left-16 w-12 h-12 border border-[#0da2e7]/20 rounded-lg hidden md:block"
+          className="absolute top-28 left-16 w-12 h-12 border border-[#0066FF]/20 rounded-lg hidden md:block"
           style={{ transform: 'translateZ(30px) rotate(45deg)', transformStyle: 'preserve-3d' }}
           animate={{ y: [0, -20, 0], rotate: [45, 90, 45] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute top-48 right-20 w-8 h-8 rounded-full border border-[#8B5CF6]/25"
+          className="absolute top-48 right-20 w-8 h-8 rounded-full border border-[#7C3AED]/25"
           animate={{ y: [0, -15, 0], scale: [1, 1.2, 1] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -504,9 +504,9 @@ const LandingPage = () => {
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 glass-card"
-            style={{ borderColor: '#0da2e740' }}
+            style={{ borderColor: '#0066FF40' }}
           >
-            <span className="w-2 h-2 rounded-full bg-[#0da2e7] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#0066FF] animate-pulse" />
             <span className="text-[13px] font-medium text-[#22D3EE]">
               AI Career Intelligence for CS & Tech Students
             </span>
@@ -566,10 +566,10 @@ const LandingPage = () => {
           className="flex items-center gap-3 sm:gap-4 relative z-10 flex-wrap justify-center"
         >
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 0 50px rgba(13,162,231,0.4), 0 0 100px rgba(13,162,231,0.15)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 50px rgba(0,102,255,0.4), 0 0 100px rgba(0,102,255,0.15)' }}
             whileTap={{ scale: 0.97 }}
             onClick={() => navigate('/register')}
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#0da2e7] to-[#0b8ecc] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
+            className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
           >
             <span className="absolute inset-0 pointer-events-none" style={{
               background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%)',
@@ -614,40 +614,40 @@ const LandingPage = () => {
           <div
             className="h-[300px] sm:h-[420px] lg:h-[620px] rounded-2xl overflow-hidden glass-card"
             style={{
-              boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 60px rgba(13,162,231,0.08), inset 0 1px 0 rgba(255,255,255,0.06)',
+              boxShadow: '0 25px 80px rgba(0,0,0,0.5), 0 0 60px rgba(0,102,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06)',
             }}
           >
             <div
               className="w-full h-full"
               style={{
-                background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #0da2e712 80%, #0F172A 100%)',
+                background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #0066FF12 80%, #0F172A 100%)',
               }}
             >
               <div className="w-full h-full relative overflow-hidden">
-                <div className="absolute top-6 left-6 right-6 h-10 rounded-lg bg-[#1E293B]/60 flex items-center px-4 gap-2">
+                <div className="absolute top-6 left-6 right-6 h-10 rounded-lg bg-[#111827]/60 flex items-center px-4 gap-2">
                   <span className="w-3 h-3 rounded-full bg-[#EF4444]/60" />
                   <span className="w-3 h-3 rounded-full bg-[#F59E0B]/60" />
                   <span className="w-3 h-3 rounded-full bg-[#10B981]/60" />
                   <span className="ml-4 text-xs text-[#64748B]">lakshpath.app/dashboard</span>
                 </div>
-                <div className="absolute top-20 left-6 w-48 bottom-6 rounded-lg bg-[#1E293B]/40" />
+                <div className="absolute top-20 left-6 w-48 bottom-6 rounded-lg bg-[#111827]/40" />
                 <div className="absolute top-20 left-60 right-6 bottom-6 flex flex-col gap-4 p-4">
-                  <div className="h-8 w-64 rounded bg-[#1E293B]/50" />
+                  <div className="h-8 w-64 rounded bg-[#111827]/50" />
                   <div className="flex gap-4 flex-1">
-                    <div className="flex-1 rounded-xl bg-[#1E293B]/30 p-4">
-                      <div className="h-4 w-24 rounded bg-[#0da2e7]/20 mb-3" />
-                      <div className="h-32 rounded-lg bg-gradient-to-br from-[#0da2e7]/10 to-transparent" />
+                    <div className="flex-1 rounded-xl bg-[#111827]/30 p-4">
+                      <div className="h-4 w-24 rounded bg-[#0066FF]/20 mb-3" />
+                      <div className="h-32 rounded-lg bg-gradient-to-br from-[#0066FF]/10 to-transparent" />
                     </div>
-                    <div className="flex-1 rounded-xl bg-[#1E293B]/30 p-4">
-                      <div className="h-4 w-20 rounded bg-[#8B5CF6]/20 mb-3" />
-                      <div className="h-32 rounded-lg bg-gradient-to-br from-[#8B5CF6]/10 to-transparent" />
+                    <div className="flex-1 rounded-xl bg-[#111827]/30 p-4">
+                      <div className="h-4 w-20 rounded bg-[#7C3AED]/20 mb-3" />
+                      <div className="h-32 rounded-lg bg-gradient-to-br from-[#7C3AED]/10 to-transparent" />
                     </div>
-                    <div className="flex-1 rounded-xl bg-[#1E293B]/30 p-4">
+                    <div className="flex-1 rounded-xl bg-[#111827]/30 p-4">
                       <div className="h-4 w-28 rounded bg-[#10B981]/20 mb-3" />
                       <div className="h-32 rounded-lg bg-gradient-to-br from-[#10B981]/10 to-transparent" />
                     </div>
                   </div>
-                  <div className="h-40 rounded-xl bg-[#1E293B]/25" />
+                  <div className="h-40 rounded-xl bg-[#111827]/25" />
                 </div>
               </div>
             </div>
@@ -661,7 +661,7 @@ const LandingPage = () => {
               opacity: 0.08,
               maskImage: 'linear-gradient(to top, transparent, black)',
               WebkitMaskImage: 'linear-gradient(to top, transparent, black)',
-              background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #0da2e712 80%, #0F172A 100%)',
+              background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #0066FF12 80%, #0F172A 100%)',
             }}
           />
 
@@ -672,7 +672,7 @@ const LandingPage = () => {
             className="absolute -left-16 top-24 glass-card rounded-xl p-3 w-[140px] hidden lg:block"
             style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.3)' }}
           >
-            <div className="h-2 w-16 rounded bg-[#0da2e7]/30 mb-2" />
+            <div className="h-2 w-16 rounded bg-[#0066FF]/30 mb-2" />
             <div className="h-2 w-12 rounded bg-[#94A3B8]/20 mb-2" />
             <div className="h-6 w-full rounded bg-[#10B981]/15" />
           </motion.div>
@@ -683,10 +683,10 @@ const LandingPage = () => {
             className="absolute -right-12 top-40 glass-card rounded-xl p-3 w-[120px] hidden lg:block"
             style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.3)' }}
           >
-            <div className="h-2 w-10 rounded bg-[#8B5CF6]/30 mb-2" />
+            <div className="h-2 w-10 rounded bg-[#7C3AED]/30 mb-2" />
             <div className="flex gap-1">
-              <div className="h-8 w-8 rounded bg-[#8B5CF6]/15" />
-              <div className="h-8 w-8 rounded bg-[#0da2e7]/15" />
+              <div className="h-8 w-8 rounded bg-[#7C3AED]/15" />
+              <div className="h-8 w-8 rounded bg-[#0066FF]/15" />
               <div className="h-8 w-8 rounded bg-[#F59E0B]/15" />
             </div>
           </motion.div>
@@ -698,7 +698,7 @@ const LandingPage = () => {
             style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.3)' }}
           >
             <div className="h-2 w-14 rounded bg-[#22D3EE]/30 mb-2" />
-            <div className="h-12 w-full rounded bg-gradient-to-r from-[#22D3EE]/10 to-[#0da2e7]/10" />
+            <div className="h-12 w-full rounded bg-gradient-to-r from-[#22D3EE]/10 to-[#0066FF]/10" />
           </motion.div>
         </motion.div>
       </section>
@@ -776,8 +776,8 @@ const LandingPage = () => {
           >
             <defs>
               <linearGradient id="featureLineGrad">
-                <stop offset="0%" stopColor="#0da2e740" />
-                <stop offset="50%" stopColor="#8B5CF640" />
+                <stop offset="0%" stopColor="#0066FF40" />
+                <stop offset="50%" stopColor="#7C3AED40" />
                 <stop offset="100%" stopColor="#22D3EE40" />
               </linearGradient>
             </defs>
@@ -821,9 +821,9 @@ const LandingPage = () => {
           <motion.div
             variants={itemVariants}
             className="rounded-full px-3.5 py-1.5 glass-card"
-            style={{ borderColor: '#8B5CF640' }}
+            style={{ borderColor: '#7C3AED40' }}
           >
-            <span className="text-xs font-semibold text-[#8B5CF6]">How It Works</span>
+            <span className="text-xs font-semibold text-[#7C3AED]">How It Works</span>
           </motion.div>
           <motion.h2
             variants={itemVariants}
@@ -843,10 +843,10 @@ const LandingPage = () => {
           >
             <defs>
               <linearGradient id="stepPathGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0da2e7" />
-                <stop offset="33%" stopColor="#8B5CF6" />
+                <stop offset="0%" stopColor="#0066FF" />
+                <stop offset="33%" stopColor="#7C3AED" />
                 <stop offset="66%" stopColor="#22D3EE" />
-                <stop offset="100%" stopColor="#0da2e7" />
+                <stop offset="100%" stopColor="#0066FF" />
               </linearGradient>
             </defs>
             <line
@@ -868,10 +868,10 @@ const LandingPage = () => {
               />
             </line>
             {/* Particle dots traveling along the path */}
-            <circle r="3" fill="#0da2e7" opacity="0.6">
+            <circle r="3" fill="#0066FF" opacity="0.6">
               <animateMotion dur="4s" repeatCount="indefinite" path="M80,4 L580,4" />
             </circle>
-            <circle r="2" fill="#8B5CF6" opacity="0.5">
+            <circle r="2" fill="#7C3AED" opacity="0.5">
               <animateMotion dur="4s" repeatCount="indefinite" path="M80,4 L580,4" begin="1.3s" />
             </circle>
             <circle r="2.5" fill="#22D3EE" opacity="0.5">
@@ -894,12 +894,12 @@ const LandingPage = () => {
                     i === 0 ? 'animate-glow-ring' : ''
                   }`}
                   style={{
-                    background: 'linear-gradient(135deg, #0da2e730, #8B5CF620)',
+                    background: 'linear-gradient(135deg, #0066FF30, #7C3AED20)',
                     transform: 'translateZ(16px)',
-                    boxShadow: '0 0 20px rgba(13,162,231,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
+                    boxShadow: '0 0 20px rgba(0,102,255,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                   }}
                 >
-                  <span className="text-[18px] font-extrabold text-[#0da2e7]">{s.num}</span>
+                  <span className="text-[18px] font-extrabold text-[#0066FF]">{s.num}</span>
                 </div>
                 <h3
                   className="text-[17px] font-semibold text-white"
@@ -941,7 +941,7 @@ const LandingPage = () => {
                 transition: { type: 'spring', stiffness: 260, damping: 20 },
               }}
               style={{ transformStyle: 'preserve-3d', perspective: 800 }}
-              className="glass-card border-gradient rounded-xl p-6 flex items-start gap-4 transition-all duration-300 cursor-default hover:shadow-[0_0_30px_rgba(13,162,231,0.1)]"
+              className="glass-card border-gradient rounded-xl p-6 flex items-start gap-4 transition-all duration-300 cursor-default hover:shadow-[0_0_30px_rgba(0,102,255,0.1)]"
             >
               <motion.div
                 animate={{ y: [0, -4, 0] }}
@@ -972,8 +972,8 @@ const LandingPage = () => {
         variants={sectionVariants}
         className="flex items-center justify-around py-10 md:py-14 px-5 md:px-20 glass-ultra aurora-bg relative z-10 flex-wrap gap-8"
         style={{
-          borderTop: '1px solid rgba(13,162,231,0.15)',
-          borderBottom: '1px solid rgba(13,162,231,0.15)',
+          borderTop: '1px solid rgba(0,102,255,0.15)',
+          borderBottom: '1px solid rgba(0,102,255,0.15)',
         }}
       >
         <AnimatedStat value={liveStats?.students ?? 50000} suffix="+" label="Active Students" />
@@ -1066,8 +1066,8 @@ const LandingPage = () => {
                   {'★'.repeat(t.stars)}
                 </span>
                 <span
-                  className="text-[32px] leading-none text-[#0da2e7] opacity-30"
-                  style={{ textShadow: '0 0 20px rgba(13,162,231,0.4)' }}
+                  className="text-[32px] leading-none text-[#0066FF] opacity-30"
+                  style={{ textShadow: '0 0 20px rgba(0,102,255,0.4)' }}
                 >
                   &ldquo;
                 </span>
@@ -1077,7 +1077,7 @@ const LandingPage = () => {
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white"
                   style={{
-                    background: 'linear-gradient(135deg, #0da2e7, #8B5CF6)',
+                    background: 'linear-gradient(135deg, #0066FF, #7C3AED)',
                     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15)',
                   }}
                 >
@@ -1101,7 +1101,7 @@ const LandingPage = () => {
         variants={sectionVariants}
         className="flex flex-col items-center gap-6 md:gap-7 py-16 md:py-20 px-5 md:px-16 lg:px-[120px] relative z-10 aurora-bg"
         style={{
-          background: 'linear-gradient(180deg, #0da2e718 0%, #0A0F1C 100%)',
+          background: 'linear-gradient(180deg, #0066FF18 0%, #030712 100%)',
         }}
       >
         <motion.h2
@@ -1119,10 +1119,10 @@ const LandingPage = () => {
         </motion.p>
         <motion.div variants={itemVariants}>
           <motion.button
-            whileHover={{ scale: 1.06, boxShadow: '0 0 50px rgba(13,162,231,0.4), 0 0 100px rgba(13,162,231,0.15)' }}
+            whileHover={{ scale: 1.06, boxShadow: '0 0 50px rgba(0,102,255,0.4), 0 0 100px rgba(0,102,255,0.15)' }}
             whileTap={{ scale: 0.96 }}
             onClick={() => navigate('/register')}
-            className="px-9 py-4 rounded-xl bg-gradient-to-r from-[#0da2e7] to-[#0b8ecc] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
+            className="px-9 py-4 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white text-[16px] font-semibold transition-all duration-300 glow-accent relative overflow-hidden"
           >
             <span className="absolute inset-0 pointer-events-none" style={{
               background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%)',
@@ -1145,7 +1145,7 @@ const LandingPage = () => {
           {/* brand */}
           <div className="flex flex-col gap-3 max-w-[300px]">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#0da2e7] to-[#22D3EE] glow-accent-sm" />
+              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#0066FF] to-[#22D3EE] glow-accent-sm" />
               <span className="text-[18px] font-bold text-white">LakshPath</span>
             </div>
             <p className="text-sm text-[#64748B] leading-[1.5]">
@@ -1164,7 +1164,7 @@ const LandingPage = () => {
                     className="text-sm text-[#64748B] hover:text-[#94A3B8] transition-colors cursor-pointer relative group"
                   >
                     {link}
-                    <span className="absolute bottom-[-2px] left-0 w-0 h-[1px] bg-[#0da2e7]/50 transition-all duration-300 group-hover:w-full" />
+                    <span className="absolute bottom-[-2px] left-0 w-0 h-[1px] bg-[#0066FF]/50 transition-all duration-300 group-hover:w-full" />
                   </span>
                 ))}
               </div>
@@ -1176,7 +1176,7 @@ const LandingPage = () => {
         <div
           className="h-px w-full"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(13,162,231,0.25), rgba(139,92,246,0.15), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(0,102,255,0.25), rgba(124,58,237,0.15), transparent)',
           }}
         />
 

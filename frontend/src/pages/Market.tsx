@@ -211,18 +211,18 @@ const DEMO_JOBS: DemoJob[] = [
 ];
 
 const TRENDING_SKILLS: TrendingSkill[] = [
-  { name: 'React.js', demand: 94, color: '#0da2e7', growth: '+12%', category: 'Frontend' },
+  { name: 'React.js', demand: 94, color: '#0066FF', growth: '+12%', category: 'Frontend' },
   { name: 'Python', demand: 92, color: '#10B981', growth: '+15%', category: 'Backend' },
-  { name: 'TypeScript', demand: 88, color: '#8B5CF6', growth: '+22%', category: 'Language' },
+  { name: 'TypeScript', demand: 88, color: '#7C3AED', growth: '+22%', category: 'Language' },
   { name: 'AWS', demand: 85, color: '#F59E0B', growth: '+18%', category: 'Cloud' },
-  { name: 'Docker', demand: 82, color: '#0da2e7', growth: '+14%', category: 'DevOps' },
+  { name: 'Docker', demand: 82, color: '#0066FF', growth: '+14%', category: 'DevOps' },
   { name: 'Node.js', demand: 80, color: '#10B981', growth: '+8%', category: 'Backend' },
-  { name: 'Kubernetes', demand: 78, color: '#8B5CF6', growth: '+25%', category: 'DevOps' },
+  { name: 'Kubernetes', demand: 78, color: '#7C3AED', growth: '+25%', category: 'DevOps' },
   { name: 'System Design', demand: 75, color: '#F59E0B', growth: '+20%', category: 'Architecture' },
   { name: 'Machine Learning', demand: 72, color: '#EF4444', growth: '+30%', category: 'AI/ML' },
-  { name: 'Go', demand: 68, color: '#0da2e7', growth: '+35%', category: 'Language' },
+  { name: 'Go', demand: 68, color: '#0066FF', growth: '+35%', category: 'Language' },
   { name: 'Rust', demand: 65, color: '#EF4444', growth: '+42%', category: 'Language' },
-  { name: 'Next.js', demand: 62, color: '#8B5CF6', growth: '+28%', category: 'Frontend' },
+  { name: 'Next.js', demand: 62, color: '#7C3AED', growth: '+28%', category: 'Frontend' },
 ];
 
 const HOT_ROLES: HotRole[] = [
@@ -263,8 +263,8 @@ const SALARY_DATA: SalaryData[] = [
 ];
 
 const CITY_SALARIES: CitySalary[] = [
-  { city: 'Bangalore', avgSalary: '18.5 LPA', avgVal: 18.5, costOfLiving: 'High', topCompanies: ['Google', 'Flipkart', 'Swiggy', 'Razorpay'], color: '#0da2e7' },
-  { city: 'Hyderabad', avgSalary: '16.2 LPA', avgVal: 16.2, costOfLiving: 'Medium', topCompanies: ['Amazon', 'Microsoft', 'Google', 'ServiceNow'], color: '#8B5CF6' },
+  { city: 'Bangalore', avgSalary: '18.5 LPA', avgVal: 18.5, costOfLiving: 'High', topCompanies: ['Google', 'Flipkart', 'Swiggy', 'Razorpay'], color: '#0066FF' },
+  { city: 'Hyderabad', avgSalary: '16.2 LPA', avgVal: 16.2, costOfLiving: 'Medium', topCompanies: ['Amazon', 'Microsoft', 'Google', 'ServiceNow'], color: '#7C3AED' },
   { city: 'Pune', avgSalary: '14.8 LPA', avgVal: 14.8, costOfLiving: 'Medium', topCompanies: ['Infosys', 'TCS', 'PhonePe', 'Persistent'], color: '#10B981' },
   { city: 'Mumbai', avgSalary: '17.4 LPA', avgVal: 17.4, costOfLiving: 'Very High', topCompanies: ['JPMorgan', 'Jio', 'Tata Digital', 'Deutsche Bank'], color: '#F59E0B' },
   { city: 'Delhi NCR', avgSalary: '16.8 LPA', avgVal: 16.8, costOfLiving: 'High', topCompanies: ['Paytm', 'Zomato', 'Adobe', 'Samsung R&D'], color: '#EF4444' },
@@ -272,8 +272,8 @@ const CITY_SALARIES: CitySalary[] = [
 ];
 
 const INDUSTRY_BREAKDOWN = [
-  { name: 'IT Services & Consulting', share: 32, color: '#0da2e7' },
-  { name: 'Product / SaaS', share: 24, color: '#8B5CF6' },
+  { name: 'IT Services & Consulting', share: 32, color: '#0066FF' },
+  { name: 'Product / SaaS', share: 24, color: '#7C3AED' },
   { name: 'Fintech', share: 14, color: '#10B981' },
   { name: 'E-Commerce', share: 12, color: '#F59E0B' },
   { name: 'Healthcare Tech', share: 8, color: '#EF4444' },
@@ -419,7 +419,7 @@ const MatchScoreRing = ({ score, size = 56 }: { score: number; size?: number }) 
 
   const getColor = (s: number) => {
     if (s >= 85) return '#10B981';
-    if (s >= 70) return '#0da2e7';
+    if (s >= 70) return '#0066FF';
     if (s >= 55) return '#F59E0B';
     return '#EF4444';
   };
@@ -501,20 +501,20 @@ const StatPill = ({ icon, label, value, delay }: { icon: string; label: string; 
   <motion.div
     className="flex items-center gap-3 px-4 py-3 rounded-xl"
     style={{
-      background: 'rgba(30,41,59,0.6)',
+      background: 'rgba(17,24,39,0.6)',
       border: '1px solid rgba(255,255,255,0.06)',
       backdropFilter: 'blur(12px)',
     }}
     initial={{ opacity: 0, y: 20, scale: 0.9 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
     transition={{ delay, type: 'spring', stiffness: 260, damping: 22 }}
-    whileHover={{ y: -2, borderColor: 'rgba(13,162,231,0.3)' }}
+    whileHover={{ y: -2, borderColor: 'rgba(0,102,255,0.3)' }}
   >
     <div
       className="w-9 h-9 rounded-lg flex items-center justify-center"
-      style={{ background: 'rgba(13,162,231,0.12)' }}
+      style={{ background: 'rgba(0,102,255,0.12)' }}
     >
-      <Icon name={icon} size={18} className="text-[#0da2e7]" />
+      <Icon name={icon} size={18} className="text-[#0066FF]" />
     </div>
     <div>
       <p className="text-[11px] text-[#64748B] uppercase tracking-wider font-medium">{label}</p>
@@ -531,9 +531,9 @@ const SectionTitle = ({ icon, title, subtitle }: { icon: string; title: string; 
   <motion.div className="flex items-center gap-3 mb-4" variants={itemVariants}>
     <div
       className="w-8 h-8 rounded-lg flex items-center justify-center"
-      style={{ background: 'rgba(13,162,231,0.12)' }}
+      style={{ background: 'rgba(0,102,255,0.12)' }}
     >
-      <Icon name={icon} size={18} className="text-[#0da2e7]" />
+      <Icon name={icon} size={18} className="text-[#0066FF]" />
     </div>
     <div>
       <h3 className="text-base font-semibold text-white">{title}</h3>
@@ -593,10 +593,10 @@ const Market = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <motion.div
-          className="w-10 h-10 rounded-full border-[3px] border-[#0da2e7]/20 border-t-[#0da2e7]"
+          className="w-10 h-10 rounded-full border-[3px] border-[#0066FF]/20 border-t-[#0066FF]"
           animate={{ rotate: 360 }}
           transition={{ duration: 0.85, repeat: Infinity, ease: 'linear' }}
-          style={{ boxShadow: '0 0 20px rgba(13,162,231,0.25), inset 0 0 10px rgba(13,162,231,0.1)' }}
+          style={{ boxShadow: '0 0 20px rgba(0,102,255,0.25), inset 0 0 10px rgba(0,102,255,0.1)' }}
         />
       </div>
     );
@@ -616,7 +616,7 @@ const Market = () => {
         variants={itemVariants}
         className="relative rounded-2xl overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, rgba(13,162,231,0.12) 0%, rgba(139,92,246,0.08) 50%, rgba(15,23,42,0.95) 100%)',
+          background: 'linear-gradient(135deg, rgba(0,102,255,0.12) 0%, rgba(124,58,237,0.08) 50%, rgba(15,23,42,0.95) 100%)',
           border: '1px solid rgba(255,255,255,0.06)',
         }}
       >
@@ -631,11 +631,11 @@ const Market = () => {
         {/* Decorative glow orbs */}
         <div
           className="absolute -top-20 -right-20 w-60 h-60 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(13,162,231,0.15), transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(0,102,255,0.15), transparent 70%)' }}
         />
         <div
           className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.1), transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.1), transparent 70%)' }}
         />
 
         <div className="relative z-10 p-6 md:p-8">
@@ -667,7 +667,7 @@ const Market = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, type: 'spring', stiffness: 260, damping: 24 }}
               >
-                <span className="bg-gradient-to-r from-[#0da2e7] via-[#22D3EE] to-[#8B5CF6] bg-clip-text text-transparent bg-[length:200%_auto] animate-[gradientShift_4s_ease_infinite]">
+                <span className="bg-gradient-to-r from-[#0066FF] via-[#22D3EE] to-[#7C3AED] bg-clip-text text-transparent bg-[length:200%_auto] animate-[gradientShift_4s_ease_infinite]">
                   Market Intelligence
                 </span>
               </motion.h1>
@@ -714,18 +714,18 @@ const Market = () => {
             className={`relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
               tab === t.id
                 ? 'text-white'
-                : 'bg-[#1E293B] border border-[#1E293B] text-[#94A3B8] hover:text-white'
+                : 'bg-[#111827] border border-[#1E293B] text-[#94A3B8] hover:text-white'
             }`}
-            whileHover={{ y: -2, boxShadow: '0 4px 20px rgba(13,162,231,0.15)' }}
+            whileHover={{ y: -2, boxShadow: '0 4px 20px rgba(0,102,255,0.15)' }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
             {tab === t.id && (
               <motion.span
-                className="absolute inset-0 rounded-xl bg-[#0da2e7]"
+                className="absolute inset-0 rounded-xl bg-[#0066FF]"
                 layoutId="activeTab"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                style={{ boxShadow: '0 4px 24px rgba(13,162,231,0.3)' }}
+                style={{ boxShadow: '0 4px 24px rgba(0,102,255,0.3)' }}
               />
             )}
             <span className="relative z-10 flex items-center gap-1.5">
@@ -771,7 +771,7 @@ const Market = () => {
                   onClick={() => setScoutFilter(f.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     scoutFilter === f.id
-                      ? 'bg-[#0da2e7]/15 text-[#0da2e7] border border-[#0da2e7]/25'
+                      ? 'bg-[#0066FF]/15 text-[#0066FF] border border-[#0066FF]/25'
                       : 'bg-white/[0.03] text-[#94A3B8] border border-white/[0.06] hover:text-white'
                   }`}
                   whileHover={{ scale: 1.03 }}
@@ -797,11 +797,11 @@ const Market = () => {
                     animate="visible"
                     whileHover={{
                       y: -4,
-                      boxShadow: '0 20px 50px -10px rgba(13,162,231,0.18)',
-                      borderColor: 'rgba(13,162,231,0.35)',
+                      boxShadow: '0 20px 50px -10px rgba(0,102,255,0.18)',
+                      borderColor: 'rgba(0,102,255,0.35)',
                     }}
                     transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                    className="rounded-2xl border border-white/[0.06] bg-[#1E293B] p-5 cursor-default group"
+                    className="rounded-2xl border border-white/[0.06] bg-[#111827] p-5 cursor-default group"
                     style={{
                       boxShadow: '0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04)',
                     }}
@@ -811,9 +811,9 @@ const Market = () => {
                       <div className="flex items-start gap-3">
                         <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                          style={{ background: 'rgba(13,162,231,0.1)', border: '1px solid rgba(13,162,231,0.15)' }}
+                          style={{ background: 'rgba(0,102,255,0.1)', border: '1px solid rgba(0,102,255,0.15)' }}
                         >
-                          <Icon name={job.logo || 'work'} size={20} className="text-[#0da2e7]" />
+                          <Icon name={job.logo || 'work'} size={20} className="text-[#0066FF]" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-white text-sm leading-tight">{job.jobTitle}</h3>
@@ -943,9 +943,9 @@ const Market = () => {
               >
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.15)' }}
+                  style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.15)' }}
                 >
-                  <Icon name="compare_arrows" size={22} className="text-[#8B5CF6]" />
+                  <Icon name="compare_arrows" size={22} className="text-[#7C3AED]" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-white">Compare a Job Description</h2>
@@ -962,7 +962,7 @@ const Market = () => {
                       value={jobTitle}
                       onChange={(e) => setJobTitle(e.target.value)}
                       placeholder="e.g., Frontend Developer"
-                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7]/50 focus:ring-1 focus:ring-[#0da2e7]/20 transition-all duration-200 text-sm"
+                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm"
                     />
                   </motion.div>
 
@@ -973,7 +973,7 @@ const Market = () => {
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="e.g., Google"
-                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7]/50 focus:ring-1 focus:ring-[#0da2e7]/20 transition-all duration-200 text-sm"
+                      className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm"
                     />
                   </motion.div>
                 </div>
@@ -985,7 +985,7 @@ const Market = () => {
                     value={jobDesc}
                     onChange={(e) => setJobDesc(e.target.value)}
                     placeholder="Paste the job description here..."
-                    className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none min-h-[140px] resize-none focus:border-[#0da2e7]/50 focus:ring-1 focus:ring-[#0da2e7]/20 transition-all duration-200 text-sm leading-relaxed"
+                    className="w-full bg-[rgba(15,23,42,0.5)] border border-white/[0.06] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none min-h-[140px] resize-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all duration-200 text-sm leading-relaxed"
                   />
                 </motion.div>
 
@@ -1111,7 +1111,7 @@ const Market = () => {
                     {/* Recommendations */}
                     {compareResult.recommendations && compareResult.recommendations.length > 0 && (
                       <div className="mt-5 pt-4 border-t border-white/[0.04]">
-                        <p className="text-sm font-semibold text-[#0da2e7] mb-3">Recommendations</p>
+                        <p className="text-sm font-semibold text-[#0066FF] mb-3">Recommendations</p>
                         <div className="space-y-2">
                           {compareResult.recommendations.map((r: string, i: number) => (
                             <motion.div
@@ -1121,7 +1121,7 @@ const Market = () => {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: 0.3 + i * 0.07, type: 'spring', stiffness: 280, damping: 22 }}
                             >
-                              <Icon name="lightbulb" size={14} className="text-[#0da2e7] mt-0.5 flex-shrink-0" />
+                              <Icon name="lightbulb" size={14} className="text-[#0066FF] mt-0.5 flex-shrink-0" />
                               <span className="text-sm text-[#94A3B8]">{r}</span>
                             </motion.div>
                           ))}
@@ -1175,7 +1175,7 @@ const Market = () => {
               >
                 <Card glow>
                   <div className="flex items-center gap-2 mb-3">
-                    <Icon name="auto_awesome" size={18} className="text-[#0da2e7]" />
+                    <Icon name="auto_awesome" size={18} className="text-[#0066FF]" />
                     <h2 className="text-base font-semibold text-white">AI Market Brief</h2>
                   </div>
                   <p className="text-sm text-[#94A3B8] leading-relaxed">
@@ -1191,7 +1191,7 @@ const Market = () => {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.2 + i * 0.07, type: 'spring', stiffness: 280, damping: 22 }}
                         >
-                          <Icon name="lightbulb" size={14} className="text-[#0da2e7] mt-0.5 flex-shrink-0" />
+                          <Icon name="lightbulb" size={14} className="text-[#0066FF] mt-0.5 flex-shrink-0" />
                           <span className="text-sm text-[#94A3B8]">{r}</span>
                         </motion.div>
                       ))}
@@ -1247,11 +1247,11 @@ const Market = () => {
                     variants={gridItem}
                     whileHover={{
                       y: -3,
-                      boxShadow: '0 12px 40px -8px rgba(13,162,231,0.15)',
-                      borderColor: 'rgba(13,162,231,0.25)',
+                      boxShadow: '0 12px 40px -8px rgba(0,102,255,0.15)',
+                      borderColor: 'rgba(0,102,255,0.25)',
                     }}
                     transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                    className="rounded-xl border border-white/[0.06] bg-[#1E293B] p-4 cursor-default"
+                    className="rounded-xl border border-white/[0.06] bg-[#111827] p-4 cursor-default"
                     style={{
                       boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)',
                     }}
@@ -1259,9 +1259,9 @@ const Market = () => {
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-9 h-9 rounded-lg flex items-center justify-center"
-                        style={{ background: 'rgba(13,162,231,0.08)', border: '1px solid rgba(13,162,231,0.1)' }}
+                        style={{ background: 'rgba(0,102,255,0.08)', border: '1px solid rgba(0,102,255,0.1)' }}
                       >
-                        <Icon name={comp.logo} size={18} className="text-[#0da2e7]" />
+                        <Icon name={comp.logo} size={18} className="text-[#0066FF]" />
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-white">{comp.name}</h4>
@@ -1297,7 +1297,7 @@ const Market = () => {
                   const demandColors: Record<string, string> = {
                     'Very High': '#EF4444',
                     'High': '#F59E0B',
-                    'Medium': '#0da2e7',
+                    'Medium': '#0066FF',
                   };
                   const demandBadge: Record<string, 'error' | 'warning' | 'accent'> = {
                     'Very High': 'error',
@@ -1313,7 +1313,7 @@ const Market = () => {
                         borderColor: `${demandColors[role.demandLevel]}30`,
                       }}
                       transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                      className="rounded-xl border border-white/[0.06] bg-[#1E293B] p-4 cursor-default"
+                      className="rounded-xl border border-white/[0.06] bg-[#111827] p-4 cursor-default"
                       style={{
                         boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)',
                       }}
@@ -1341,7 +1341,7 @@ const Market = () => {
                         </div>
                         <div>
                           <p className="text-[10px] text-[#64748B] mb-0.5">Openings</p>
-                          <p className="text-xs font-bold text-[#0da2e7]">{role.openings}</p>
+                          <p className="text-xs font-bold text-[#0066FF]">{role.openings}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -1410,11 +1410,11 @@ const Market = () => {
                 {/* Legend */}
                 <div className="flex items-center gap-4 mb-5">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-sm bg-[#0da2e7]" />
+                    <div className="w-3 h-3 rounded-sm bg-[#0066FF]" />
                     <span className="text-[11px] text-[#94A3B8]">Fresher (0-2 yrs)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-3 h-3 rounded-sm bg-[#8B5CF6]" />
+                    <div className="w-3 h-3 rounded-sm bg-[#7C3AED]" />
                     <span className="text-[11px] text-[#94A3B8]">Mid (2-5 yrs)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -1431,7 +1431,7 @@ const Market = () => {
                       variants={gridItem}
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <Icon name={data.icon} size={16} className="text-[#0da2e7]" />
+                        <Icon name={data.icon} size={16} className="text-[#0066FF]" />
                         <span className="text-sm font-medium text-white">{data.role}</span>
                       </div>
 
@@ -1439,18 +1439,18 @@ const Market = () => {
                       <div className="flex items-center gap-3 mb-1.5">
                         <span className="text-[10px] text-[#64748B] w-14 text-right">Fresher</span>
                         <div className="flex-1">
-                          <AnimatedBar value={data.fresherVal} maxValue={55} color="#0da2e7" delay={i * 0.04} />
+                          <AnimatedBar value={data.fresherVal} maxValue={55} color="#0066FF" delay={i * 0.04} />
                         </div>
-                        <span className="text-[11px] text-[#0da2e7] font-medium w-16 text-right">{data.fresher}</span>
+                        <span className="text-[11px] text-[#0066FF] font-medium w-16 text-right">{data.fresher}</span>
                       </div>
 
                       {/* Mid */}
                       <div className="flex items-center gap-3 mb-1.5">
                         <span className="text-[10px] text-[#64748B] w-14 text-right">Mid</span>
                         <div className="flex-1">
-                          <AnimatedBar value={data.midVal} maxValue={55} color="#8B5CF6" delay={i * 0.04 + 0.1} />
+                          <AnimatedBar value={data.midVal} maxValue={55} color="#7C3AED" delay={i * 0.04 + 0.1} />
                         </div>
-                        <span className="text-[11px] text-[#8B5CF6] font-medium w-16 text-right">{data.mid}</span>
+                        <span className="text-[11px] text-[#7C3AED] font-medium w-16 text-right">{data.mid}</span>
                       </div>
 
                       {/* Senior */}
@@ -1486,7 +1486,7 @@ const Market = () => {
                     experience: '0-2 Years',
                     avgRange: '4-14 LPA',
                     icon: 'school',
-                    color: '#0da2e7',
+                    color: '#0066FF',
                     description: 'Campus placements and first jobs. Strong foundations in DSA and one framework is key.',
                     topSkills: ['DSA', 'React/Angular', 'Python', 'SQL'],
                     tips: 'Focus on strong fundamentals, contribute to open source, and build 2-3 solid projects.',
@@ -1496,7 +1496,7 @@ const Market = () => {
                     experience: '2-5 Years',
                     avgRange: '10-35 LPA',
                     icon: 'engineering',
-                    color: '#8B5CF6',
+                    color: '#7C3AED',
                     description: 'Rapid growth phase. System design knowledge and cloud skills differentiate candidates.',
                     topSkills: ['System Design', 'AWS/GCP', 'Docker', 'CI/CD'],
                     tips: 'Lead features end-to-end, learn system design, and specialize in a niche domain.',
@@ -1521,7 +1521,7 @@ const Market = () => {
                       boxShadow: `0 16px 48px -12px ${level.color}20`,
                     }}
                     transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                    className="rounded-2xl border border-white/[0.06] bg-[#1E293B] p-5 cursor-default"
+                    className="rounded-2xl border border-white/[0.06] bg-[#111827] p-5 cursor-default"
                     style={{
                       boxShadow: '0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04)',
                     }}
@@ -1560,9 +1560,9 @@ const Market = () => {
 
                     <div
                       className="p-2.5 rounded-lg flex items-start gap-2"
-                      style={{ background: 'rgba(13,162,231,0.05)' }}
+                      style={{ background: 'rgba(0,102,255,0.05)' }}
                     >
-                      <Icon name="tips_and_updates" size={14} className="text-[#0da2e7] mt-0.5 flex-shrink-0" />
+                      <Icon name="tips_and_updates" size={14} className="text-[#0066FF] mt-0.5 flex-shrink-0" />
                       <p className="text-[11px] text-[#94A3B8] leading-relaxed">{level.tips}</p>
                     </div>
                   </motion.div>
@@ -1622,7 +1622,7 @@ const Market = () => {
                         isSelected ? 'ring-1' : ''
                       }`}
                       style={{
-                        background: isSelected ? `${cs.color}08` : 'rgba(30,41,59,1)',
+                        background: isSelected ? `${cs.color}08` : 'rgba(17,24,39,1)',
                         borderColor: isSelected ? `${cs.color}30` : 'rgba(255,255,255,0.06)',
                         boxShadow: isSelected
                           ? `0 8px 32px -8px ${cs.color}25, inset 0 1px 0 rgba(255,255,255,0.05)`

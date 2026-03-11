@@ -75,7 +75,7 @@ const TopNav = () => {
     >
       {/* Left: Page title with icon */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.1), rgba(13,162,231,0.05))', border: '1px solid rgba(13,162,231,0.1)' }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.1), rgba(0,102,255,0.05))', border: '1px solid rgba(0,102,255,0.1)' }}>
           <Icon name={meta.icon} size={18} className="text-accent" />
         </div>
         <div>
@@ -106,8 +106,8 @@ const TopNav = () => {
           >
             <Icon name="notifications" size={20} />
             {notifications.length > 0 && (
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full" style={{ background: 'linear-gradient(135deg, #0da2e7, #22D3EE)', boxShadow: '0 0 6px rgba(13,162,231,0.5)' }}>
-                <span className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(13,162,231,0.4)' }} />
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full" style={{ background: 'linear-gradient(135deg, #0066FF, #22D3EE)', boxShadow: '0 0 6px rgba(0,102,255,0.5)' }}>
+                <span className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(0,102,255,0.4)' }} />
               </span>
             )}
           </motion.button>
@@ -120,7 +120,7 @@ const TopNav = () => {
                 exit={{ opacity: 0, y: 8, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
                 className="absolute right-0 top-12 w-80 max-h-96 overflow-y-auto rounded-xl z-50"
-                style={{ background: 'linear-gradient(135deg, #1E293B, #0F172A)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
+                style={{ background: 'linear-gradient(135deg, #111827, #0F172A)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
               >
                 <div className="p-4 border-b border-white/5">
                   <div className="flex items-center justify-between">
@@ -188,7 +188,7 @@ const TopNav = () => {
                 exit={{ opacity: 0, y: 8, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
                 className="absolute right-0 top-12 w-64 rounded-xl z-50 overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, #1E293B, #0F172A)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
+                style={{ background: 'linear-gradient(135deg, #111827, #0F172A)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
               >
                 <div className="p-4 border-b border-white/5">
                   <div className="flex items-center gap-3">
@@ -204,12 +204,12 @@ const TopNav = () => {
                         <Icon name="local_fire_department" size={12} style={{ color: '#F59E0B' }} />
                         <span className="text-[10px] font-bold text-white">{streakData.streak}d</span>
                       </div>
-                      <div className="flex items-center gap-1 px-2 py-1 rounded-md" style={{ background: 'rgba(139,92,246,0.1)' }}>
-                        <Icon name="stars" size={12} style={{ color: '#8B5CF6' }} />
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md" style={{ background: 'rgba(124,58,237,0.1)' }}>
+                        <Icon name="stars" size={12} style={{ color: '#7C3AED' }} />
                         <span className="text-[10px] font-bold text-white">Lv.{streakData.level}</span>
                       </div>
-                      <div className="flex items-center gap-1 px-2 py-1 rounded-md" style={{ background: 'rgba(13,162,231,0.1)' }}>
-                        <Icon name="bolt" size={12} style={{ color: '#0da2e7' }} />
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md" style={{ background: 'rgba(0,102,255,0.1)' }}>
+                        <Icon name="bolt" size={12} style={{ color: '#0066FF' }} />
                         <span className="text-[10px] font-bold text-white">{streakData.xp} XP</span>
                       </div>
                     </div>
@@ -218,8 +218,8 @@ const TopNav = () => {
 
                 <div className="p-2">
                   {[
-                    { icon: 'person', label: 'My Profile', path: '/profile', color: '#0da2e7' },
-                    { icon: 'settings', label: 'Settings', path: '/profile', color: '#8B5CF6' },
+                    { icon: 'person', label: 'My Profile', path: '/profile', color: '#0066FF' },
+                    { icon: 'settings', label: 'Settings', path: '/profile', color: '#7C3AED' },
                     { icon: 'code', label: 'GitHub Account', path: '/profile', color: '#10B981' },
                     { icon: 'link', label: 'LinkedIn Account', path: '/profile', color: '#0A66C2' },
                     { icon: 'workspace_premium', label: 'Badges & XP', path: '/profile', color: '#F59E0B' },

@@ -12,12 +12,12 @@ interface StatCardProps {
   accentColor?: string;
 }
 
-const StatCard = ({ label, value, icon, trend, children, className = '', accentColor = '#0da2e7' }: StatCardProps) => {
+const StatCard = ({ label, value, icon, trend, children, className = '', accentColor = '#0066FF' }: StatCardProps) => {
   return (
     <motion.div
       className={`rounded-2xl border border-white/[0.06] p-5 relative overflow-hidden ${className}`}
       style={{
-        background: 'linear-gradient(145deg, rgba(30,41,59,0.6), rgba(15,23,42,0.4))',
+        background: 'linear-gradient(145deg, rgba(17,24,39,0.7), rgba(11,17,32,0.5))',
         boxShadow: '0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)',
       }}
       whileHover={{

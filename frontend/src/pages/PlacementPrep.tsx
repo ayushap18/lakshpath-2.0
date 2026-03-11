@@ -365,9 +365,9 @@ const topicStrengths = [
   { topic: 'Arrays & Strings', score: 88, color: '#10B981' },
   { topic: 'Number System', score: 82, color: '#10B981' },
   { topic: 'Blood Relations', score: 85, color: '#10B981' },
-  { topic: 'OOP Concepts', score: 78, color: '#0da2e7' },
+  { topic: 'OOP Concepts', score: 78, color: '#0066FF' },
   { topic: 'Sorting & Searching', score: 80, color: '#10B981' },
-  { topic: 'Grammar', score: 72, color: '#0da2e7' },
+  { topic: 'Grammar', score: 72, color: '#0066FF' },
   { topic: 'Dynamic Programming', score: 25, color: '#EF4444' },
   { topic: 'Graphs', score: 32, color: '#EF4444' },
   { topic: 'System Design', score: 18, color: '#EF4444' },
@@ -468,7 +468,7 @@ const WeeklyChart = ({ data }: { data: typeof weeklyData }) => {
               initial={{ height: 0, y: chartHeight }}
               animate={{ height: barHeight, y }}
               transition={{ duration: 0.6, delay: i * 0.08, ease: 'easeOut' }}
-              style={{ filter: 'drop-shadow(0 2px 6px rgba(13,162,231,0.3))' }}
+              style={{ filter: 'drop-shadow(0 2px 6px rgba(0,102,255,0.3))' }}
             />
             <text
               x={x + barWidth / 2}
@@ -484,7 +484,7 @@ const WeeklyChart = ({ data }: { data: typeof weeklyData }) => {
               x={x + barWidth / 2}
               y={y - 6}
               textAnchor="middle"
-              fill="#0da2e7"
+              fill="#0066FF"
               fontSize="10"
               fontWeight="600"
               fontFamily="inherit"
@@ -499,8 +499,8 @@ const WeeklyChart = ({ data }: { data: typeof weeklyData }) => {
       })}
       <defs>
         <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0da2e7" />
-          <stop offset="100%" stopColor="#8B5CF6" />
+          <stop offset="0%" stopColor="#0066FF" />
+          <stop offset="100%" stopColor="#7C3AED" />
         </linearGradient>
       </defs>
     </svg>
@@ -536,7 +536,7 @@ const PlacementPrep = () => {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-2xl mx-auto py-8 px-4">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0da2e7] to-[#8B5CF6] flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0066FF] to-[#7C3AED] flex items-center justify-center mx-auto mb-4">
             <Icon name="school" size={28} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Set Up Placement Prep</h1>
@@ -544,7 +544,7 @@ const PlacementPrep = () => {
         </div>
 
         <div className="w-full h-1.5 bg-white/5 rounded-full mb-8 overflow-hidden">
-          <motion.div className="h-full rounded-full bg-[#0da2e7]" animate={{ width: `${((setupStep + 1) / 4) * 100}%` }} />
+          <motion.div className="h-full rounded-full bg-[#0066FF]" animate={{ width: `${((setupStep + 1) / 4) * 100}%` }} />
         </div>
 
         <AnimatePresence mode="wait">
@@ -561,7 +561,7 @@ const PlacementPrep = () => {
                       }))}
                       className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                         setupData.targetCompanies.includes(c)
-                          ? 'bg-[#0da2e7]/20 border-[#0da2e7]/50 text-[#0da2e7]'
+                          ? 'bg-[#0066FF]/20 border-[#0066FF]/50 text-[#0066FF]'
                           : 'bg-white/5 border-white/10 text-[#94A3B8]'
                       } border`}
                       whileHover={{ scale: 1.02 }}
@@ -581,7 +581,7 @@ const PlacementPrep = () => {
                       onClick={() => setSetupData(d => ({ ...d, targetRole: r }))}
                       className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                         setupData.targetRole === r
-                          ? 'bg-[#0da2e7]/20 border-[#0da2e7]/50 text-white'
+                          ? 'bg-[#0066FF]/20 border-[#0066FF]/50 text-white'
                           : 'bg-white/5 border-white/10 text-[#94A3B8]'
                       } border`}
                       whileTap={{ scale: 0.98 }}
@@ -600,7 +600,7 @@ const PlacementPrep = () => {
                       onClick={() => setSetupData(d => ({ ...d, currentLevel: l }))}
                       className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                         setupData.currentLevel === l
-                          ? 'bg-[#8B5CF6]/20 border-[#8B5CF6]/50 text-white'
+                          ? 'bg-[#7C3AED]/20 border-[#7C3AED]/50 text-white'
                           : 'bg-white/5 border-white/10 text-[#94A3B8]'
                       } border`}
                       whileTap={{ scale: 0.98 }}
@@ -855,7 +855,7 @@ const PlacementPrep = () => {
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl text-sm font-semibold text-white"
             style={{
-              background: 'linear-gradient(135deg, rgba(139,92,246,0.9), rgba(13,162,231,0.9))',
+              background: 'linear-gradient(135deg, rgba(124,58,237,0.9), rgba(0,102,255,0.9))',
               backdropFilter: 'blur(12px)',
               border: '1px solid rgba(255,255,255,0.15)',
               boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
@@ -874,22 +874,22 @@ const PlacementPrep = () => {
         <div
           className="rounded-2xl p-6 md:p-8 relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, rgba(13,162,231,0.1), rgba(139,92,246,0.06), rgba(15,23,42,0.9))',
-            border: '1px solid rgba(13,162,231,0.12)',
+            background: 'linear-gradient(135deg, rgba(0,102,255,0.1), rgba(124,58,237,0.06), rgba(15,23,42,0.9))',
+            border: '1px solid rgba(0,102,255,0.12)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)',
           }}
         >
           {/* Decorative orbs */}
-          <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full opacity-[0.07] pointer-events-none" style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} />
-          <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }} />
+          <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full opacity-[0.07] pointer-events-none" style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }} />
+          <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }} />
 
           <div className="relative z-[1]">
             <div className="flex items-center gap-3 mb-2">
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1))',
-                  border: '1px solid rgba(13,162,231,0.2)',
+                  background: 'linear-gradient(135deg, rgba(0,102,255,0.15), rgba(124,58,237,0.1))',
+                  border: '1px solid rgba(0,102,255,0.2)',
                 }}
               >
                 <Icon name="school" size={24} className="text-accent" filled />
@@ -932,8 +932,8 @@ const PlacementPrep = () => {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-1 gap-3">
-            <StatCard label="Topics Covered" value={`${topicsCovered}/58`} icon="topic" accentColor="#0da2e7" trend={{ value: '+4 this week', positive: true }} />
-            <StatCard label="Mock Tests" value={mockTestsTaken} icon="quiz" accentColor="#8B5CF6" trend={{ value: '+2 this week', positive: true }} />
+            <StatCard label="Topics Covered" value={`${topicsCovered}/58`} icon="topic" accentColor="#0066FF" trend={{ value: '+4 this week', positive: true }} />
+            <StatCard label="Mock Tests" value={mockTestsTaken} icon="quiz" accentColor="#7C3AED" trend={{ value: '+2 this week', positive: true }} />
             <StatCard label="Questions Solved" value={questionsSolved} icon="check_circle" accentColor="#10B981" trend={{ value: '+89 this week', positive: true }} />
           </div>
         </div>
@@ -965,7 +965,7 @@ const PlacementPrep = () => {
               <Card key={ri} glass>
                 <button className="w-full flex items-center justify-between" onClick={() => setExpandedRound(expandedRound === ri ? null : ri)}>
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(13,162,231,0.1)' }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(0,102,255,0.1)' }}>
                       <span className="text-xs font-bold text-accent">{ri + 1}</span>
                     </div>
                     <div className="text-left">
@@ -1020,7 +1020,7 @@ const PlacementPrep = () => {
                       className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all border ${
                         companyPrepRevealed
                           ? oi === companyPrepQuestion.correctAnswer ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : oi === companyPrepAnswer ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-white/5 border-white/5 text-muted'
-                          : companyPrepAnswer === oi ? 'bg-[#0da2e7]/15 border-[#0da2e7]/40 text-white' : 'bg-white/5 border-white/5 text-secondary hover:bg-white/8'
+                          : companyPrepAnswer === oi ? 'bg-[#0066FF]/15 border-[#0066FF]/40 text-white' : 'bg-white/5 border-white/5 text-secondary hover:bg-white/8'
                       }`}
                       onClick={() => { if (!companyPrepRevealed) setCompanyPrepAnswer(oi); }}
                       whileTap={!companyPrepRevealed ? { scale: 0.98 } : {}}
@@ -1070,7 +1070,7 @@ const PlacementPrep = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Badge variant="accent">Q{mockTestIndex + 1}/{activeMockTest.questions?.length || 0}</Badge>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: mockTestTimeLeft < 60 ? 'rgba(239,68,68,0.1)' : 'rgba(13,162,231,0.1)', border: `1px solid ${mockTestTimeLeft < 60 ? 'rgba(239,68,68,0.2)' : 'rgba(13,162,231,0.2)'}` }}>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: mockTestTimeLeft < 60 ? 'rgba(239,68,68,0.1)' : 'rgba(0,102,255,0.1)', border: `1px solid ${mockTestTimeLeft < 60 ? 'rgba(239,68,68,0.2)' : 'rgba(0,102,255,0.2)'}` }}>
                   <Icon name="timer" size={16} className={mockTestTimeLeft < 60 ? 'text-error' : 'text-accent'} />
                   <span className={`text-sm font-mono font-bold ${mockTestTimeLeft < 60 ? 'text-error' : 'text-white'}`}>{formatTimer(mockTestTimeLeft)}</span>
                 </div>
@@ -1080,7 +1080,7 @@ const PlacementPrep = () => {
             {/* Question dots */}
             <div className="flex flex-wrap gap-1.5">
               {(activeMockTest.questions || []).map((_: any, i: number) => (
-                <button key={i} onClick={() => setMockTestIndex(i)} className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${i === mockTestIndex ? 'bg-[#0da2e7] text-white' : mockTestAnswers[(activeMockTest.questions[i] as any).id] !== undefined ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-white/5 text-muted border border-white/5'}`}>
+                <button key={i} onClick={() => setMockTestIndex(i)} className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${i === mockTestIndex ? 'bg-[#0066FF] text-white' : mockTestAnswers[(activeMockTest.questions[i] as any).id] !== undefined ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-white/5 text-muted border border-white/5'}`}>
                   {i + 1}
                 </button>
               ))}
@@ -1100,8 +1100,8 @@ const PlacementPrep = () => {
                   <p className="text-white text-sm md:text-base leading-relaxed mb-5">{q.question}</p>
                   <div className="space-y-2.5">
                     {q.options?.map((opt: string, oi: number) => (
-                      <motion.button key={oi} className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all border ${mockTestAnswers[q.id] === oi ? 'bg-[#0da2e7]/10 border-[#0da2e7]/30 text-white' : 'bg-white/[0.03] border-white/[0.05] text-secondary hover:bg-white/[0.05]'}`} onClick={() => setMockTestAnswers((a) => ({ ...a, [q.id]: oi }))} whileTap={{ scale: 0.98 }}>
-                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 ${mockTestAnswers[q.id] === oi ? 'bg-[#0da2e7]/20 text-[#0da2e7]' : 'bg-white/[0.05] text-muted'}`}>{String.fromCharCode(65 + oi)}</span>
+                      <motion.button key={oi} className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all border ${mockTestAnswers[q.id] === oi ? 'bg-[#0066FF]/10 border-[#0066FF]/30 text-white' : 'bg-white/[0.03] border-white/[0.05] text-secondary hover:bg-white/[0.05]'}`} onClick={() => setMockTestAnswers((a) => ({ ...a, [q.id]: oi }))} whileTap={{ scale: 0.98 }}>
+                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 ${mockTestAnswers[q.id] === oi ? 'bg-[#0066FF]/20 text-[#0066FF]' : 'bg-white/[0.05] text-muted'}`}>{String.fromCharCode(65 + oi)}</span>
                         <span className="text-sm">{opt}</span>
                       </motion.button>
                     ))}
@@ -1188,7 +1188,7 @@ const PlacementPrep = () => {
         <div className="flex items-center gap-3 mb-4">
           <div
             className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(13,162,231,0.1)', border: '1px solid rgba(13,162,231,0.15)' }}
+            style={{ background: 'rgba(0,102,255,0.1)', border: '1px solid rgba(0,102,255,0.15)' }}
           >
             <Icon name="apartment" size={20} className="text-accent" />
           </div>
@@ -1304,9 +1304,9 @@ const PlacementPrep = () => {
         <div className="flex items-center gap-3 mb-4">
           <div
             className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.15)' }}
+            style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.15)' }}
           >
-            <Icon name="layers" size={20} className="text-[#8B5CF6]" />
+            <Icon name="layers" size={20} className="text-[#7C3AED]" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-white">Round-wise Preparation</h2>
@@ -1328,9 +1328,9 @@ const PlacementPrep = () => {
               style={
                 activeRound === tab
                   ? {
-                      background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1))',
-                      border: '1px solid rgba(13,162,231,0.2)',
-                      boxShadow: '0 2px 8px rgba(13,162,231,0.15)',
+                      background: 'linear-gradient(135deg, rgba(0,102,255,0.15), rgba(124,58,237,0.1))',
+                      border: '1px solid rgba(0,102,255,0.2)',
+                      boxShadow: '0 2px 8px rgba(0,102,255,0.15)',
                     }
                   : { background: 'transparent', border: '1px solid transparent' }
               }
@@ -1355,7 +1355,7 @@ const PlacementPrep = () => {
                 <div className="flex items-center gap-2.5 mb-4">
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center"
-                    style={{ background: 'rgba(13,162,231,0.1)', border: '1px solid rgba(13,162,231,0.12)' }}
+                    style={{ background: 'rgba(0,102,255,0.1)', border: '1px solid rgba(0,102,255,0.12)' }}
                   >
                     <Icon name={section.icon} size={18} className="text-accent" />
                   </div>
@@ -1495,11 +1495,11 @@ const PlacementPrep = () => {
                     }
                   } else if (isSelectedOption) {
                     optionStyle = {
-                      background: 'rgba(13,162,231,0.08)',
-                      border: '1px solid rgba(13,162,231,0.3)',
-                      boxShadow: '0 0 12px rgba(13,162,231,0.1)',
+                      background: 'rgba(0,102,255,0.08)',
+                      border: '1px solid rgba(0,102,255,0.3)',
+                      boxShadow: '0 0 12px rgba(0,102,255,0.1)',
                     };
-                    letterStyle = { background: 'rgba(13,162,231,0.15)', color: '#0da2e7' };
+                    letterStyle = { background: 'rgba(0,102,255,0.15)', color: '#0066FF' };
                   }
 
                   return (
@@ -1572,8 +1572,8 @@ const PlacementPrep = () => {
                     <div
                       className="mt-4 p-4 rounded-xl text-sm text-secondary leading-relaxed"
                       style={{
-                        background: 'rgba(13,162,231,0.04)',
-                        border: '1px solid rgba(13,162,231,0.1)',
+                        background: 'rgba(0,102,255,0.04)',
+                        border: '1px solid rgba(0,102,255,0.1)',
                       }}
                     >
                       <div className="flex items-center gap-2 mb-2">
@@ -1622,7 +1622,7 @@ const PlacementPrep = () => {
                 className="flex-1 lg:flex-initial flex flex-col items-center justify-center p-4 rounded-xl"
                 style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}
               >
-                <Icon name="speed" size={24} className="text-[#8B5CF6] mb-1" />
+                <Icon name="speed" size={24} className="text-[#7C3AED] mb-1" />
                 <span className="text-sm font-bold text-white">{activeQuestion.difficulty}</span>
                 <span className="text-[11px] text-muted mt-0.5">Difficulty</span>
               </div>
@@ -1636,9 +1636,9 @@ const PlacementPrep = () => {
         <div className="flex items-center gap-3 mb-4">
           <div
             className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.15)' }}
+            style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.15)' }}
           >
-            <Icon name="assignment" size={20} className="text-[#8B5CF6]" />
+            <Icon name="assignment" size={20} className="text-[#7C3AED]" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-white">Mock Tests</h2>
@@ -1690,7 +1690,7 @@ const PlacementPrep = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {mockTests.map((test) => {
             const companyData = test.company ? companyPacks.find((c) => c.name === test.company) : null;
-            const accentColor = companyData?.color || '#0da2e7';
+            const accentColor = companyData?.color || '#0066FF';
             return (
               <Card key={test.id} hover glass padding="p-0">
                 {companyData && (

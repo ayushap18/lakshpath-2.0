@@ -121,7 +121,7 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0066FF] to-[#7C3AED] flex items-center justify-center mx-auto mb-6">
               <Icon name={info.icon} className="text-white text-3xl" />
             </div>
 
@@ -161,14 +161,14 @@ export default function UpgradePrompt({ isOpen, onClose, feature = 'default' }: 
               <button
                 onClick={handleUpgrade}
                 disabled={upgradeLoading || trialLoading}
-                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all text-sm disabled:opacity-50"
+                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white font-semibold hover:shadow-lg hover:shadow-[#0066FF]/25 transition-all text-sm disabled:opacity-50"
               >
                 {upgradeLoading ? 'Processing...' : 'Upgrade Now — ₹499/mo'}
               </button>
               <button
                 onClick={handleStartTrial}
                 disabled={trialLoading}
-                className="w-full px-4 py-2.5 rounded-xl text-indigo-400 text-sm font-medium hover:bg-white/5 transition-colors disabled:opacity-50"
+                className="w-full px-4 py-2.5 rounded-xl text-[#60a5fa] text-sm font-medium hover:bg-white/5 transition-colors disabled:opacity-50"
               >
                 {trialLoading ? 'Starting trial...' : 'Or try 7 days free'}
               </button>

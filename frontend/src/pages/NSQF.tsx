@@ -49,7 +49,7 @@ const NSQF_LEVELS = [
     description: 'Intermediate competence covering a range of activities. Works with limited autonomy and carries out well-defined tasks.',
     roles: ['Electrician', 'Plumber', 'Welder', 'Medical Assistant', 'Mechanic'],
     salaryRange: '1.5 - 3.0 LPA',
-    color: '#0da2e7',
+    color: '#0066FF',
   },
   {
     level: 4,
@@ -58,7 +58,7 @@ const NSQF_LEVELS = [
     description: 'Factual and procedural knowledge in broad contexts. Can work independently on non-routine tasks and supervise others.',
     roles: ['Lab Technician', 'IT Support', 'Nursing Aide', 'Accounts Assistant'],
     salaryRange: '2.0 - 4.0 LPA',
-    color: '#0da2e7',
+    color: '#0066FF',
   },
   {
     level: 5,
@@ -85,7 +85,7 @@ const NSQF_LEVELS = [
     description: 'Specialized knowledge with strong analytical and decision-making abilities. Independently manages processes and projects.',
     roles: ['Software Engineer', 'Nurse', 'Accountant', 'Civil Engineer', 'Teacher'],
     salaryRange: '4.0 - 12.0 LPA',
-    color: '#8B5CF6',
+    color: '#7C3AED',
   },
   {
     level: 8,
@@ -94,7 +94,7 @@ const NSQF_LEVELS = [
     description: 'Critical understanding of advanced theories and practices. Expert in a specific professional domain with leadership skills.',
     roles: ['Project Manager', 'Clinical Specialist', 'Data Analyst', 'Design Lead'],
     salaryRange: '6.0 - 18.0 LPA',
-    color: '#8B5CF6',
+    color: '#7C3AED',
   },
   {
     level: 9,
@@ -127,7 +127,7 @@ const VOCATIONAL_SECTORS = [
     growth: 45,
     jobs: '2.5L+',
     salary: '4 - 25 LPA',
-    color: '#0da2e7',
+    color: '#0066FF',
     topRoles: ['Full Stack Developer', 'Cloud Engineer', 'Cybersecurity Analyst', 'Data Scientist', 'DevOps Engineer'],
   },
   {
@@ -145,7 +145,7 @@ const VOCATIONAL_SECTORS = [
     growth: 28,
     jobs: '1.2L+',
     salary: '3.5 - 20 LPA',
-    color: '#8B5CF6',
+    color: '#7C3AED',
     topRoles: ['Financial Analyst', 'Insurance Agent', 'Loan Officer', 'Investment Advisor', 'GST Practitioner'],
   },
   {
@@ -207,7 +207,7 @@ const GOVT_SCHEMES = [
     eligibility: 'Indian citizens aged 15-45, Class 10 pass (varies by course)',
     benefits: ['Free training & certification', 'Placement assistance', 'Recognition of Prior Learning', 'Special Projects for vulnerable groups'],
     icon: 'workspace_premium',
-    color: '#0da2e7',
+    color: '#0066FF',
     link: 'pmkvyofficial.org',
   },
   {
@@ -217,7 +217,7 @@ const GOVT_SCHEMES = [
     eligibility: 'Open to all citizens and training organizations',
     benefits: ['Industry partnerships', 'Quality skill training', 'Entrepreneurship support', 'International placements'],
     icon: 'handshake',
-    color: '#8B5CF6',
+    color: '#7C3AED',
     link: 'nsdcindia.org',
   },
   {
@@ -270,7 +270,7 @@ const CERTIFICATIONS = [
   {
     sector: 'IT & Software',
     icon: 'code',
-    color: '#0da2e7',
+    color: '#0066FF',
     certs: [
       { name: 'AWS Cloud Practitioner', provider: 'Amazon Web Services', duration: '2-3 months', cost: 'Paid (Rs 8,500)', nsqfLevel: 5 },
       { name: 'Google Cloud Associate', provider: 'Google Cloud', duration: '3-4 months', cost: 'Paid (Rs 10,000)', nsqfLevel: 6 },
@@ -292,7 +292,7 @@ const CERTIFICATIONS = [
   {
     sector: 'Finance & Banking',
     icon: 'payments',
-    color: '#8B5CF6',
+    color: '#7C3AED',
     certs: [
       { name: 'NISM Series Certifications', provider: 'NISM (SEBI)', duration: '1-2 months', cost: 'Paid (Rs 1,500)', nsqfLevel: 5 },
       { name: 'CFA Foundation Level', provider: 'CFA Institute', duration: '6-12 months', cost: 'Paid (Rs 65,000)', nsqfLevel: 7 },
@@ -307,8 +307,8 @@ const CERTIFICATIONS = [
 /* ------------------------------------------------------------------ */
 
 const SUCCESS_STATS = [
-  { label: 'Trained under PMKVY', value: '1 Crore+', numericValue: 10000000, icon: 'groups', color: '#0da2e7' },
-  { label: 'Sector Skill Councils', value: '37', numericValue: 37, icon: 'domain', color: '#8B5CF6' },
+  { label: 'Trained under PMKVY', value: '1 Crore+', numericValue: 10000000, icon: 'groups', color: '#0066FF' },
+  { label: 'Sector Skill Councils', value: '37', numericValue: 37, icon: 'domain', color: '#7C3AED' },
   { label: 'Training Centers', value: '10,000+', numericValue: 10000, icon: 'school', color: '#10B981' },
   { label: 'Qualifications Available', value: '600+', numericValue: 600, icon: 'verified', color: '#F59E0B' },
 ];
@@ -493,7 +493,7 @@ const NSQF = () => {
       {/* ---------------------------------------------------------- */}
       <motion.div variants={itemVariants}>
         <h1 className="text-3xl font-extrabold">
-          <span className="bg-gradient-to-r from-[#0da2e7] via-[#22D3EE] to-[#0da2e7] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#0066FF] via-[#22D3EE] to-[#0066FF] bg-clip-text text-transparent">
             NSQF Vocational Pathways
           </span>
         </h1>
@@ -552,8 +552,8 @@ const NSQF = () => {
                     transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                     className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                       education === l
-                        ? 'bg-[#0da2e7] text-white shadow-[0_2px_12px_rgba(13,162,231,0.35)]'
-                        : 'bg-[#1E293B] text-[#94A3B8] border border-[#1E293B] hover:border-[#0da2e7]/30'
+                        ? 'bg-[#0066FF] text-white shadow-[0_2px_12px_rgba(0,102,255,0.35)]'
+                        : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:border-[#0066FF]/30'
                     }`}
                   >
                     {l}
@@ -570,7 +570,7 @@ const NSQF = () => {
                   key={`cur-${currentLevel}`}
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-[#0da2e7] font-bold"
+                  className="text-[#0066FF] font-bold"
                 >
                   {currentLevel}
                 </motion.span>
@@ -593,7 +593,7 @@ const NSQF = () => {
                       initial={{ scale: 0.7, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                      className="text-xs font-bold text-[#0da2e7] bg-[#0da2e7]/10 px-2 py-0.5 rounded-full"
+                      className="text-xs font-bold text-[#0066FF] bg-[#0066FF]/10 px-2 py-0.5 rounded-full"
                     >
                       Lvl {currentLevel}
                     </motion.span>
@@ -604,7 +604,7 @@ const NSQF = () => {
                     max="10"
                     value={currentLevel}
                     onChange={(e) => setCurrentLevel(Number(e.target.value))}
-                    className="w-full accent-[#0da2e7] cursor-pointer"
+                    className="w-full accent-[#0066FF] cursor-pointer"
                   />
                 </div>
                 <div className="flex-1">
@@ -644,14 +644,14 @@ const NSQF = () => {
                       onClick={() => toggleInterest(i)}
                       animate={{
                         scale: selected ? 1.05 : 1,
-                        backgroundColor: selected ? 'rgba(13,162,231,0.12)' : 'rgba(30,41,59,1)',
-                        borderColor: selected ? 'rgba(13,162,231,0.4)' : 'rgba(30,41,59,1)',
+                        backgroundColor: selected ? 'rgba(0,102,255,0.12)' : 'rgba(17,24,39,1)',
+                        borderColor: selected ? 'rgba(0,102,255,0.4)' : 'rgba(17,24,39,1)',
                       }}
                       whileHover={{ scale: selected ? 1.08 : 1.04 }}
                       whileTap={{ scale: 0.93 }}
                       transition={chipSpring}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
-                        selected ? 'text-[#0da2e7]' : 'text-[#64748B]'
+                        selected ? 'text-[#0066FF]' : 'text-[#64748B]'
                       }`}
                     >
                       {selected && (
@@ -679,7 +679,7 @@ const NSQF = () => {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="e.g., Delhi, Mumbai"
-                  className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-2.5 text-white placeholder-[#64748B] outline-none text-sm focus:border-[#0da2e7]/50 transition-colors duration-200"
+                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-2.5 text-white placeholder-[#64748B] outline-none text-sm focus:border-[#0066FF]/50 transition-colors duration-200"
                 />
               </div>
               <div>
@@ -696,8 +696,8 @@ const NSQF = () => {
                         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                         className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                           active
-                            ? 'bg-[#0da2e7] text-white shadow-[0_2px_12px_rgba(13,162,231,0.35)]'
-                            : 'bg-[#1E293B] text-[#94A3B8] border border-[#1E293B] hover:border-[#0da2e7]/30'
+                            ? 'bg-[#0066FF] text-white shadow-[0_2px_12px_rgba(0,102,255,0.35)]'
+                            : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:border-[#0066FF]/30'
                         }`}
                       >
                         <motion.span
@@ -726,7 +726,7 @@ const NSQF = () => {
               variant="primary"
               className={`relative overflow-hidden ${
                 interests.length > 0 && !loading
-                  ? 'shadow-[0_0_25px_rgba(13,162,231,0.4),0_0_60px_rgba(13,162,231,0.15)]'
+                  ? 'shadow-[0_0_25px_rgba(0,102,255,0.4),0_0_60px_rgba(0,102,255,0.15)]'
                   : ''
               }`}
               onClick={handleGenerate}
@@ -778,7 +778,7 @@ const NSQF = () => {
               <motion.div variants={itemVariants}>
                 <Card>
                   <h2 className="text-lg font-semibold text-white mb-5 flex items-center gap-2">
-                    <Icon name="route" size={20} className="text-[#0da2e7]" />
+                    <Icon name="route" size={20} className="text-[#0066FF]" />
                     Your NSQF Pathway
                   </h2>
                   <motion.div
@@ -790,7 +790,7 @@ const NSQF = () => {
                     {/* Animated connecting line */}
                     {pathwaySteps.length > 1 && (
                       <motion.div
-                        className="absolute left-4 top-4 w-0.5 bg-gradient-to-b from-[#0da2e7] to-[#22D3EE]/30"
+                        className="absolute left-4 top-4 w-0.5 bg-gradient-to-b from-[#0066FF] to-[#22D3EE]/30"
                         initial={{ height: 0 }}
                         animate={{ height: 'calc(100% - 2rem)' }}
                         transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
@@ -812,16 +812,16 @@ const NSQF = () => {
                             <motion.div
                               className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 ${
                                 isCurrent
-                                  ? 'bg-[#0da2e7] shadow-[0_0_12px_rgba(13,162,231,0.5)]'
-                                  : 'bg-[#0da2e7]/80'
+                                  ? 'bg-[#0066FF] shadow-[0_0_12px_rgba(0,102,255,0.5)]'
+                                  : 'bg-[#0066FF]/80'
                               }`}
                               animate={
                                 isCurrent
                                   ? {
                                       boxShadow: [
-                                        '0 0 0px rgba(13,162,231,0.4)',
-                                        '0 0 18px rgba(13,162,231,0.6)',
-                                        '0 0 0px rgba(13,162,231,0.4)',
+                                        '0 0 0px rgba(0,102,255,0.4)',
+                                        '0 0 18px rgba(0,102,255,0.6)',
+                                        '0 0 0px rgba(0,102,255,0.4)',
                                       ],
                                     }
                                   : {}
@@ -876,13 +876,13 @@ const NSQF = () => {
                     {coursesList.slice(0, 5).map((c: any, i: number) => (
                       <motion.div
                         key={i}
-                        whileHover={{ y: -2, backgroundColor: 'rgba(13,162,231,0.04)' }}
+                        whileHover={{ y: -2, backgroundColor: 'rgba(0,102,255,0.04)' }}
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         className="flex items-center justify-between py-3 px-3 rounded-xl border-b border-white/5 last:border-0"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-[#0da2e7]/10 flex items-center justify-center shrink-0">
-                            <Icon name="play_lesson" size={16} className="text-[#0da2e7]" />
+                          <div className="w-8 h-8 rounded-lg bg-[#0066FF]/10 flex items-center justify-center shrink-0">
+                            <Icon name="play_lesson" size={16} className="text-[#0066FF]" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-white">{c.title || c.name}</p>
@@ -911,7 +911,7 @@ const NSQF = () => {
               <motion.div variants={itemVariants}>
                 <Card>
                   <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <Icon name="account_balance" size={20} className="text-[#0da2e7]" />
+                    <Icon name="account_balance" size={20} className="text-[#0066FF]" />
                     Recommended Schemes for You
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -935,7 +935,7 @@ const NSQF = () => {
                   </h2>
                   <div className="flex items-center gap-6">
                     <motion.div
-                      className="text-4xl font-extrabold bg-gradient-to-r from-[#0da2e7] to-[#22D3EE] bg-clip-text text-transparent tabular-nums"
+                      className="text-4xl font-extrabold bg-gradient-to-r from-[#0066FF] to-[#22D3EE] bg-clip-text text-transparent tabular-nums"
                       initial={{ opacity: 0, scale: 0.5 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 0.2 }}
@@ -945,7 +945,7 @@ const NSQF = () => {
                     <div className="flex-1">
                       <div className="w-full bg-white/5 rounded-full overflow-hidden h-4">
                         <motion.div
-                          className="h-4 rounded-full bg-gradient-to-r from-[#0da2e7] to-[#22D3EE]"
+                          className="h-4 rounded-full bg-gradient-to-r from-[#0066FF] to-[#22D3EE]"
                           initial={{ width: '0%' }}
                           animate={{ width: `${Math.min(employabilityScore, 100)}%` }}
                           transition={{ duration: 1.2, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -984,7 +984,7 @@ const NSQF = () => {
         <Card>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Icon name="stairs" size={20} className="text-[#0da2e7]" />
+              <Icon name="stairs" size={20} className="text-[#0066FF]" />
               NSQF Level Guide
             </h2>
             <Badge variant="gradient" size="md">
@@ -1010,12 +1010,12 @@ const NSQF = () => {
                   onClick={() => setExpandedLevel(isExpanded ? null : lvl.level)}
                   className={`rounded-xl p-4 border cursor-pointer transition-colors duration-200 ${
                     isInRange
-                      ? 'bg-[#0da2e7]/[0.06] border-[#0da2e7]/20'
+                      ? 'bg-[#0066FF]/[0.06] border-[#0066FF]/20'
                       : 'bg-[#0F172A]/60 border-white/[0.04]'
                   }`}
                   whileHover={{
                     y: -2,
-                    borderColor: isInRange ? 'rgba(13,162,231,0.35)' : 'rgba(255,255,255,0.1)',
+                    borderColor: isInRange ? 'rgba(0,102,255,0.35)' : 'rgba(255,255,255,0.1)',
                     boxShadow: `0 4px 20px rgba(0,0,0,0.2)`,
                   }}
                   transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -1204,7 +1204,7 @@ const NSQF = () => {
         <Card>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Icon name="account_balance" size={20} className="text-[#8B5CF6]" />
+              <Icon name="account_balance" size={20} className="text-[#7C3AED]" />
               Government Schemes & Programs
             </h2>
             <Badge variant="violet" size="md" dot>
@@ -1262,7 +1262,7 @@ const NSQF = () => {
                             <div className="mt-3 pt-3 border-t border-white/[0.06]">
                               <div className="mb-3">
                                 <p className="text-[10px] uppercase tracking-wider text-[#64748B] font-semibold mb-1">Eligibility</p>
-                                <p className="text-xs text-[#0da2e7] flex items-center gap-1">
+                                <p className="text-xs text-[#0066FF] flex items-center gap-1">
                                   <Icon name="verified_user" size={13} />
                                   {scheme.eligibility}
                                 </p>
@@ -1328,7 +1328,7 @@ const NSQF = () => {
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                   activeCertSector === idx
-                    ? 'text-white shadow-[0_2px_12px_rgba(13,162,231,0.25)]'
+                    ? 'text-white shadow-[0_2px_12px_rgba(0,102,255,0.25)]'
                     : 'bg-[#0F172A]/60 text-[#64748B] border border-white/[0.04] hover:border-white/[0.1]'
                 }`}
                 style={
@@ -1408,8 +1408,8 @@ const NSQF = () => {
       <motion.div variants={itemVariants}>
         <Card glass>
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#0da2e7]/10 flex items-center justify-center shrink-0">
-              <Icon name="lightbulb" size={20} className="text-[#0da2e7]" />
+            <div className="w-10 h-10 rounded-xl bg-[#0066FF]/10 flex items-center justify-center shrink-0">
+              <Icon name="lightbulb" size={20} className="text-[#0066FF]" />
             </div>
             <div>
               <h3 className="text-sm font-semibold text-white mb-1">About NSQF</h3>
@@ -1480,17 +1480,17 @@ function SchemeCard({ scheme }: { scheme: any }) {
       animate={{ rotateX, rotateY }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       whileHover={{
-        borderColor: 'rgba(13,162,231,0.25)',
-        boxShadow: '0 8px 30px rgba(13,162,231,0.08)',
+        borderColor: 'rgba(0,102,255,0.25)',
+        boxShadow: '0 8px 30px rgba(0,102,255,0.08)',
       }}
       style={{ transformStyle: 'preserve-3d', perspective: 800 }}
-      className="bg-[#1E293B] rounded-xl p-4 border border-[#1E293B] cursor-default"
+      className="bg-[#111827] rounded-xl p-4 border border-[#1E293B] cursor-default"
     >
       <div style={{ transform: 'translateZ(20px)' }}>
         <h4 className="font-medium text-white text-sm">{scheme.name || scheme.title}</h4>
         <p className="text-xs text-[#94A3B8] mt-1">{scheme.description}</p>
         {scheme.eligibility && (
-          <p className="text-xs text-[#0da2e7] mt-2 flex items-center gap-1">
+          <p className="text-xs text-[#0066FF] mt-2 flex items-center gap-1">
             <Icon name="verified" size={12} />
             Eligibility: {scheme.eligibility}
           </p>

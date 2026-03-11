@@ -40,7 +40,7 @@ const PageLoader = () => (
   <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
     <motion.div
       className="w-12 h-12 rounded-2xl flex items-center justify-center"
-      style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.1), rgba(139,92,246,0.08))', border: '1px solid rgba(13,162,231,0.15)' }}
+      style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.1), rgba(124,58,237,0.08))', border: '1px solid rgba(0,102,255,0.15)' }}
       animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
       transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
     >

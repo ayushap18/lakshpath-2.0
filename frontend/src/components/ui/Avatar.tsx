@@ -16,7 +16,7 @@ const Avatar = ({ src, name, size = 'md', className = '', ring = false }: Avatar
   };
 
   const ringStyles = ring ? {
-    boxShadow: '0 0 0 2px rgba(10,15,28,1), 0 0 0 4px rgba(13,162,231,0.4)',
+    boxShadow: '0 0 0 2px rgba(10,15,28,1), 0 0 0 4px rgba(0,102,255,0.4)',
   } : {};
 
   const initials = name
@@ -33,7 +33,7 @@ const Avatar = ({ src, name, size = 'md', className = '', ring = false }: Avatar
         alt={name}
         className={`${sizes[size]} rounded-full object-cover ${className}`}
         style={{
-          border: '2px solid rgba(13,162,231,0.3)',
+          border: '2px solid rgba(0,102,255,0.3)',
           ...ringStyles,
         }}
       />
@@ -44,7 +44,7 @@ const Avatar = ({ src, name, size = 'md', className = '', ring = false }: Avatar
     <div
       className={`${sizes[size]} rounded-full flex items-center justify-center font-bold text-white flex-shrink-0 ${className}`}
       style={{
-        background: 'linear-gradient(135deg, #0da2e7, #8B5CF6)',
+        background: 'linear-gradient(135deg, #0066FF, #7C3AED)',
         ...ringStyles,
       }}
     >

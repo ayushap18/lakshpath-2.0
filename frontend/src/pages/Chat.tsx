@@ -96,24 +96,24 @@ const Chat = () => {
         className="relative mb-5 rounded-2xl overflow-hidden px-6 py-5"
         style={{
           background:
-            'linear-gradient(135deg, rgba(13,162,231,0.15) 0%, rgba(34,211,238,0.08) 50%, rgba(13,162,231,0.05) 100%)',
-          border: '1px solid rgba(13,162,231,0.12)',
+            'linear-gradient(135deg, rgba(0,102,255,0.15) 0%, rgba(34,211,238,0.08) 50%, rgba(0,102,255,0.05) 100%)',
+          border: '1px solid rgba(0,102,255,0.12)',
         }}
       >
         {/* Decorative blurred orb */}
         <div
           className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
           style={{
-            background: 'radial-gradient(circle, rgba(13,162,231,0.2) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(0,102,255,0.2) 0%, transparent 70%)',
             filter: 'blur(30px)',
           }}
         />
 
         <div className="relative flex items-center gap-4">
           <motion.div
-            className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0da2e7] to-[#22D3EE] flex items-center justify-center shadow-lg"
+            className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0066FF] to-[#22D3EE] flex items-center justify-center shadow-lg"
             style={{
-              boxShadow: '0 4px 20px rgba(13,162,231,0.35)',
+              boxShadow: '0 4px 20px rgba(0,102,255,0.35)',
               transformStyle: 'preserve-3d',
             }}
             whileHover={{ rotateY: 15, rotateX: -10, scale: 1.08 }}
@@ -161,20 +161,20 @@ const Chat = () => {
               onClick={() => setRound(cat.value)}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-[#0da2e7] text-white'
-                  : 'bg-[#1E293B] border border-white/5 text-[#94A3B8] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#0066FF] text-white'
+                  : 'bg-[#111827] border border-white/5 text-[#94A3B8] hover:text-white hover:bg-white/5'
               }`}
               whileHover={{
                 y: -2,
                 boxShadow: isActive
-                  ? '0 6px 24px rgba(13,162,231,0.4)'
-                  : '0 4px 16px rgba(13,162,231,0.12)',
+                  ? '0 6px 24px rgba(0,102,255,0.4)'
+                  : '0 4px 16px rgba(0,102,255,0.12)',
               }}
               whileTap={{ scale: 0.97 }}
               animate={
                 isActive
-                  ? { boxShadow: '0 4px 18px rgba(13,162,231,0.3)' }
-                  : { boxShadow: '0 0px 0px rgba(13,162,231,0)' }
+                  ? { boxShadow: '0 4px 18px rgba(0,102,255,0.3)' }
+                  : { boxShadow: '0 0px 0px rgba(0,102,255,0)' }
               }
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             >
@@ -232,24 +232,24 @@ const Chat = () => {
                 className="absolute inset-0 rounded-2xl"
                 animate={{
                   boxShadow: [
-                    '0 0 20px rgba(13,162,231,0.15)',
-                    '0 0 40px rgba(13,162,231,0.3)',
-                    '0 0 20px rgba(13,162,231,0.15)',
+                    '0 0 20px rgba(0,102,255,0.15)',
+                    '0 0 40px rgba(0,102,255,0.3)',
+                    '0 0 20px rgba(0,102,255,0.15)',
                   ],
                 }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               />
               <motion.div
-                className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0da2e7] to-[#22D3EE] flex items-center justify-center relative"
+                className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0066FF] to-[#22D3EE] flex items-center justify-center relative"
                 style={{
                   transformStyle: 'preserve-3d',
-                  boxShadow: '0 8px 32px rgba(13,162,231,0.35)',
+                  boxShadow: '0 8px 32px rgba(0,102,255,0.35)',
                 }}
                 whileHover={{
                   rotateY: 20,
                   rotateX: -15,
                   scale: 1.1,
-                  boxShadow: '0 12px 40px rgba(13,162,231,0.5)',
+                  boxShadow: '0 12px 40px rgba(0,102,255,0.5)',
                 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
               >
@@ -285,7 +285,7 @@ const Chat = () => {
                 <motion.button
                   key={q}
                   onClick={() => setInput(q)}
-                  className="bg-[#1E293B] border border-white/5 px-4 py-2.5 rounded-xl text-sm text-[#94A3B8] hover:text-white transition-colors"
+                  className="bg-[#111827] border border-white/5 px-4 py-2.5 rounded-xl text-sm text-[#94A3B8] hover:text-white transition-colors"
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -296,8 +296,8 @@ const Chat = () => {
                   }}
                   whileHover={{
                     y: -3,
-                    borderColor: 'rgba(13,162,231,0.4)',
-                    boxShadow: '0 4px 20px rgba(13,162,231,0.15)',
+                    borderColor: 'rgba(0,102,255,0.4)',
+                    boxShadow: '0 4px 20px rgba(0,102,255,0.15)',
                     color: '#ffffff',
                   }}
                   whileTap={{ scale: 0.97 }}
@@ -360,7 +360,7 @@ const Chat = () => {
                             animate={{ opacity: 1, height: 'auto' }}
                             transition={{ delay: 0.2, duration: 0.4 }}
                           >
-                            <p className="text-xs font-semibold uppercase text-[#0da2e7]">
+                            <p className="text-xs font-semibold uppercase text-[#0066FF]">
                               Action Plan
                             </p>
                             {msg.structured.actionPlan.map((step, i) => (
@@ -398,11 +398,11 @@ const Chat = () => {
                               <motion.button
                                 key={i}
                                 onClick={() => setInput(fu.question)}
-                                className="bg-[#0da2e7]/10 text-[#0da2e7] text-xs px-3 py-1.5 rounded-lg hover:bg-[#0da2e7]/20 transition-colors"
+                                className="bg-[#0066FF]/10 text-[#0066FF] text-xs px-3 py-1.5 rounded-lg hover:bg-[#0066FF]/20 transition-colors"
                                 whileHover={{
                                   y: -1,
                                   boxShadow:
-                                    '0 2px 12px rgba(13,162,231,0.2)',
+                                    '0 2px 12px rgba(0,102,255,0.2)',
                                 }}
                                 whileTap={{ scale: 0.96 }}
                                 initial={{ opacity: 0, scale: 0.9 }}
@@ -432,11 +432,11 @@ const Chat = () => {
               exit={{ opacity: 0, y: -8 }}
               transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             >
-              <div className="flex gap-1.5 bg-[#1E293B] border border-white/5 px-4 py-2.5 rounded-2xl rounded-tl-sm">
+              <div className="flex gap-1.5 bg-[#111827] border border-white/5 px-4 py-2.5 rounded-2xl rounded-tl-sm">
                 {[0, 1, 2].map((i) => (
                   <motion.span
                     key={i}
-                    className="w-2 h-2 bg-[#0da2e7] rounded-full"
+                    className="w-2 h-2 bg-[#0066FF] rounded-full"
                     variants={dotVariant}
                     initial="initial"
                     animate="animate"
@@ -483,14 +483,14 @@ const Chat = () => {
       <motion.form
         variants={item}
         onSubmit={handleSubmit}
-        className="flex items-center gap-3 mt-4 bg-[#1E293B] rounded-2xl p-3 transition-all duration-300"
+        className="flex items-center gap-3 mt-4 bg-[#111827] rounded-2xl p-3 transition-all duration-300"
         animate={{
           borderColor: inputFocused
-            ? 'rgba(13,162,231,0.4)'
+            ? 'rgba(0,102,255,0.4)'
             : 'rgba(255,255,255,0.05)',
           boxShadow: inputFocused
-            ? '0 0 0 1px rgba(13,162,231,0.25), 0 4px 24px rgba(13,162,231,0.08)'
-            : '0 0 0 1px rgba(255,255,255,0.05), 0 0px 0px rgba(13,162,231,0)',
+            ? '0 0 0 1px rgba(0,102,255,0.25), 0 4px 24px rgba(0,102,255,0.08)'
+            : '0 0 0 1px rgba(255,255,255,0.05), 0 0px 0px rgba(0,102,255,0)',
         }}
         style={{ border: '1px solid rgba(255,255,255,0.05)' }}
         transition={{ duration: 0.3 }}
@@ -510,7 +510,7 @@ const Chat = () => {
             input.trim() && !loading
               ? {
                   scale: 1.08,
-                  boxShadow: '0 4px 20px rgba(13,162,231,0.4)',
+                  boxShadow: '0 4px 20px rgba(0,102,255,0.4)',
                 }
               : undefined
           }

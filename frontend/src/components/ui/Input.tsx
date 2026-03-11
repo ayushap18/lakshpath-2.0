@@ -16,7 +16,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className="w-full">
         {label && (
           <label className="block text-sm font-medium text-secondary mb-1.5 transition-colors duration-200"
-            style={focused ? { color: '#0da2e7' } : undefined}
+            style={focused ? { color: '#0066FF' } : undefined}
           >
             {label}
           </label>
@@ -24,7 +24,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative group">
           {icon && (
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-200"
-              style={{ color: focused ? '#0da2e7' : error ? '#EF4444' : '#64748B' }}
+              style={{ color: focused ? '#0066FF' : error ? '#EF4444' : '#64748B' }}
             >
               <Icon name={icon} size={20} />
             </div>
@@ -37,16 +37,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               error ? 'border-error/50' : ''
             } ${className}`}
             style={{
-              background: 'rgba(15,23,42,0.8)',
+              background: 'rgba(11,17,32,0.8)',
               border: `1px solid ${
                 error ? 'rgba(239,68,68,0.4)'
-                : focused ? 'rgba(13,162,231,0.5)'
+                : focused ? 'rgba(0,102,255,0.5)'
                 : 'rgba(255,255,255,0.06)'
               }`,
               boxShadow: error
                 ? '0 0 0 3px rgba(239,68,68,0.08), inset 0 2px 4px rgba(0,0,0,0.15)'
                 : focused
-                ? '0 0 0 3px rgba(13,162,231,0.1), 0 0 20px rgba(13,162,231,0.06), inset 0 2px 4px rgba(0,0,0,0.1)'
+                ? '0 0 0 3px rgba(0,102,255,0.1), 0 0 20px rgba(0,102,255,0.06), inset 0 2px 4px rgba(0,0,0,0.1)'
                 : 'inset 0 2px 4px rgba(0,0,0,0.15)',
             }}
             onFocus={(e) => {
@@ -63,7 +63,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <div
             className="absolute top-0 left-4 right-4 h-px pointer-events-none transition-opacity duration-300"
             style={{
-              background: 'linear-gradient(90deg, transparent, rgba(13,162,231,0.3), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(0,102,255,0.3), transparent)',
               opacity: focused ? 1 : 0,
             }}
           />

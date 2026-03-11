@@ -67,9 +67,9 @@ type InterviewScreen = 'setup' | 'camera-check' | 'interview' | 'results';
 /* ------------------------------------------------------------------ */
 
 const COMPANIES = [
-  { id: 'TCS', label: 'TCS', color: '#0da2e7', icon: 'business' },
+  { id: 'TCS', label: 'TCS', color: '#0066FF', icon: 'business' },
   { id: 'INFOSYS', label: 'Infosys', color: '#10B981', icon: 'apartment' },
-  { id: 'WIPRO', label: 'Wipro', color: '#8B5CF6', icon: 'corporate_fare' },
+  { id: 'WIPRO', label: 'Wipro', color: '#7C3AED', icon: 'corporate_fare' },
   { id: 'GOOGLE', label: 'Google', color: '#F59E0B', icon: 'search' },
   { id: 'AMAZON', label: 'Amazon', color: '#EF4444', icon: 'shopping_cart' },
   { id: 'MICROSOFT', label: 'Microsoft', color: '#3B82F6', icon: 'window' },

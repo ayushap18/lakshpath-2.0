@@ -101,7 +101,7 @@ const ProfileSetup = () => {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0da2e7] to-[#38bdf8] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0066FF] to-[#38bdf8] flex items-center justify-center">
               <Icon name="rocket_launch" size={22} className="text-white" />
             </div>
             <div>
@@ -118,8 +118,8 @@ const ProfileSetup = () => {
               <motion.div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-colors ${
                   i <= step
-                    ? 'bg-[#0da2e7] text-white'
-                    : 'bg-[#1E293B] text-[#64748B]'
+                    ? 'bg-[#0066FF] text-white'
+                    : 'bg-[#111827] text-[#64748B]'
                 }`}
                 animate={i === step ? { scale: [1, 1.1, 1] } : {}}
                 transition={{ duration: 0.3 }}
@@ -127,7 +127,7 @@ const ProfileSetup = () => {
                 {i < step ? <Icon name="check" size={16} /> : i + 1}
               </motion.div>
               {i < STEPS.length - 1 && (
-                <div className={`flex-1 h-0.5 rounded ${i < step ? 'bg-[#0da2e7]' : 'bg-[#1E293B]'}`} />
+                <div className={`flex-1 h-0.5 rounded ${i < step ? 'bg-[#0066FF]' : 'bg-[#111827]'}`} />
               )}
             </div>
           ))}
@@ -135,7 +135,7 @@ const ProfileSetup = () => {
 
         {/* Progress bar */}
         <div className="w-full h-1.5 bg-white/5 rounded-full mb-8 overflow-hidden">
-          <motion.div className="h-full rounded-full bg-[#0da2e7]" animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
+          <motion.div className="h-full rounded-full bg-[#0066FF]" animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
         </div>
 
         {/* Step content */}
@@ -153,7 +153,7 @@ const ProfileSetup = () => {
                     value={form.name}
                     onChange={e => set('name', e.target.value)}
                     placeholder="Your full name"
-                    className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
                   />
                 </div>
 
@@ -165,7 +165,7 @@ const ProfileSetup = () => {
                       value={form.age}
                       onChange={e => set('age', e.target.value)}
                       placeholder="21"
-                      className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
                     />
                   </div>
                   <div>
@@ -174,7 +174,7 @@ const ProfileSetup = () => {
                       value={form.phone}
                       onChange={e => set('phone', e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
                     />
                   </div>
                 </div>
@@ -186,7 +186,7 @@ const ProfileSetup = () => {
                     onChange={e => set('bio', e.target.value)}
                     placeholder="Aspiring full-stack developer passionate about AI..."
                     rows={2}
-                    className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors resize-none"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors resize-none"
                   />
                 </div>
               </div>
@@ -204,7 +204,7 @@ const ProfileSetup = () => {
                     value={form.college}
                     onChange={e => set('college', e.target.value)}
                     placeholder="IIT Delhi, VIT Vellore, etc."
-                    className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
                   />
                 </div>
 
@@ -214,7 +214,7 @@ const ProfileSetup = () => {
                     <select
                       value={form.degree}
                       onChange={e => set('degree', e.target.value)}
-                      className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white outline-none focus:border-[#0da2e7] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white outline-none focus:border-[#0066FF] transition-colors"
                     >
                       <option value="B.Tech">B.Tech / BE</option>
                       <option value="BCA">BCA</option>
@@ -231,7 +231,7 @@ const ProfileSetup = () => {
                     <select
                       value={form.branch}
                       onChange={e => set('branch', e.target.value)}
-                      className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white outline-none focus:border-[#0da2e7] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white outline-none focus:border-[#0066FF] transition-colors"
                     >
                       <option value="">Select branch</option>
                       <option value="CSE">Computer Science (CSE)</option>
@@ -252,7 +252,7 @@ const ProfileSetup = () => {
                   <select
                     value={form.graduationYear}
                     onChange={e => set('graduationYear', e.target.value)}
-                    className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white outline-none focus:border-[#0da2e7] transition-colors"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white outline-none focus:border-[#0066FF] transition-colors"
                   >
                     <option value="">Select year</option>
                     {[2024, 2025, 2026, 2027, 2028, 2029].map(y => (
@@ -283,11 +283,11 @@ const ProfileSetup = () => {
                         set('githubUsername', val);
                       }}
                       placeholder="username"
-                      className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl pl-[115px] pr-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors"
+                      className="w-full bg-[#111827] border border-[#1E293B] rounded-xl pl-[115px] pr-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
                     />
                     {githubLoading && (
                       <motion.div
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[#0da2e7]/30 border-t-[#0da2e7] rounded-full"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full"
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       />
@@ -300,7 +300,7 @@ const ProfileSetup = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-[#1E293B] border border-[#0da2e7]/30 rounded-xl p-4"
+                    className="bg-[#111827] border border-[#0066FF]/30 rounded-xl p-4"
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <img src={githubPreview.avatarUrl} alt="" className="w-10 h-10 rounded-full" />
@@ -327,7 +327,7 @@ const ProfileSetup = () => {
                     {githubPreview.languages?.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-3">
                         {githubPreview.languages.slice(0, 6).map((l: any) => (
-                          <span key={l.language} className="px-2 py-1 rounded-md bg-[#0da2e7]/10 text-[#0da2e7] text-xs font-medium">
+                          <span key={l.language} className="px-2 py-1 rounded-md bg-[#0066FF]/10 text-[#0066FF] text-xs font-medium">
                             {l.language} ({l.repoCount})
                           </span>
                         ))}
@@ -342,7 +342,7 @@ const ProfileSetup = () => {
                     value={form.linkedinUrl}
                     onChange={e => set('linkedinUrl', e.target.value)}
                     placeholder="https://linkedin.com/in/your-profile"
-                    className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7] transition-colors"
+                    className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF] transition-colors"
                   />
                 </div>
               </div>
@@ -369,10 +369,10 @@ const ProfileSetup = () => {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.05 }}
-                      className="flex items-center gap-3 bg-[#1E293B] rounded-xl p-3"
+                      className="flex items-center gap-3 bg-[#111827] rounded-xl p-3"
                     >
                       <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center">
-                        <Icon name={item.icon} size={18} className="text-[#0da2e7]" />
+                        <Icon name={item.icon} size={18} className="text-[#0066FF]" />
                       </div>
                       <div>
                         <p className="text-[#64748B] text-xs">{item.label}</p>
@@ -407,7 +407,7 @@ const ProfileSetup = () => {
               Next <Icon name="arrow_forward" size={18} />
             </Button>
           ) : (
-            <motion.div whileHover={{ boxShadow: '0 0 20px rgba(13,162,231,0.3)' }}>
+            <motion.div whileHover={{ boxShadow: '0 0 20px rgba(0,102,255,0.3)' }}>
               <Button variant="primary" size="md" onClick={handleSubmit} disabled={loading}>
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -447,7 +447,7 @@ const ProfileSetup = () => {
                 className="flex items-start gap-3"
               >
                 <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
-                  <Icon name={item.icon} size={16} className="text-[#0da2e7]" />
+                  <Icon name={item.icon} size={16} className="text-[#0066FF]" />
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">{item.title}</p>

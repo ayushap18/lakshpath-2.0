@@ -26,7 +26,7 @@ export const useToast = () => {
 const TOAST_STYLES: Record<ToastType, { bg: string; border: string; icon: string; iconColor: string }> = {
   success: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)', icon: 'check_circle', iconColor: '#10B981' },
   error: { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', icon: 'error', iconColor: '#EF4444' },
-  info: { bg: 'rgba(13,162,231,0.08)', border: 'rgba(13,162,231,0.2)', icon: 'info', iconColor: '#0da2e7' },
+  info: { bg: 'rgba(0,102,255,0.08)', border: 'rgba(0,102,255,0.2)', icon: 'info', iconColor: '#0066FF' },
   badge: { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)', icon: 'emoji_events', iconColor: '#F59E0B' },
 };
 

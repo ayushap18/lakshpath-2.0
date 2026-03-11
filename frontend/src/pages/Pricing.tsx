@@ -100,7 +100,7 @@ export default function Pricing() {
             <Icon name="arrow_back" className="text-xl" />
             <span className="text-sm">Back</span>
           </button>
-          <span className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          <span className="text-lg font-bold bg-gradient-to-r from-[#60a5fa] to-[#a78bfa] bg-clip-text text-transparent">
             LakshPath
           </span>
           {token ? (
@@ -134,7 +134,7 @@ export default function Pricing() {
             className="relative w-14 h-7 rounded-full bg-white/10 border border-white/20 transition-colors"
           >
             <motion.div
-              className="absolute top-0.5 w-6 h-6 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+              className="absolute top-0.5 w-6 h-6 rounded-full bg-gradient-to-r from-[#0066FF] to-[#7C3AED]"
               animate={{ left: billing === 'yearly' ? '1.75rem' : '0.125rem' }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
@@ -188,9 +188,9 @@ export default function Pricing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="relative rounded-2xl p-8 border border-indigo-500/50 bg-gradient-to-b from-indigo-500/10 to-transparent"
+            className="relative rounded-2xl p-8 border border-[#0066FF]/50 bg-gradient-to-b from-[#0066FF]/10 to-transparent"
           >
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-semibold">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white text-xs font-semibold">
               Most Popular
             </div>
 
@@ -222,7 +222,7 @@ export default function Pricing() {
             <button
               onClick={() => handlePlanAction('PRO')}
               disabled={upgrading || isProUser}
-              className="w-full py-3 rounded-xl font-semibold text-sm transition-all bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50"
+              className="w-full py-3 rounded-xl font-semibold text-sm transition-all bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white hover:shadow-lg hover:shadow-[#0066FF]/25 disabled:opacity-50"
             >
               {isProUser
                 ? isTrialing ? 'Trial Active' : 'Current Plan'
@@ -237,7 +237,7 @@ export default function Pricing() {
                 <button
                   onClick={handleStartTrial}
                   disabled={trialLoading}
-                  className="text-indigo-400 text-sm hover:text-indigo-300 transition-colors font-medium disabled:opacity-50"
+                  className="text-[#60a5fa] text-sm hover:text-[#93bbfc] transition-colors font-medium disabled:opacity-50"
                 >
                   {trialLoading ? 'Starting trial...' : 'Or try 7 days free — no card needed'}
                 </button>

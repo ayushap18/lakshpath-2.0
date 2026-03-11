@@ -87,7 +87,7 @@ const roleDefinitions: RoleDefinition[] = [
     id: 'fullstack',
     title: 'Full Stack Developer',
     icon: 'code',
-    color: '#0da2e7',
+    color: '#0066FF',
     description: 'Build end-to-end web applications with modern frameworks',
     avgSalary: '8-25 LPA',
     demand: 'Very High',
@@ -110,7 +110,7 @@ const roleDefinitions: RoleDefinition[] = [
     id: 'datascientist',
     title: 'Data Scientist',
     icon: 'analytics',
-    color: '#8B5CF6',
+    color: '#7C3AED',
     description: 'Extract insights from data using ML and statistical methods',
     avgSalary: '10-30 LPA',
     demand: 'Very High',
@@ -1019,7 +1019,7 @@ const LearningPathItem = ({
       <div
         className="rounded-xl border border-white/[0.06] overflow-hidden transition-all duration-300 hover:border-white/[0.1]"
         style={{
-          background: 'linear-gradient(145deg, rgba(30,41,59,0.4), rgba(15,23,42,0.3))',
+          background: 'linear-gradient(145deg, rgba(17,24,39,0.4), rgba(15,23,42,0.3))',
         }}
       >
         <button
@@ -1219,7 +1219,7 @@ const RoleComparison = ({
       <motion.div variants={item}>
         <Card glass padding="p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Icon name="join" size={18} className="text-[#8B5CF6]" />
+            <Icon name="join" size={18} className="text-[#7C3AED]" />
             <h4 className="text-sm font-bold text-white">
               Shared Skills ({sharedSkills.length})
             </h4>
@@ -1310,7 +1310,7 @@ const AnalysisLoader = () => (
     <div className="relative w-16 h-16">
       <motion.div
         className="absolute inset-0 rounded-full border-2 border-transparent"
-        style={{ borderTopColor: '#0da2e7', borderRightColor: '#8B5CF6' }}
+        style={{ borderTopColor: '#0066FF', borderRightColor: '#7C3AED' }}
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
       />
@@ -1321,7 +1321,7 @@ const AnalysisLoader = () => (
         transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
       />
       <div className="absolute inset-4 rounded-full bg-[#0F172A] flex items-center justify-center">
-        <Icon name="psychology" size={20} className="text-[#0da2e7]" />
+        <Icon name="psychology" size={20} className="text-[#0066FF]" />
       </div>
     </div>
     <div className="text-center">
@@ -1507,7 +1507,7 @@ const SkillSimulator = () => {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(135deg, rgba(13,162,231,0.12) 0%, rgba(139,92,246,0.12) 40%, rgba(34,211,238,0.08) 100%)',
+              'linear-gradient(135deg, rgba(0,102,255,0.12) 0%, rgba(124,58,237,0.12) 40%, rgba(34,211,238,0.08) 100%)',
             backgroundSize: '200% 200%',
             animation: 'gradient-shift 8s ease infinite',
           }}
@@ -1530,8 +1530,8 @@ const SkillSimulator = () => {
                   animate={{ rotate: 0, scale: 1 }}
                   transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0da2e7]/20 to-[#8B5CF6]/20 border border-[#0da2e7]/20 flex items-center justify-center">
-                    <Icon name="psychology" size={22} className="text-[#0da2e7]" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0066FF]/20 to-[#7C3AED]/20 border border-[#0066FF]/20 flex items-center justify-center">
+                    <Icon name="psychology" size={22} className="text-[#0066FF]" />
                   </div>
                 </motion.div>
                 <div>
@@ -1564,7 +1564,7 @@ const SkillSimulator = () => {
       {/* ================================================================ */}
       <motion.div variants={item}>
         <div className="flex items-center gap-2 mb-4">
-          <Icon name="work" size={18} className="text-[#0da2e7]" />
+          <Icon name="work" size={18} className="text-[#0066FF]" />
           <h2 className="text-lg font-bold text-white">Select Target Role</h2>
         </div>
         <motion.div
@@ -1665,7 +1665,7 @@ const SkillSimulator = () => {
                 label="Est. Time to Ready"
                 value={`${summaryStats.estimatedWeeks} weeks`}
                 icon="schedule"
-                accentColor="#0da2e7"
+                accentColor="#0066FF"
               />
               <StatCard
                 label="Top Priority"
@@ -1687,7 +1687,7 @@ const SkillSimulator = () => {
                     }}
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                       activeSection === section.id
-                        ? 'bg-[#0da2e7]/15 text-[#0da2e7] shadow-sm'
+                        ? 'bg-[#0066FF]/15 text-[#0066FF] shadow-sm'
                         : 'text-[#64748B] hover:text-white hover:bg-white/[0.04]'
                     }`}
                   >
@@ -1952,8 +1952,8 @@ const SkillSimulator = () => {
                     <Card glass padding="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0da2e7]/20 to-[#8B5CF6]/20 border border-[#0da2e7]/20 flex items-center justify-center">
-                            <Icon name="timeline" size={20} className="text-[#0da2e7]" />
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0066FF]/20 to-[#7C3AED]/20 border border-[#0066FF]/20 flex items-center justify-center">
+                            <Icon name="timeline" size={20} className="text-[#0066FF]" />
                           </div>
                           <div>
                             <p className="text-sm font-bold text-white">Total Learning Investment</p>
@@ -2017,7 +2017,7 @@ const SkillSimulator = () => {
                             animate={{ y: [0, -6, 0] }}
                             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                           >
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0da2e7]/15 to-[#8B5CF6]/15 border border-[#0da2e7]/20 flex items-center justify-center mb-4">
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0066FF]/15 to-[#7C3AED]/15 border border-[#0066FF]/20 flex items-center justify-center mb-4">
                               <Icon name="compare_arrows" size={32} className="text-[#64748B]" />
                             </div>
                           </motion.div>
@@ -2058,7 +2058,7 @@ const SkillSimulator = () => {
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0da2e7]/15 to-[#8B5CF6]/15 border border-[#0da2e7]/15 flex items-center justify-center mb-5">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0066FF]/15 to-[#7C3AED]/15 border border-[#0066FF]/15 flex items-center justify-center mb-5">
                   <Icon name="psychology" size={40} className="text-[#64748B]" />
                 </div>
               </motion.div>
@@ -2114,7 +2114,7 @@ const SkillSimulator = () => {
           border-radius: 50%;
           background: white;
           cursor: pointer;
-          box-shadow: 0 0 8px rgba(13,162,231,0.3);
+          box-shadow: 0 0 8px rgba(0,102,255,0.3);
         }
       `}</style>
     </motion.div>

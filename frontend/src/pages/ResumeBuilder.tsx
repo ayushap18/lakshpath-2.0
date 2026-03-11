@@ -93,7 +93,7 @@ const TEMPLATES: TemplateOption[] = [
     description: 'Clean, minimal layout with accent colors',
     color: 'accent',
     icon: 'auto_awesome',
-    accentHex: '#0da2e7',
+    accentHex: '#0066FF',
   },
   {
     id: 'professional',
@@ -101,7 +101,7 @@ const TEMPLATES: TemplateOption[] = [
     description: 'Corporate, formal with structured sections',
     color: 'violet',
     icon: 'business_center',
-    accentHex: '#8B5CF6',
+    accentHex: '#7C3AED',
   },
   {
     id: 'creative',
@@ -586,7 +586,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
 
   const getTemplateAccent = () => {
     const tpl = TEMPLATES.find(t => t.id === selectedTemplate);
-    return tpl?.accentHex || '#0da2e7';
+    return tpl?.accentHex || '#0066FF';
   };
 
   /* ──────────────────────────────────────────────────────────────────────────
@@ -600,20 +600,20 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
         <div
           className="rounded-2xl p-8 relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, rgba(13,162,231,0.08), rgba(139,92,246,0.05), rgba(15,23,42,0.9))',
-            border: '1px solid rgba(13,162,231,0.1)',
+            background: 'linear-gradient(135deg, rgba(0,102,255,0.08), rgba(124,58,237,0.05), rgba(15,23,42,0.9))',
+            border: '1px solid rgba(0,102,255,0.1)',
           }}
         >
           <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
           <motion.div
             className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-[0.06] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }}
             animate={{ scale: [1, 1.3, 1], x: [0, 10, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
             className="absolute -bottom-16 -left-16 w-56 h-56 rounded-full opacity-[0.04] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }}
             animate={{ scale: [1, 1.2, 1], y: [0, -8, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
           />
@@ -629,8 +629,8 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1))',
-                  border: '1px solid rgba(13,162,231,0.2)',
+                  background: 'linear-gradient(135deg, rgba(0,102,255,0.15), rgba(124,58,237,0.1))',
+                  border: '1px solid rgba(0,102,255,0.2)',
                 }}
               >
                 <Icon name="description" size={24} className="text-accent" />
@@ -664,14 +664,14 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                   return typeof val === 'number' && typeof maxVal === 'number' && val >= maxVal * 0.5;
                 }).length}/${formSections.length}`}
                 icon="checklist"
-                accentColor="#8B5CF6"
+                accentColor="#7C3AED"
                 className="flex-1 min-w-[140px]"
               />
               <StatCard
                 label="Keywords Matched"
                 value={`${matchedKeywords.length}/${ATS_KEYWORDS.length}`}
                 icon="key"
-                accentColor="#0da2e7"
+                accentColor="#0066FF"
                 className="flex-1 min-w-[140px]"
               />
             </div>
@@ -701,7 +701,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                   style={{
                     background: isActive
                       ? `linear-gradient(145deg, ${tpl.accentHex}15, rgba(15,23,42,0.6))`
-                      : 'linear-gradient(145deg, rgba(30,41,59,0.45), rgba(15,23,42,0.35))',
+                      : 'linear-gradient(145deg, rgba(17,24,39,0.45), rgba(15,23,42,0.35))',
                     border: `1px solid ${isActive ? `${tpl.accentHex}40` : 'rgba(255,255,255,0.06)'}`,
                     boxShadow: isActive
                       ? `0 8px 32px ${tpl.accentHex}20, inset 0 1px 0 rgba(255,255,255,0.06)`
@@ -1017,8 +1017,8 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                       value={resumeData.summary}
                       onChange={e => setResumeData(prev => ({ ...prev, summary: e.target.value }))}
                       onFocus={e => {
-                        e.target.style.borderColor = 'rgba(13,162,231,0.5)';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(13,162,231,0.1), 0 0 20px rgba(13,162,231,0.06), inset 0 2px 4px rgba(0,0,0,0.1)';
+                        e.target.style.borderColor = 'rgba(0,102,255,0.5)';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(0,102,255,0.1), 0 0 20px rgba(0,102,255,0.06), inset 0 2px 4px rgba(0,0,0,0.1)';
                       }}
                       onBlur={e => {
                         e.target.style.borderColor = 'rgba(255,255,255,0.06)';
@@ -1123,8 +1123,8 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                             value={exp.description}
                             onChange={e => updateExperience(exp.id, 'description', e.target.value)}
                             onFocus={e => {
-                              e.target.style.borderColor = 'rgba(13,162,231,0.5)';
-                              e.target.style.boxShadow = '0 0 0 3px rgba(13,162,231,0.1), inset 0 2px 4px rgba(0,0,0,0.1)';
+                              e.target.style.borderColor = 'rgba(0,102,255,0.5)';
+                              e.target.style.boxShadow = '0 0 0 3px rgba(0,102,255,0.1), inset 0 2px 4px rgba(0,0,0,0.1)';
                             }}
                             onBlur={e => {
                               e.target.style.borderColor = 'rgba(255,255,255,0.06)';
@@ -1448,8 +1448,8 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                             value={project.description}
                             onChange={e => updateProject(project.id, 'description', e.target.value)}
                             onFocus={e => {
-                              e.target.style.borderColor = 'rgba(13,162,231,0.5)';
-                              e.target.style.boxShadow = '0 0 0 3px rgba(13,162,231,0.1), inset 0 2px 4px rgba(0,0,0,0.1)';
+                              e.target.style.borderColor = 'rgba(0,102,255,0.5)';
+                              e.target.style.boxShadow = '0 0 0 3px rgba(0,102,255,0.1), inset 0 2px 4px rgba(0,0,0,0.1)';
                             }}
                             onBlur={e => {
                               e.target.style.borderColor = 'rgba(255,255,255,0.06)';
@@ -1603,7 +1603,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                 {selectedTemplate === 'modern' && (
                   <div style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif", color: '#1a1a2e', fontSize: 11 }}>
                     {/* Header band */}
-                    <div style={{ background: 'linear-gradient(135deg, #0da2e7, #0b86c1)', padding: '24px 28px 20px', color: '#fff' }}>
+                    <div style={{ background: 'linear-gradient(135deg, #0066FF, #0b86c1)', padding: '24px 28px 20px', color: '#fff' }}>
                       <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.5px', marginBottom: 4 }}>
                         {resumeData.personal.name || 'Your Name'}
                       </div>
@@ -1630,7 +1630,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                       {/* Summary */}
                       {resumeData.summary && (
                         <div style={{ marginBottom: 16 }}>
-                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0da2e7', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0da2e7', paddingBottom: 3 }}>
+                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0066FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0066FF', paddingBottom: 3 }}>
                             Professional Summary
                           </div>
                           <div style={{ lineHeight: 1.6, color: '#374151' }}>{resumeData.summary}</div>
@@ -1640,7 +1640,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                       {/* Experience */}
                       {resumeData.experience.length > 0 && resumeData.experience.some(e => e.company || e.role) && (
                         <div style={{ marginBottom: 16 }}>
-                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0da2e7', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0da2e7', paddingBottom: 3 }}>
+                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0066FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0066FF', paddingBottom: 3 }}>
                             Experience
                           </div>
                           {resumeData.experience.map(exp => (
@@ -1650,7 +1650,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                                   <div style={{ fontWeight: 700, fontSize: 11.5, color: '#111827' }}>{exp.role || 'Role'}</div>
                                   <div style={{ fontSize: 10, color: '#6b7280' }}>{exp.duration}</div>
                                 </div>
-                                <div style={{ fontWeight: 600, color: '#0da2e7', fontSize: 10.5, marginBottom: 3 }}>{exp.company}</div>
+                                <div style={{ fontWeight: 600, color: '#0066FF', fontSize: 10.5, marginBottom: 3 }}>{exp.company}</div>
                                 {exp.description && (
                                   <div style={{ color: '#4b5563', lineHeight: 1.5, fontSize: 10.5 }}>{exp.description}</div>
                                 )}
@@ -1663,7 +1663,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                       {/* Education */}
                       {resumeData.education.length > 0 && resumeData.education.some(e => e.institution || e.degree) && (
                         <div style={{ marginBottom: 16 }}>
-                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0da2e7', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0da2e7', paddingBottom: 3 }}>
+                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0066FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0066FF', paddingBottom: 3 }}>
                             Education
                           </div>
                           {resumeData.education.map(edu => (
@@ -1673,7 +1673,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                                   <div style={{ fontWeight: 700, fontSize: 11.5, color: '#111827' }}>{edu.degree || 'Degree'}</div>
                                   <div style={{ fontSize: 10, color: '#6b7280' }}>{edu.year}</div>
                                 </div>
-                                <div style={{ color: '#0da2e7', fontWeight: 600, fontSize: 10.5 }}>{edu.institution}</div>
+                                <div style={{ color: '#0066FF', fontWeight: 600, fontSize: 10.5 }}>{edu.institution}</div>
                                 {edu.gpa && <div style={{ color: '#6b7280', fontSize: 10 }}>GPA: {edu.gpa}</div>}
                               </div>
                             )
@@ -1684,7 +1684,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                       {/* Skills */}
                       {resumeData.skills.length > 0 && (
                         <div style={{ marginBottom: 16 }}>
-                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0da2e7', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0da2e7', paddingBottom: 3 }}>
+                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0066FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0066FF', paddingBottom: 3 }}>
                             Skills
                           </div>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -1710,7 +1710,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                       {/* Projects */}
                       {resumeData.projects.length > 0 && resumeData.projects.some(p => p.name) && (
                         <div style={{ marginBottom: 16 }}>
-                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0da2e7', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0da2e7', paddingBottom: 3 }}>
+                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0066FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0066FF', paddingBottom: 3 }}>
                             Projects
                           </div>
                           {resumeData.projects.map(project => (
@@ -1718,7 +1718,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                               <div key={project.id} style={{ marginBottom: 10 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                   <div style={{ fontWeight: 700, fontSize: 11.5, color: '#111827' }}>{project.name}</div>
-                                  {project.link && <div style={{ fontSize: 10, color: '#0da2e7' }}>{project.link}</div>}
+                                  {project.link && <div style={{ fontSize: 10, color: '#0066FF' }}>{project.link}</div>}
                                 </div>
                                 {project.techStack && (
                                   <div style={{ color: '#6b7280', fontSize: 10, marginBottom: 2, fontStyle: 'italic' }}>{project.techStack}</div>
@@ -1735,7 +1735,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                       {/* Certifications */}
                       {resumeData.certifications.length > 0 && resumeData.certifications.some(c => c.name) && (
                         <div>
-                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0da2e7', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0da2e7', paddingBottom: 3 }}>
+                          <div style={{ fontWeight: 700, fontSize: 12, color: '#0066FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6, borderBottom: '2px solid #0066FF', paddingBottom: 3 }}>
                             Certifications
                           </div>
                           {resumeData.certifications.map(cert => (
@@ -1759,7 +1759,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                 {selectedTemplate === 'professional' && (
                   <div style={{ fontFamily: "'Georgia', 'Times New Roman', serif", color: '#1a1a2e', fontSize: 11 }}>
                     {/* Header */}
-                    <div style={{ padding: '28px 28px 20px', borderBottom: '3px solid #8B5CF6', textAlign: 'center' }}>
+                    <div style={{ padding: '28px 28px 20px', borderBottom: '3px solid #7C3AED', textAlign: 'center' }}>
                       <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#1e1b4b', marginBottom: 6 }}>
                         {resumeData.personal.name || 'Your Name'}
                       </div>
@@ -1776,7 +1776,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                           <span>{resumeData.personal.location}</span>
                         )}
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '4px 12px', fontSize: 10, color: '#8B5CF6', marginTop: 4 }}>
+                      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '4px 12px', fontSize: 10, color: '#7C3AED', marginTop: 4 }}>
                         {resumeData.personal.linkedin && (
                           <span>{resumeData.personal.linkedin}</span>
                         )}
@@ -1809,7 +1809,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                               <div key={exp.id} style={{ marginBottom: 12 }}>
                                 <div style={{ fontWeight: 700, fontSize: 12, color: '#1e1b4b' }}>{exp.company || 'Company'}</div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                  <div style={{ fontStyle: 'italic', color: '#8B5CF6', fontSize: 11 }}>{exp.role}</div>
+                                  <div style={{ fontStyle: 'italic', color: '#7C3AED', fontSize: 11 }}>{exp.role}</div>
                                   <div style={{ fontSize: 10, color: '#6b7280' }}>{exp.duration}</div>
                                 </div>
                                 {exp.description && (
@@ -1832,7 +1832,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                               <div key={edu.id} style={{ marginBottom: 8 }}>
                                 <div style={{ fontWeight: 700, fontSize: 12, color: '#1e1b4b' }}>{edu.institution || 'Institution'}</div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                  <div style={{ fontStyle: 'italic', color: '#8B5CF6', fontSize: 11 }}>{edu.degree}</div>
+                                  <div style={{ fontStyle: 'italic', color: '#7C3AED', fontSize: 11 }}>{edu.degree}</div>
                                   <div style={{ fontSize: 10, color: '#6b7280' }}>{edu.year}</div>
                                 </div>
                                 {edu.gpa && <div style={{ color: '#6b7280', fontSize: 10 }}>GPA: {edu.gpa}</div>}
@@ -1880,7 +1880,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
                               <div key={project.id} style={{ marginBottom: 10 }}>
                                 <div style={{ fontWeight: 700, fontSize: 11.5, color: '#1e1b4b' }}>{project.name}</div>
                                 {project.techStack && (
-                                  <div style={{ color: '#8B5CF6', fontSize: 10, fontStyle: 'italic', marginBottom: 2 }}>{project.techStack}</div>
+                                  <div style={{ color: '#7C3AED', fontSize: 10, fontStyle: 'italic', marginBottom: 2 }}>{project.techStack}</div>
                                 )}
                                 {project.description && (
                                   <div style={{ color: '#4b5563', lineHeight: 1.5, fontSize: 10.5 }}>{project.description}</div>
@@ -2091,7 +2091,7 @@ ${d.certifications.filter(c => c.name).map(c => `\\item \\textbf{${esc(c.name)}}
             <div className="mt-4">
               <Card glass>
                 <div className="flex items-center gap-2 mb-4">
-                  <Icon name="analytics" size={20} style={{ color: '#0da2e7' }} />
+                  <Icon name="analytics" size={20} style={{ color: '#0066FF' }} />
                   <h3 className="text-sm font-semibold text-white">ATS Compatibility Analysis</h3>
                 </div>
 

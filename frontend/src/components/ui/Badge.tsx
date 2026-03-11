@@ -15,7 +15,7 @@ const Badge = ({ children, variant = 'default', size = 'sm', className = '', dot
     warning: 'bg-warning/10 text-warning border border-warning/15',
     error: 'bg-error/10 text-error border border-error/15',
     accent: 'bg-accent/10 text-accent border border-accent/15',
-    violet: 'bg-[#8B5CF6]/10 text-[#8B5CF6] border border-[#8B5CF6]/15',
+    violet: 'bg-[#7C3AED]/10 text-[#7C3AED] border border-[#7C3AED]/15',
     gradient: 'text-white border-0',
   };
 
@@ -25,7 +25,7 @@ const Badge = ({ children, variant = 'default', size = 'sm', className = '', dot
     warning: 'bg-warning',
     error: 'bg-error',
     accent: 'bg-accent',
-    violet: 'bg-[#8B5CF6]',
+    violet: 'bg-[#7C3AED]',
     gradient: 'bg-white',
   };
 
@@ -40,8 +40,8 @@ const Badge = ({ children, variant = 'default', size = 'sm', className = '', dot
     <span
       className={`inline-flex items-center gap-1.5 rounded-full font-semibold ${variants[variant]} ${sizes[size]} ${className}`}
       style={isGradient ? {
-        background: 'linear-gradient(135deg, rgba(13,162,231,0.2), rgba(139,92,246,0.15))',
-        border: '1px solid rgba(13,162,231,0.2)',
+        background: 'linear-gradient(135deg, rgba(0,102,255,0.2), rgba(124,58,237,0.15))',
+        border: '1px solid rgba(0,102,255,0.2)',
       } : undefined}
     >
       {dot && (

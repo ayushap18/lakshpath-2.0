@@ -182,7 +182,7 @@ const Interview = () => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder={type === 'Technical' ? 'Write your code or solution here...' : 'Type your answer...'}
-                className={`flex-1 w-full bg-[#1E293B] border border-[#1E293B] rounded-xl p-4 text-white placeholder-[#64748B] outline-none focus:border-[#0da2e7]/50 resize-none transition-colors duration-200 ${
+                className={`flex-1 w-full bg-[#111827] border border-[#1E293B] rounded-xl p-4 text-white placeholder-[#64748B] outline-none focus:border-[#0066FF]/50 resize-none transition-colors duration-200 ${
                   type === 'Technical' ? 'font-mono text-sm' : ''
                 }`}
               />
@@ -190,7 +190,7 @@ const Interview = () => {
               <div className="flex items-center justify-end gap-3 mt-4">
                 {/* Submit button with loading spinner */}
                 <motion.div
-                  whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(13,162,231,0.35)' }}
+                  whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(0,102,255,0.35)' }}
                   whileTap={{ scale: 0.97 }}
                   className="rounded-xl"
                 >
@@ -218,7 +218,7 @@ const Interview = () => {
             <motion.div custom={0} variants={sidebarCardVariants} initial="hidden" animate="visible">
               <Card className="border border-[#1E293B]">
                 <div className="flex items-center gap-2 mb-4">
-                  <Icon name="auto_awesome" size={20} className="text-[#0da2e7]" />
+                  <Icon name="auto_awesome" size={20} className="text-[#0066FF]" />
                   <h3 className="font-semibold text-white">STAR Analysis</h3>
                 </div>
                 {feedback.length === 0 ? (
@@ -233,10 +233,10 @@ const Interview = () => {
                           initial="hidden"
                           animate="visible"
                           exit={{ opacity: 0, x: -20 }}
-                          className="bg-[#1E293B] rounded-xl p-3"
+                          className="bg-[#111827] rounded-xl p-3"
                         >
                           <div className="flex items-center justify-between mb-1">
-                            <p className="text-xs text-[#0da2e7] font-medium">Q{i + 1} Feedback</p>
+                            <p className="text-xs text-[#0066FF] font-medium">Q{i + 1} Feedback</p>
                             {f.score != null && (
                               <Badge variant={f.score >= 70 ? 'success' : f.score >= 40 ? 'warning' : 'error'} size="sm">
                                 {Math.round(f.score)}%
@@ -274,9 +274,9 @@ const Interview = () => {
               <Card className="border border-[#1E293B]">
                 <h4 className="text-sm font-semibold text-white mb-2">Session Progress</h4>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 h-2 bg-[#1E293B] rounded-full overflow-hidden">
+                  <div className="flex-1 h-2 bg-[#111827] rounded-full overflow-hidden">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-[#0da2e7] to-[#22D3EE] rounded-full"
+                      className="h-full bg-gradient-to-r from-[#0066FF] to-[#22D3EE] rounded-full"
                       initial={{ width: 0 }}
                       animate={{ width: `${allQuestions.length > 0 ? (feedback.length / allQuestions.length) * 100 : 0}%` }}
                       transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -306,7 +306,7 @@ const Interview = () => {
         {/* Title with gradient text */}
         <motion.h1
           variants={itemVariants}
-          className="text-2xl font-bold bg-gradient-to-r from-[#0da2e7] via-[#22D3EE] to-[#0da2e7] bg-clip-text text-transparent"
+          className="text-2xl font-bold bg-gradient-to-r from-[#0066FF] via-[#22D3EE] to-[#0066FF] bg-clip-text text-transparent"
         >
           Interview Practice Lab
         </motion.h1>
@@ -346,15 +346,15 @@ const Interview = () => {
                       whileHover={{
                         y: -2,
                         boxShadow: type === t
-                          ? '0 0 16px rgba(13,162,231,0.45)'
-                          : '0 0 12px rgba(13,162,231,0.15)',
+                          ? '0 0 16px rgba(0,102,255,0.45)'
+                          : '0 0 12px rgba(0,102,255,0.15)',
                       }}
                       whileTap={{ scale: 0.97 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                       className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                         type === t
-                          ? 'bg-[#0da2e7] text-white shadow-lg shadow-[#0da2e7]/25'
-                          : 'bg-[#1E293B] text-[#94A3B8] border border-[#1E293B] hover:text-white'
+                          ? 'bg-[#0066FF] text-white shadow-lg shadow-[#0066FF]/25'
+                          : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:text-white'
                       }`}
                     >
                       {t}
@@ -374,15 +374,15 @@ const Interview = () => {
                       whileHover={{
                         y: -2,
                         boxShadow: difficulty === d
-                          ? '0 0 16px rgba(13,162,231,0.45)'
-                          : '0 0 12px rgba(13,162,231,0.15)',
+                          ? '0 0 16px rgba(0,102,255,0.45)'
+                          : '0 0 12px rgba(0,102,255,0.15)',
                       }}
                       whileTap={{ scale: 0.97 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                       className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
                         difficulty === d
-                          ? 'bg-[#0da2e7] text-white shadow-lg shadow-[#0da2e7]/25'
-                          : 'bg-[#1E293B] text-[#94A3B8] border border-[#1E293B] hover:text-white'
+                          ? 'bg-[#0066FF] text-white shadow-lg shadow-[#0066FF]/25'
+                          : 'bg-[#111827] text-[#94A3B8] border border-[#1E293B] hover:text-white'
                       }`}
                     >
                       {d}
@@ -398,14 +398,14 @@ const Interview = () => {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder="e.g., Frontend Developer"
-                  className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl px-4 py-2 text-white placeholder-[#64748B] outline-none text-sm focus:border-[#0da2e7]/50 transition-colors duration-200"
+                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-2 text-white placeholder-[#64748B] outline-none text-sm focus:border-[#0066FF]/50 transition-colors duration-200"
                 />
               </div>
             </div>
 
             {/* Start session button with accent glow */}
             <motion.div
-              whileHover={{ boxShadow: '0 0 24px rgba(13,162,231,0.4)' }}
+              whileHover={{ boxShadow: '0 0 24px rgba(0,102,255,0.4)' }}
               whileTap={{ scale: 0.97 }}
               className="inline-block rounded-xl"
             >
@@ -430,14 +430,14 @@ const Interview = () => {
                   animate="visible"
                   whileHover={{
                     y: -2,
-                    boxShadow: '0 4px 20px rgba(13,162,231,0.1)',
+                    boxShadow: '0 4px 20px rgba(0,102,255,0.1)',
                     transition: { duration: 0.2 },
                   }}
                 >
-                  <Card className="flex items-center justify-between border border-[#1E293B] transition-colors duration-200 hover:border-[#0da2e7]/20">
+                  <Card className="flex items-center justify-between border border-[#1E293B] transition-colors duration-200 hover:border-[#0066FF]/20">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#0da2e7]/10 flex items-center justify-center">
-                        <Icon name="record_voice_over" size={20} className="text-[#0da2e7]" />
+                      <div className="w-10 h-10 rounded-xl bg-[#0066FF]/10 flex items-center justify-center">
+                        <Icon name="record_voice_over" size={20} className="text-[#0066FF]" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{s.type || 'Interview'} &middot; {s.difficulty || 'Medium'}</p>

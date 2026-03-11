@@ -73,9 +73,9 @@ const checkboxSpring = {
 const pulseGlow = {
   animate: {
     boxShadow: [
-      '0 0 0px rgba(13,162,231,0.0)',
-      '0 0 20px rgba(13,162,231,0.3)',
-      '0 0 0px rgba(13,162,231,0.0)',
+      '0 0 0px rgba(0,102,255,0.0)',
+      '0 0 20px rgba(0,102,255,0.3)',
+      '0 0 0px rgba(0,102,255,0.0)',
     ],
     transition: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
   },
@@ -85,7 +85,7 @@ const pulseGlow = {
 const AnimatedSkillBar = ({ value, color }: { value: number; color: string }) => {
   const colorMap: Record<string, string> = {
     success: '#22c55e',
-    accent: '#0da2e7',
+    accent: '#0066FF',
     warning: '#f59e0b',
   };
   const fillColor = colorMap[color] || colorMap.accent;
@@ -233,7 +233,7 @@ const MicroCoach = () => {
               animate={{ rotate: [0, 15, -15, 0] }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
             >
-              <Icon name="auto_awesome" size={20} className="text-[#0da2e7]" />
+              <Icon name="auto_awesome" size={20} className="text-[#0066FF]" />
             </motion.span>
             AI Concept Explainer
           </h2>
@@ -244,8 +244,8 @@ const MicroCoach = () => {
               placeholder="Enter a concept to understand (e.g., REST APIs, Machine Learning)"
               className="flex-1 bg-inset border border-white/5 rounded-xl px-4 py-3 text-white placeholder-[#64748B] outline-none text-sm transition-shadow duration-300"
               whileFocus={{
-                boxShadow: '0 0 0 2px rgba(13,162,231,0.3), 0 0 20px rgba(13,162,231,0.1)',
-                borderColor: 'rgba(13,162,231,0.5)',
+                boxShadow: '0 0 0 2px rgba(0,102,255,0.3), 0 0 20px rgba(0,102,255,0.1)',
+                borderColor: 'rgba(0,102,255,0.5)',
               }}
               onKeyDown={(e) => e.key === 'Enter' && handleExplain()}
             />
@@ -255,17 +255,17 @@ const MicroCoach = () => {
                   key={d}
                   onClick={() => setDepth(d)}
                   className={`px-3 py-2 rounded-xl text-xs font-medium capitalize transition-all ${
-                    depth === d ? 'bg-[#0da2e7] text-white' : 'bg-inset text-[#64748B] border border-white/5'
+                    depth === d ? 'bg-[#0066FF] text-white' : 'bg-inset text-[#64748B] border border-white/5'
                   }`}
                   whileHover={{
                     scale: 1.05,
-                    boxShadow: '0 0 12px rgba(13,162,231,0.2)',
+                    boxShadow: '0 0 12px rgba(0,102,255,0.2)',
                   }}
                   whileTap={{ scale: 0.95 }}
                   animate={depth === d ? {
-                    boxShadow: '0 0 12px rgba(13,162,231,0.3)',
+                    boxShadow: '0 0 12px rgba(0,102,255,0.3)',
                   } : {
-                    boxShadow: '0 0 0px rgba(13,162,231,0)',
+                    boxShadow: '0 0 0px rgba(0,102,255,0)',
                   }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
@@ -299,7 +299,7 @@ const MicroCoach = () => {
                 </motion.p>
                 {explanation.keyPoints && Array.isArray(explanation.keyPoints) && explanation.keyPoints.length > 0 && (
                   <div>
-                    <p className="text-xs font-medium text-[#0da2e7] mb-1">Key Points</p>
+                    <p className="text-xs font-medium text-[#0066FF] mb-1">Key Points</p>
                     <ul className="list-disc list-inside space-y-1">
                       {explanation.keyPoints.map((kp: string, ki: number) => (
                         <li key={ki} className="text-xs text-[#94A3B8]">{kp}</li>
@@ -309,7 +309,7 @@ const MicroCoach = () => {
                 )}
                 {explanation.analogies && Array.isArray(explanation.analogies) && explanation.analogies.length > 0 && (
                   <div>
-                    <p className="text-xs font-medium text-[#0da2e7] mb-1">Analogies</p>
+                    <p className="text-xs font-medium text-[#0066FF] mb-1">Analogies</p>
                     {explanation.analogies.map((a: string, ai: number) => (
                       <p key={ai} className="text-xs text-[#94A3B8]">{a}</p>
                     ))}
@@ -331,7 +331,7 @@ const MicroCoach = () => {
                 <motion.span
                   className="text-sm text-[#94A3B8]"
                   key={completedCount}
-                  initial={{ scale: 1.3, color: '#0da2e7' }}
+                  initial={{ scale: 1.3, color: '#0066FF' }}
                   animate={{ scale: 1, color: '#94A3B8' }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
@@ -342,14 +342,14 @@ const MicroCoach = () => {
               {/* Generate Tasks Button with Glow + Loading */}
               <motion.div
                 whileHover={{
-                  boxShadow: '0 0 20px rgba(13,162,231,0.3)',
+                  boxShadow: '0 0 20px rgba(0,102,255,0.3)',
                 }}
                 className="rounded-xl"
                 animate={generating ? {
                   boxShadow: [
-                    '0 0 0px rgba(13,162,231,0)',
-                    '0 0 25px rgba(13,162,231,0.4)',
-                    '0 0 0px rgba(13,162,231,0)',
+                    '0 0 0px rgba(0,102,255,0)',
+                    '0 0 25px rgba(0,102,255,0.4)',
+                    '0 0 0px rgba(0,102,255,0)',
                   ],
                 } : {}}
                 transition={generating ? { duration: 1.2, repeat: Infinity } : {}}
@@ -384,10 +384,10 @@ const MicroCoach = () => {
                       y: -3,
                       boxShadow: task.completed
                         ? '0 0 15px rgba(34,197,94,0.15)'
-                        : '0 0 15px rgba(13,162,231,0.15)',
+                        : '0 0 15px rgba(0,102,255,0.15)',
                       borderColor: task.completed
                         ? 'rgba(34,197,94,0.3)'
-                        : 'rgba(13,162,231,0.3)',
+                        : 'rgba(0,102,255,0.3)',
                     }}
                     transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                     className={`flex items-start gap-3 p-4 rounded-xl border transition-colors ${
@@ -402,7 +402,7 @@ const MicroCoach = () => {
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.85 }}
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
-                        task.completed ? 'bg-green-500 border-green-500' : 'border-white/20 hover:border-[#0da2e7]'
+                        task.completed ? 'bg-green-500 border-green-500' : 'border-white/20 hover:border-[#0066FF]'
                       }`}
                     >
                       <AnimatePresence mode="wait">
@@ -445,7 +445,7 @@ const MicroCoach = () => {
                             href={task.resourceUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-[#0da2e7] hover:text-[#38bdf8] flex items-center gap-1"
+                            className="text-xs text-[#0066FF] hover:text-[#38bdf8] flex items-center gap-1"
                             whileHover={{ x: 2 }}
                           >
                             <Icon name="open_in_new" size={12} /> Resource
@@ -490,7 +490,7 @@ const MicroCoach = () => {
               animate="animate"
               className="rounded-2xl"
             >
-              <Card className="border-[#0da2e7]/20 bg-[#0da2e7]/5">
+              <Card className="border-[#0066FF]/20 bg-[#0066FF]/5">
                 <div className="flex items-start gap-3">
                   <motion.div
                     animate={{
@@ -499,7 +499,7 @@ const MicroCoach = () => {
                     }}
                     transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
                   >
-                    <Icon name="lightbulb" size={24} className="text-[#0da2e7] mt-0.5" />
+                    <Icon name="lightbulb" size={24} className="text-[#0066FF] mt-0.5" />
                   </motion.div>
                   <div>
                     <h3 className="font-semibold text-white">Next Best Action</h3>

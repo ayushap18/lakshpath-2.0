@@ -6,6 +6,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import ProgressBar from '../components/ui/ProgressBar';
+import Skeleton, { SkeletonStatCard } from '../components/ui/Skeleton';
 import { useAssessment } from '../hooks/useAssessment';
 import { useProfile } from '../hooks/useProfile';
 import { profileAPI, userAPI } from '../services/api';
@@ -21,8 +22,8 @@ const item = {
 
 const RARITY_COLORS: Record<string, string> = {
   COMMON: '#94A3B8',
-  RARE: '#0da2e7',
-  EPIC: '#8B5CF6',
+  RARE: '#0066FF',
+  EPIC: '#7C3AED',
   LEGENDARY: '#F59E0B',
 };
 
@@ -67,8 +68,8 @@ const Dashboard = () => {
   const xpNeeded = streakData?.xpNeeded || 100;
 
   const quickActions = [
-    { label: 'AI Mentor', icon: 'neurology', path: '/chat', color: '#0da2e7', bgColor: 'rgba(13,162,231,0.1)' },
-    { label: 'Interview', icon: 'record_voice_over', path: '/interview', color: '#8B5CF6', bgColor: 'rgba(139,92,246,0.1)' },
+    { label: 'AI Mentor', icon: 'neurology', path: '/chat', color: '#0066FF', bgColor: 'rgba(0,102,255,0.1)' },
+    { label: 'Interview', icon: 'record_voice_over', path: '/interview', color: '#7C3AED', bgColor: 'rgba(124,58,237,0.1)' },
     { label: 'Portfolio', icon: 'work_history', path: '/portfolio', color: '#10B981', bgColor: 'rgba(16,185,129,0.1)' },
     { label: 'Market', icon: 'query_stats', path: '/market', color: '#F59E0B', bgColor: 'rgba(245,158,11,0.1)' },
   ];
@@ -77,32 +78,27 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="space-y-5 animate-pulse">
+      <div className="space-y-5">
         {/* Hero skeleton */}
-        <div className="rounded-2xl p-6 h-32" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <div className="h-5 w-48 rounded-lg bg-white/8 mb-3" />
-          <div className="h-4 w-72 rounded-lg bg-white/5" />
-        </div>
+        <Skeleton variant="rectangular" height={132} className="rounded-2xl" />
         {/* Stat card skeletons */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1,2,3,4].map(i => (
-            <div key={i} className="rounded-2xl p-4 h-24" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="h-4 w-16 rounded bg-white/8 mb-2" />
-              <div className="h-7 w-12 rounded bg-white/6" />
-            </div>
-          ))}
+          {[1,2,3,4].map(i => <SkeletonStatCard key={i} />)}
         </div>
         {/* Content skeletons */}
-        {[1,2].map(i => (
-          <div key={i} className="rounded-2xl p-5 h-40" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="h-4 w-32 rounded bg-white/8 mb-4" />
-            <div className="space-y-2">
-              <div className="h-3 w-full rounded bg-white/5" />
-              <div className="h-3 w-4/5 rounded bg-white/5" />
-              <div className="h-3 w-3/5 rounded bg-white/5" />
+        <div className="flex flex-col lg:flex-row gap-5">
+          <div className="flex-1 space-y-5">
+            <Skeleton variant="rectangular" height={200} className="rounded-2xl" />
+            <div className="grid grid-cols-4 gap-3">
+              {[1,2,3,4].map(i => <Skeleton key={i} variant="rectangular" height={88} className="rounded-2xl" />)}
             </div>
+            <Skeleton variant="rectangular" height={180} className="rounded-2xl" />
           </div>
-        ))}
+          <div className="w-full lg:w-80 space-y-5">
+            <Skeleton variant="rectangular" height={160} className="rounded-2xl" />
+            <Skeleton variant="rectangular" height={200} className="rounded-2xl" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -111,9 +107,9 @@ const Dashboard = () => {
     <motion.div variants={container} initial="hidden" animate="visible" className="space-y-5">
       {/* Welcome Hero Section */}
       <motion.div variants={item}>
-        <div className="rounded-2xl p-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.06), rgba(139,92,246,0.04), rgba(15,23,42,0.8))', border: '1px solid rgba(13,162,231,0.08)' }}>
+        <div className="rounded-2xl p-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.06), rgba(124,58,237,0.04), rgba(15,23,42,0.8))', border: '1px solid rgba(0,102,255,0.08)' }}>
           <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-          <motion.div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-[0.04] pointer-events-none" style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
+          <motion.div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-[0.04] pointer-events-none" style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }} animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
 
           <div className="relative z-[1] flex items-center justify-between">
             <div>
@@ -129,7 +125,7 @@ const Dashboard = () => {
             <div className="hidden lg:flex items-center gap-3">
               {[
                 { label: 'Streak', value: `${streak} days`, icon: 'local_fire_department', color: '#F59E0B' },
-                { label: 'XP', value: String(xp), icon: 'stars', color: '#8B5CF6' },
+                { label: 'XP', value: String(xp), icon: 'stars', color: '#7C3AED' },
                 { label: 'Level', value: `${xpLevel} - ${xpLevelLabel}`, icon: 'emoji_events', color: '#10B981' },
               ].map((stat, i) => (
                 <motion.div key={stat.label} className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: `${stat.color}08`, border: `1px solid ${stat.color}15` }} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }}>
@@ -256,7 +252,7 @@ const Dashboard = () => {
           {/* Top Match Card — FIX HIGH-10: Show empty state when no real career match data */}
           <motion.div variants={item}>
             <Card tilt glass className="relative">
-              <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} />
+              <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-[0.05] pointer-events-none" style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }} />
               {hasCareerMatch ? (
                 <>
                   <div className="flex items-center gap-2 mb-4">
@@ -281,9 +277,9 @@ const Dashboard = () => {
                       <div className="relative flex-shrink-0 ml-4">
                         <svg className="w-24 h-24" viewBox="0 0 96 96">
                           <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="7" />
-                          <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(13,162,231,0.08)" strokeWidth="7" />
-                          <motion.circle cx="48" cy="48" r="40" fill="none" strokeWidth="7" stroke="url(#scoreGradient)" strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 40}`} initial={{ strokeDashoffset: 2 * Math.PI * 40 }} animate={{ strokeDashoffset: 2 * Math.PI * 40 * (1 - matchScore / 100) }} transition={{ duration: 1.8, ease: 'easeOut', delay: 0.3 }} transform="rotate(-90 48 48)" style={{ filter: 'drop-shadow(0 0 6px rgba(13,162,231,0.4))' }} />
-                          <defs><linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#0da2e7" /><stop offset="100%" stopColor="#8B5CF6" /></linearGradient></defs>
+                          <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(0,102,255,0.08)" strokeWidth="7" />
+                          <motion.circle cx="48" cy="48" r="40" fill="none" strokeWidth="7" stroke="url(#scoreGradient)" strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 40}`} initial={{ strokeDashoffset: 2 * Math.PI * 40 }} animate={{ strokeDashoffset: 2 * Math.PI * 40 * (1 - matchScore / 100) }} transition={{ duration: 1.8, ease: 'easeOut', delay: 0.3 }} transform="rotate(-90 48 48)" style={{ filter: 'drop-shadow(0 0 6px rgba(0,102,255,0.4))' }} />
+                          <defs><linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#0066FF" /><stop offset="100%" stopColor="#7C3AED" /></linearGradient></defs>
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                           <span className="text-2xl font-extrabold text-white">{matchScore}%</span>
@@ -309,7 +305,7 @@ const Dashboard = () => {
           {/* Quick Actions */}
           <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {quickActions.map((action, i) => (
-              <motion.button key={action.label} onClick={() => navigate(action.path)} className="flex flex-col items-center gap-2.5 p-4 rounded-2xl border border-white/[0.05] relative overflow-hidden group" style={{ background: 'linear-gradient(145deg, rgba(30,41,59,0.4), rgba(15,23,42,0.3))' }} whileHover={{ y: -4, borderColor: `${action.color}30`, boxShadow: `0 12px 32px rgba(0,0,0,0.2), 0 0 20px ${action.color}10` }} whileTap={{ scale: 0.96 }} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + i * 0.06 }}>
+              <motion.button key={action.label} onClick={() => navigate(action.path)} className="flex flex-col items-center gap-2.5 p-4 rounded-2xl border border-white/[0.05] relative overflow-hidden group" style={{ background: 'linear-gradient(145deg, rgba(17,24,39,0.4), rgba(15,23,42,0.3))' }} whileHover={{ y: -4, borderColor: `${action.color}30`, boxShadow: `0 12px 32px rgba(0,0,0,0.2), 0 0 20px ${action.color}10` }} whileTap={{ scale: 0.96 }} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + i * 0.06 }}>
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: action.bgColor, border: `1px solid ${action.color}20` }}>
                   <Icon name={action.icon} size={22} style={{ color: action.color }} />
                 </div>
@@ -334,10 +330,10 @@ const Dashboard = () => {
                   const state = states[i];
                   return (
                     <div key={i} className="flex-1 flex flex-col items-center relative">
-                      {i < 3 && (<div className="absolute top-6 left-[60%] right-[-40%] h-[2px]"><div className="h-full rounded-full" style={{ background: state === 'completed' ? 'linear-gradient(90deg, #10B981, #0da2e7)' : 'rgba(255,255,255,0.06)' }} /></div>)}
-                      <motion.div className={`w-12 h-12 rounded-2xl flex items-center justify-center relative z-[1] ${state === 'locked' ? 'border border-white/10' : ''}`} style={state === 'completed' ? { background: 'linear-gradient(135deg, #10B981, #059669)', boxShadow: '0 0 16px rgba(16,185,129,0.25)' } : state === 'active' ? { background: 'linear-gradient(135deg, #0da2e7, #22D3EE)', boxShadow: '0 0 16px rgba(13,162,231,0.3)' } : { background: 'rgba(30,41,59,0.5)' }} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 + i * 0.12, type: 'spring', stiffness: 200 }}>
+                      {i < 3 && (<div className="absolute top-6 left-[60%] right-[-40%] h-[2px]"><div className="h-full rounded-full" style={{ background: state === 'completed' ? 'linear-gradient(90deg, #10B981, #0066FF)' : 'rgba(255,255,255,0.06)' }} /></div>)}
+                      <motion.div className={`w-12 h-12 rounded-2xl flex items-center justify-center relative z-[1] ${state === 'locked' ? 'border border-white/10' : ''}`} style={state === 'completed' ? { background: 'linear-gradient(135deg, #10B981, #059669)', boxShadow: '0 0 16px rgba(16,185,129,0.25)' } : state === 'active' ? { background: 'linear-gradient(135deg, #0066FF, #22D3EE)', boxShadow: '0 0 16px rgba(0,102,255,0.3)' } : { background: 'rgba(17,24,39,0.5)' }} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 + i * 0.12, type: 'spring', stiffness: 200 }}>
                         <Icon name={state === 'completed' ? 'check' : state === 'active' ? 'play_arrow' : 'lock'} size={20} className={state === 'locked' ? 'text-muted' : 'text-white'} />
-                        {state === 'active' && (<motion.div className="absolute inset-0 rounded-2xl" style={{ border: '2px solid rgba(13,162,231,0.4)' }} animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 2, repeat: Infinity }} />)}
+                        {state === 'active' && (<motion.div className="absolute inset-0 rounded-2xl" style={{ border: '2px solid rgba(0,102,255,0.4)' }} animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 2, repeat: Infinity }} />)}
                       </motion.div>
                       <span className="text-[11px] text-muted text-center leading-tight mt-2.5">{phase.title || `Phase ${i + 1}`}</span>
                     </div>
@@ -385,7 +381,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex items-end gap-1.5 h-24">
                   {[35, 50, 60, 45, 70, 80, 65, 90].map((h, i) => (
-                    <motion.div key={i} className="flex-1 rounded-t-md relative overflow-hidden" style={{ background: i === 7 ? 'linear-gradient(180deg, #0da2e7, rgba(13,162,231,0.4))' : 'linear-gradient(180deg, rgba(13,162,231,0.3), rgba(13,162,231,0.08))' }} initial={{ height: 0, opacity: 0 }} animate={{ height: `${h}%`, opacity: 1 }} transition={{ delay: 0.5 + i * 0.05, duration: 0.5, ease: 'easeOut' }} />
+                    <motion.div key={i} className="flex-1 rounded-t-md relative overflow-hidden" style={{ background: i === 7 ? 'linear-gradient(180deg, #0066FF, rgba(0,102,255,0.4))' : 'linear-gradient(180deg, rgba(0,102,255,0.3), rgba(0,102,255,0.08))' }} initial={{ height: 0, opacity: 0 }} animate={{ height: `${h}%`, opacity: 1 }} transition={{ delay: 0.5 + i * 0.05, duration: 0.5, ease: 'easeOut' }} />
                   ))}
                 </div>
                 <div className="flex justify-between mt-2"><span className="text-[10px] text-muted">Jan</span><span className="text-[10px] text-muted">Aug</span></div>
@@ -435,8 +431,8 @@ const Dashboard = () => {
               {streakData?.breakdown && (
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   {[
-                    { label: 'Assessments', value: streakData.breakdown.assessments, icon: 'psychology', color: '#0da2e7' },
-                    { label: 'Interviews', value: streakData.breakdown.interviews, icon: 'mic', color: '#8B5CF6' },
+                    { label: 'Assessments', value: streakData.breakdown.assessments, icon: 'psychology', color: '#0066FF' },
+                    { label: 'Interviews', value: streakData.breakdown.interviews, icon: 'mic', color: '#7C3AED' },
                     { label: 'Badges', value: streakData.breakdown.badges, icon: 'emoji_events', color: '#F59E0B' },
                   ].map(b => (
                     <div key={b.label} className="rounded-lg p-2 text-center" style={{ background: `${b.color}08`, border: `1px solid ${b.color}12` }}>
@@ -463,7 +459,7 @@ const Dashboard = () => {
             <Card glass>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}><Icon name="fitness_center" size={16} style={{ color: '#8B5CF6' }} /></div>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(124,58,237,0.1)' }}><Icon name="fitness_center" size={16} style={{ color: '#7C3AED' }} /></div>
                   <h3 className="text-[15px] font-bold text-white">Micro-Coach</h3>
                 </div>
                 <Badge variant="violet" size="sm">{microTasks.length > 0 ? `${microTasks.length} tasks` : 'No tasks'}</Badge>
@@ -471,9 +467,9 @@ const Dashboard = () => {
               {microTasks.length > 0 ? (
               <div className="space-y-2.5">
                 {microTasks.map((task: any, i: number) => (
-                  <motion.div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-white/[0.04] cursor-pointer group transition-all duration-200" style={{ background: 'rgba(15,23,42,0.4)' }} whileHover={{ borderColor: 'rgba(139,92,246,0.2)', background: 'rgba(139,92,246,0.03)' }} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 + i * 0.08 }}>
-                    <div className="w-5 h-5 rounded-full border-2 border-white/15 group-hover:border-[#8B5CF6] flex-shrink-0 mt-0.5 transition-colors flex items-center justify-center">
-                      <div className="w-0 h-0 group-hover:w-2 group-hover:h-2 rounded-full bg-[#8B5CF6] transition-all duration-200" />
+                  <motion.div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-white/[0.04] cursor-pointer group transition-all duration-200" style={{ background: 'rgba(15,23,42,0.4)' }} whileHover={{ borderColor: 'rgba(124,58,237,0.2)', background: 'rgba(124,58,237,0.03)' }} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 + i * 0.08 }}>
+                    <div className="w-5 h-5 rounded-full border-2 border-white/15 group-hover:border-[#7C3AED] flex-shrink-0 mt-0.5 transition-colors flex items-center justify-center">
+                      <div className="w-0 h-0 group-hover:w-2 group-hover:h-2 rounded-full bg-[#7C3AED] transition-all duration-200" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white font-medium truncate">{task.title}</p>
@@ -492,7 +488,7 @@ const Dashboard = () => {
                 </Button>
               </div>
               )}
-              <button onClick={() => navigate('/micro-coach')} className="w-full mt-4 py-2.5 rounded-xl text-xs font-semibold text-[#8B5CF6] flex items-center justify-center gap-1 transition-all duration-200 hover:bg-[#8B5CF6]/5" style={{ border: '1px solid rgba(139,92,246,0.15)' }}>View All Tasks <Icon name="arrow_forward" size={14} /></button>
+              <button onClick={() => navigate('/micro-coach')} className="w-full mt-4 py-2.5 rounded-xl text-xs font-semibold text-[#7C3AED] flex items-center justify-center gap-1 transition-all duration-200 hover:bg-[#7C3AED]/5" style={{ border: '1px solid rgba(124,58,237,0.15)' }}>View All Tasks <Icon name="arrow_forward" size={14} /></button>
             </Card>
           </motion.div>
 
@@ -565,8 +561,8 @@ const Dashboard = () => {
 
           {/* AI Insight Card */}
           <motion.div variants={item}>
-            <div className="rounded-2xl p-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(13,162,231,0.08), rgba(139,92,246,0.05))', border: '1px solid rgba(13,162,231,0.12)' }}>
-              <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-[0.06] pointer-events-none" style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }} />
+            <div className="rounded-2xl p-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(0,102,255,0.08), rgba(124,58,237,0.05))', border: '1px solid rgba(0,102,255,0.12)' }}>
+              <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-[0.06] pointer-events-none" style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }} />
               <div className="relative z-[1]">
                 <div className="flex items-center gap-2 mb-3">
                   <Icon name="auto_awesome" size={18} className="text-accent" />

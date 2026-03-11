@@ -132,7 +132,7 @@ const AnimatedPercentage = ({ value }: { value: number }) => {
 /* ───── Pulsing Ring Component for Submitting ───── */
 const PulsingRing = ({ delay, size }: { delay: number; size: number }) => (
   <motion.div
-    className="absolute rounded-full border-2 border-[#0da2e7]"
+    className="absolute rounded-full border-2 border-[#0066FF]"
     style={{ width: size, height: size }}
     initial={{ opacity: 0.6, scale: 0.8 }}
     animate={{
@@ -151,7 +151,7 @@ const PulsingRing = ({ delay, size }: { delay: number; size: number }) => (
 /* ───── Orbiting Dot Component ───── */
 const OrbitDot = ({ delay, radius, duration }: { delay: number; radius: number; duration: number }) => (
   <motion.div
-    className="absolute w-2 h-2 rounded-full bg-[#0da2e7]"
+    className="absolute w-2 h-2 rounded-full bg-[#0066FF]"
     style={{ top: '50%', left: '50%', marginTop: -4, marginLeft: -4 }}
     animate={{
       x: [radius, 0, -radius, 0, radius],
@@ -267,7 +267,7 @@ const Assessment = () => {
 
             {/* Center spinner */}
             <motion.div
-              className="w-16 h-16 border-4 border-[#0da2e7]/30 border-t-[#0da2e7] rounded-full"
+              className="w-16 h-16 border-4 border-[#0066FF]/30 border-t-[#0066FF] rounded-full"
               animate={{ rotate: 360 }}
               transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
             />
@@ -294,7 +294,7 @@ const Assessment = () => {
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-2 h-2 rounded-full bg-[#0da2e7]"
+                className="w-2 h-2 rounded-full bg-[#0066FF]"
                 animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.4, 1, 0.4],
@@ -326,7 +326,7 @@ const Assessment = () => {
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-[#94A3B8]">Question {current + 1} of {QUESTIONS.length}</span>
             <motion.span
-              className="text-sm text-[#0da2e7] font-medium"
+              className="text-sm text-[#0066FF] font-medium"
               key={progressPercent}
             >
               <AnimatedPercentage value={progressPercent} />
@@ -335,7 +335,7 @@ const Assessment = () => {
           {/* Animated Progress Fill */}
           <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
             <motion.div
-              className="h-full rounded-full bg-[#0da2e7]"
+              className="h-full rounded-full bg-[#0066FF]"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -374,7 +374,7 @@ const Assessment = () => {
                       variants={optionVariants}
                       initial="hidden"
                       animate={answer === opt ? {
-                        boxShadow: '0 0 12px rgba(13,162,231,0.25)',
+                        boxShadow: '0 0 12px rgba(0,102,255,0.25)',
                         scale: 1,
                         opacity: 1,
                         y: 0,
@@ -382,13 +382,13 @@ const Assessment = () => {
                       onClick={() => setAnswer(opt)}
                       className={`w-full text-left px-5 py-4 rounded-xl border transition-colors ${
                         answer === opt
-                          ? 'bg-[#0da2e7]/10 border-[#0da2e7] text-white'
-                          : 'bg-[#1E293B] border-[#1E293B] text-[#94A3B8] hover:text-white'
+                          ? 'bg-[#0066FF]/10 border-[#0066FF] text-white'
+                          : 'bg-[#111827] border-[#1E293B] text-[#94A3B8] hover:text-white'
                       }`}
                       whileHover={{
                         y: -2,
-                        boxShadow: '0 0 16px rgba(13,162,231,0.15)',
-                        borderColor: answer === opt ? 'rgba(13,162,231,1)' : 'rgba(255,255,255,0.15)',
+                        boxShadow: '0 0 16px rgba(0,102,255,0.15)',
+                        borderColor: answer === opt ? 'rgba(0,102,255,1)' : 'rgba(255,255,255,0.15)',
                       }}
                       whileTap={{ scale: 0.98 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -414,12 +414,12 @@ const Assessment = () => {
                         onClick={() => toggleMultiple(opt)}
                         className={`px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                           selected
-                            ? 'bg-[#0da2e7]/10 border-[#0da2e7] text-white'
-                            : 'bg-[#1E293B] border-[#1E293B] text-[#94A3B8] hover:border-white/20'
+                            ? 'bg-[#0066FF]/10 border-[#0066FF] text-white'
+                            : 'bg-[#111827] border-[#1E293B] text-[#94A3B8] hover:border-white/20'
                         }`}
                         whileHover={{
                           scale: 1.05,
-                          boxShadow: '0 0 12px rgba(13,162,231,0.15)',
+                          boxShadow: '0 0 12px rgba(0,102,255,0.15)',
                         }}
                         whileTap={chipSpring.tap}
                       >
@@ -454,7 +454,7 @@ const Assessment = () => {
                       variants={optionVariants}
                       initial="hidden"
                       animate={answer === n ? {
-                        boxShadow: '0 0 14px rgba(13,162,231,0.35)',
+                        boxShadow: '0 0 14px rgba(0,102,255,0.35)',
                         scale: [1, 1.15, 1],
                         opacity: 1,
                         y: 0,
@@ -462,12 +462,12 @@ const Assessment = () => {
                       onClick={() => setAnswer(n)}
                       className={`w-14 h-14 rounded-xl border text-lg font-bold transition-colors ${
                         answer === n
-                          ? 'bg-[#0da2e7] border-[#0da2e7] text-white'
-                          : 'bg-[#1E293B] border-[#1E293B] text-[#94A3B8] hover:border-white/20'
+                          ? 'bg-[#0066FF] border-[#0066FF] text-white'
+                          : 'bg-[#111827] border-[#1E293B] text-[#94A3B8] hover:border-white/20'
                       }`}
                       whileHover={{
                         scale: 1.1,
-                        boxShadow: '0 0 16px rgba(13,162,231,0.25)',
+                        boxShadow: '0 0 16px rgba(0,102,255,0.25)',
                       }}
                       whileTap={{ scale: 0.9 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -484,13 +484,13 @@ const Assessment = () => {
                   value={answer || ''}
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder="Type your answer..."
-                  className="w-full bg-[#1E293B] border border-[#1E293B] rounded-xl p-4 text-white placeholder-[#64748B] outline-none min-h-[120px] resize-none transition-shadow duration-300"
+                  className="w-full bg-[#111827] border border-[#1E293B] rounded-xl p-4 text-white placeholder-[#64748B] outline-none min-h-[120px] resize-none transition-shadow duration-300"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                   whileFocus={{
-                    boxShadow: '0 0 0 2px rgba(13,162,231,0.3), 0 0 24px rgba(13,162,231,0.1)',
-                    borderColor: 'rgba(13,162,231,0.5)',
+                    boxShadow: '0 0 0 2px rgba(0,102,255,0.3), 0 0 24px rgba(0,102,255,0.1)',
+                    borderColor: 'rgba(0,102,255,0.5)',
                   }}
                 />
               )}
@@ -524,7 +524,7 @@ const Assessment = () => {
                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
               >
                 <motion.div
-                  whileHover={{ boxShadow: '0 0 16px rgba(13,162,231,0.2)' }}
+                  whileHover={{ boxShadow: '0 0 16px rgba(0,102,255,0.2)' }}
                   className="rounded-xl"
                 >
                   <Button variant="secondary" size="md" onClick={() => setCurrent((p) => p - 1)}>
@@ -537,7 +537,7 @@ const Assessment = () => {
           <div className="flex-1" />
           <motion.div
             whileHover={{
-              boxShadow: '0 0 20px rgba(13,162,231,0.3)',
+              boxShadow: '0 0 20px rgba(0,102,255,0.3)',
             }}
             whileTap={{ scale: 0.97 }}
             className="rounded-xl"
@@ -564,12 +564,12 @@ const Assessment = () => {
           transition={{ delay: 0.2 }}
         >
           <motion.div
-            className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0da2e7] to-[#38bdf8] flex items-center justify-center"
+            className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0066FF] to-[#38bdf8] flex items-center justify-center"
             animate={{
               boxShadow: [
-                '0 0 0px rgba(13,162,231,0)',
-                '0 0 14px rgba(13,162,231,0.4)',
-                '0 0 0px rgba(13,162,231,0)',
+                '0 0 0px rgba(0,102,255,0)',
+                '0 0 14px rgba(0,102,255,0.4)',
+                '0 0 0px rgba(0,102,255,0)',
               ],
             }}
             transition={{ duration: 3, repeat: Infinity }}
@@ -591,9 +591,9 @@ const Assessment = () => {
                 className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mx-auto mb-3"
                 animate={{
                   boxShadow: [
-                    '0 0 0px rgba(13,162,231,0)',
-                    '0 0 12px rgba(13,162,231,0.2)',
-                    '0 0 0px rgba(13,162,231,0)',
+                    '0 0 0px rgba(0,102,255,0)',
+                    '0 0 12px rgba(0,102,255,0.2)',
+                    '0 0 0px rgba(0,102,255,0)',
                   ],
                 }}
                 transition={{ duration: 2.5, repeat: Infinity }}
@@ -620,17 +620,17 @@ const Assessment = () => {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="bg-[#1E293B] border border-[#1E293B] rounded-xl p-4 flex items-start gap-3 relative overflow-hidden"
+                    className="bg-[#111827] border border-[#1E293B] rounded-xl p-4 flex items-start gap-3 relative overflow-hidden"
                   >
                     {/* Pulse glow overlay for newly detected patterns */}
                     {isNew && (
                       <motion.div
                         className="absolute inset-0 rounded-xl pointer-events-none"
                         initial={{
-                          boxShadow: 'inset 0 0 20px rgba(13,162,231,0.3)',
+                          boxShadow: 'inset 0 0 20px rgba(0,102,255,0.3)',
                         }}
                         animate={{
-                          boxShadow: 'inset 0 0 0px rgba(13,162,231,0)',
+                          boxShadow: 'inset 0 0 0px rgba(0,102,255,0)',
                         }}
                         transition={{ duration: 1.5, ease: 'easeOut' }}
                       />
@@ -651,7 +651,7 @@ const Assessment = () => {
         </div>
 
         <motion.div
-          className="mt-4 bg-[#1E293B] border border-[#1E293B] rounded-xl p-4"
+          className="mt-4 bg-[#111827] border border-[#1E293B] rounded-xl p-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
@@ -661,7 +661,7 @@ const Assessment = () => {
           </p>
           <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mt-2">
             <motion.div
-              className="h-full rounded-full bg-[#0da2e7]"
+              className="h-full rounded-full bg-[#0066FF]"
               animate={{ width: `${(Object.keys(answers).length / QUESTIONS.length) * 100}%` }}
               transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             />

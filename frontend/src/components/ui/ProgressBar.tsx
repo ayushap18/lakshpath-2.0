@@ -26,17 +26,17 @@ const ProgressBar = ({
     success: 'bg-success',
     warning: 'bg-warning',
     error: 'bg-error',
-    violet: 'bg-[#8B5CF6]',
+    violet: 'bg-[#7C3AED]',
     gradient: '',
   };
 
   const glowMap: Record<string, string> = {
-    accent: 'rgba(13,162,231,0.4)',
+    accent: 'rgba(0,102,255,0.4)',
     success: 'rgba(16,185,129,0.4)',
     warning: 'rgba(245,158,11,0.4)',
     error: 'rgba(239,68,68,0.4)',
-    violet: 'rgba(139,92,246,0.4)',
-    gradient: 'rgba(13,162,231,0.3)',
+    violet: 'rgba(124,58,237,0.4)',
+    gradient: 'rgba(0,102,255,0.3)',
   };
 
   const sizes: Record<string, string> = {
@@ -66,7 +66,7 @@ const ProgressBar = ({
           transition={animated ? { duration: 0.8, ease: 'easeOut' } : undefined}
           style={{
             ...(isGradient
-              ? { background: 'linear-gradient(90deg, #0da2e7, #8B5CF6, #22D3EE)' }
+              ? { background: 'linear-gradient(90deg, #0066FF, #7C3AED, #06B6D4)' }
               : {}),
             boxShadow: percentage > 0 ? `0 0 8px ${glowMap[color]}` : undefined,
           }}

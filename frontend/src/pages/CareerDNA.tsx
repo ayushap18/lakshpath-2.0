@@ -30,15 +30,15 @@ const DNA_TYPES: Record<string, DNAType> = {
   innovator: {
     label: 'The Innovator',
     tagline: 'You see patterns others miss and create solutions that redefine what is possible.',
-    gradient: 'linear-gradient(135deg, #0da2e7, #22D3EE)',
-    accentColor: '#0da2e7',
+    gradient: 'linear-gradient(135deg, #0066FF, #22D3EE)',
+    accentColor: '#0066FF',
     icon: 'auto_awesome',
   },
   strategist: {
     label: 'The Strategist',
     tagline: 'A systems thinker who plans ten steps ahead with precision and clarity.',
-    gradient: 'linear-gradient(135deg, #8B5CF6, #A78BFA)',
-    accentColor: '#8B5CF6',
+    gradient: 'linear-gradient(135deg, #7C3AED, #A78BFA)',
+    accentColor: '#7C3AED',
     icon: 'psychology',
   },
   builder: {
@@ -72,7 +72,7 @@ const SKILL_DIMENSIONS: SkillDimension[] = [
     name: 'Technical',
     score: 82,
     icon: 'terminal',
-    color: '#0da2e7',
+    color: '#0066FF',
     description: 'Strong aptitude in software systems, algorithms, and engineering principles. You think in logic and code.',
     subSkills: ['Data Structures', 'System Design', 'Cloud Architecture'],
   },
@@ -80,7 +80,7 @@ const SKILL_DIMENSIONS: SkillDimension[] = [
     name: 'Creative',
     score: 68,
     icon: 'palette',
-    color: '#8B5CF6',
+    color: '#7C3AED',
     description: 'You approach problems with originality. Your ideas often connect dots others overlook.',
     subSkills: ['Design Thinking', 'UX Intuition', 'Content Strategy'],
   },
@@ -129,8 +129,8 @@ interface PersonalityTrait {
 }
 
 const PERSONALITY_TRAITS: PersonalityTrait[] = [
-  { leftLabel: 'Introvert', rightLabel: 'Extrovert', value: 38, leftIcon: 'self_improvement', rightIcon: 'diversity_3', color: '#8B5CF6' },
-  { leftLabel: 'Thinker', rightLabel: 'Feeler', value: 72, leftIcon: 'psychology', rightIcon: 'favorite', color: '#0da2e7' },
+  { leftLabel: 'Introvert', rightLabel: 'Extrovert', value: 38, leftIcon: 'self_improvement', rightIcon: 'diversity_3', color: '#7C3AED' },
+  { leftLabel: 'Thinker', rightLabel: 'Feeler', value: 72, leftIcon: 'psychology', rightIcon: 'favorite', color: '#0066FF' },
   { leftLabel: 'Planner', rightLabel: 'Improviser', value: 65, leftIcon: 'event_note', rightIcon: 'bolt', color: '#10B981' },
   { leftLabel: 'Specialist', rightLabel: 'Generalist', value: 42, leftIcon: 'target', rightIcon: 'blur_on', color: '#F59E0B' },
   { leftLabel: 'Independent', rightLabel: 'Collaborative', value: 55, leftIcon: 'person', rightIcon: 'group', color: '#22D3EE' },
@@ -157,7 +157,7 @@ const CAREER_MATCHES: CareerMatch[] = [
     growth: '+28%',
     growthLabel: 'Very High',
     icon: 'code',
-    color: '#0da2e7',
+    color: '#0066FF',
     tags: ['Tech', 'Product', 'Startup-Friendly'],
   },
   {
@@ -167,7 +167,7 @@ const CAREER_MATCHES: CareerMatch[] = [
     growth: '+32%',
     growthLabel: 'Very High',
     icon: 'query_stats',
-    color: '#8B5CF6',
+    color: '#7C3AED',
     tags: ['AI/ML', 'Analytics', 'Research'],
   },
   {
@@ -211,12 +211,12 @@ interface PercentileRank {
 }
 
 const PERCENTILE_RANKINGS: PercentileRank[] = [
-  { dimension: 'Technical Skills', percentile: 87, icon: 'terminal', color: '#0da2e7' },
+  { dimension: 'Technical Skills', percentile: 87, icon: 'terminal', color: '#0066FF' },
   { dimension: 'Analytical Ability', percentile: 93, icon: 'analytics', color: '#22D3EE' },
   { dimension: 'Problem Solving', percentile: 91, icon: 'lightbulb', color: '#EF4444' },
   { dimension: 'Communication', percentile: 72, icon: 'forum', color: '#10B981' },
   { dimension: 'Leadership', percentile: 68, icon: 'groups', color: '#F59E0B' },
-  { dimension: 'Creativity', percentile: 75, icon: 'palette', color: '#8B5CF6' },
+  { dimension: 'Creativity', percentile: 75, icon: 'palette', color: '#7C3AED' },
 ];
 
 /* ── SVG Radar Chart Component ── */
@@ -270,13 +270,13 @@ const RadarChart = ({ dimensions, size = 220 }: { dimensions: SkillDimension[]; 
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="mx-auto">
       <defs>
         <linearGradient id="radarFill" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#0da2e7" stopOpacity="0.25" />
-          <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.15" />
+          <stop offset="0%" stopColor="#0066FF" stopOpacity="0.25" />
+          <stop offset="50%" stopColor="#7C3AED" stopOpacity="0.15" />
           <stop offset="100%" stopColor="#22D3EE" stopOpacity="0.2" />
         </linearGradient>
         <linearGradient id="radarStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#0da2e7" />
-          <stop offset="50%" stopColor="#8B5CF6" />
+          <stop offset="0%" stopColor="#0066FF" />
+          <stop offset="50%" stopColor="#7C3AED" />
           <stop offset="100%" stopColor="#22D3EE" />
         </linearGradient>
         <filter id="radarGlow">
@@ -403,14 +403,14 @@ const CareerDNA = () => {
   const personalityTraits = aiData?.personalityTraits || PERSONALITY_TRAITS;
   const careerMatches = aiData?.careerMatches || CAREER_MATCHES;
   const dnaType = aiData?.dnaType
-    ? { label: aiData.dnaType, tagline: aiData.tagline || '', gradient: 'linear-gradient(135deg, #0da2e7, #22D3EE)', accentColor: '#0da2e7', icon: 'auto_awesome' }
+    ? { label: aiData.dnaType, tagline: aiData.tagline || '', gradient: 'linear-gradient(135deg, #0066FF, #22D3EE)', accentColor: '#0066FF', icon: 'auto_awesome' }
     : DNA_TYPES.innovator;
   const strengths = aiData?.strengths || [];
   const idealRoles = aiData?.idealRoles || ['Full-Stack Engineer', 'Solutions Architect', 'Technical Lead'];
   const aiInsight = aiData?.aiInsight || null;
 
   const topStrengths = useMemo(() => {
-    if (strengths.length) return strengths.slice(0, 3).map((s: string, i: number) => ({ name: s, score: 90 - i * 5, color: ['#0da2e7', '#8B5CF6', '#10B981'][i] }));
+    if (strengths.length) return strengths.slice(0, 3).map((s: string, i: number) => ({ name: s, score: 90 - i * 5, color: ['#0066FF', '#7C3AED', '#10B981'][i] }));
     return [...SKILL_DIMENSIONS].sort((a, b) => b.score - a.score).slice(0, 3);
   }, [dimensions, strengths]);
 
@@ -421,8 +421,8 @@ const CareerDNA = () => {
         <div
           className="rounded-2xl p-6 md:p-8 relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, rgba(13,162,231,0.08), rgba(139,92,246,0.05), rgba(15,23,42,0.9))',
-            border: '1px solid rgba(13,162,231,0.1)',
+            background: 'linear-gradient(135deg, rgba(0,102,255,0.08), rgba(124,58,237,0.05), rgba(15,23,42,0.9))',
+            border: '1px solid rgba(0,102,255,0.1)',
           }}
         >
           {/* Dot pattern overlay */}
@@ -431,13 +431,13 @@ const CareerDNA = () => {
           {/* Aurora orbs */}
           <motion.div
             className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-[0.06] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }}
             animate={{ scale: [1, 1.3, 1], x: [0, 20, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
             className="absolute bottom-0 left-1/4 w-60 h-60 rounded-full opacity-[0.04] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }}
             animate={{ scale: [1, 1.2, 1], y: [0, -15, 0] }}
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -453,8 +453,8 @@ const CareerDNA = () => {
               <motion.div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1))',
-                  border: '1px solid rgba(13,162,231,0.2)',
+                  background: 'linear-gradient(135deg, rgba(0,102,255,0.15), rgba(124,58,237,0.1))',
+                  border: '1px solid rgba(0,102,255,0.2)',
                 }}
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
@@ -506,9 +506,9 @@ const CareerDNA = () => {
                   style={
                     activeTab === tab
                       ? {
-                          background: 'linear-gradient(135deg, rgba(13,162,231,0.15), rgba(139,92,246,0.1))',
-                          border: '1px solid rgba(13,162,231,0.2)',
-                          boxShadow: '0 0 20px rgba(13,162,231,0.1)',
+                          background: 'linear-gradient(135deg, rgba(0,102,255,0.15), rgba(124,58,237,0.1))',
+                          border: '1px solid rgba(0,102,255,0.2)',
+                          boxShadow: '0 0 20px rgba(0,102,255,0.1)',
                         }
                       : {
                           background: 'rgba(255,255,255,0.03)',
@@ -535,11 +535,11 @@ const CareerDNA = () => {
           {/* Card decorative elements */}
           <div
             className="absolute -top-20 -right-20 w-56 h-56 rounded-full opacity-[0.06] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }}
           />
           <div
             className="absolute -bottom-16 -left-16 w-44 h-44 rounded-full opacity-[0.04] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }}
           />
 
           {/* Gradient border top accent */}
@@ -683,8 +683,8 @@ const CareerDNA = () => {
                 {/* Quick stats row */}
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Overall Score', value: '82', icon: 'speed', color: '#0da2e7' },
-                    { label: 'Percentile', value: 'Top 12%', icon: 'leaderboard', color: '#8B5CF6' },
+                    { label: 'Overall Score', value: '82', icon: 'speed', color: '#0066FF' },
+                    { label: 'Percentile', value: 'Top 12%', icon: 'leaderboard', color: '#7C3AED' },
                     { label: 'Career Fit', value: '94%', icon: 'check_circle', color: '#10B981' },
                   ].map((stat, i) => (
                     <motion.div
@@ -809,8 +809,8 @@ const CareerDNA = () => {
       {/* ──────────────── SECTION 4: Personality Traits Grid ──────────────── */}
       <motion.div variants={item}>
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}>
-            <Icon name="psychology_alt" size={18} style={{ color: '#8B5CF6' }} />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(124,58,237,0.1)' }}>
+            <Icon name="psychology_alt" size={18} style={{ color: '#7C3AED' }} />
           </div>
           <h2 className="text-lg font-bold text-white">Personality Traits</h2>
           <Badge variant="violet" size="sm">Behavioral Map</Badge>
@@ -895,13 +895,13 @@ const CareerDNA = () => {
           <div
             className="mt-5 pt-4 border-t border-white/[0.04] flex items-start gap-3"
           >
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(139,92,246,0.1)' }}>
-              <Icon name="auto_awesome" size={16} style={{ color: '#8B5CF6' }} />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(124,58,237,0.1)' }}>
+              <Icon name="auto_awesome" size={16} style={{ color: '#7C3AED' }} />
             </div>
             <div>
               <p className="text-xs text-secondary leading-relaxed">
                 <span className="text-white font-semibold">AI Insight:</span> Your personality profile suggests a{' '}
-                <span className="text-[#8B5CF6] font-semibold">reflective thinker</span> who thrives in roles requiring deep analysis
+                <span className="text-[#7C3AED] font-semibold">reflective thinker</span> who thrives in roles requiring deep analysis
                 and structured problem-solving. You lean toward independent work but collaborate effectively when needed.
               </p>
             </div>
@@ -1156,14 +1156,14 @@ const CareerDNA = () => {
         <div
           className="rounded-2xl p-6 relative overflow-hidden text-center"
           style={{
-            background: 'linear-gradient(135deg, rgba(13,162,231,0.06), rgba(139,92,246,0.04), rgba(15,23,42,0.8))',
-            border: '1px solid rgba(13,162,231,0.08)',
+            background: 'linear-gradient(135deg, rgba(0,102,255,0.06), rgba(124,58,237,0.04), rgba(15,23,42,0.8))',
+            border: '1px solid rgba(0,102,255,0.08)',
           }}
         >
           <div className="absolute inset-0 dot-pattern opacity-20 pointer-events-none" />
           <motion.div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-48 rounded-full opacity-[0.05] pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }}
+            style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }}
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />

@@ -108,7 +108,7 @@ const RotatingRing = ({ progress, index }: { progress: number; index: number }) 
           cy="24"
           r={radius}
           fill="none"
-          stroke="rgba(139, 92, 246, 0.15)"
+          stroke="rgba(124, 58, 237, 0.15)"
           strokeWidth="2.5"
         />
         {/* Animated progress arc */}
@@ -127,13 +127,13 @@ const RotatingRing = ({ progress, index }: { progress: number; index: number }) 
         />
         <defs>
           <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#8B5CF6" />
-            <stop offset="100%" stopColor="#0da2e7" />
+            <stop offset="0%" stopColor="#7C3AED" />
+            <stop offset="100%" stopColor="#0066FF" />
           </linearGradient>
         </defs>
       </svg>
       {/* Inner phase number */}
-      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-[#0da2e7] flex items-center justify-center text-white font-bold text-sm z-10">
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-[#0066FF] flex items-center justify-center text-white font-bold text-sm z-10">
         {index + 1}
       </div>
     </div>
@@ -159,7 +159,7 @@ const MilestoneCheckbox = ({
       done
         ? 'bg-emerald-500 border-emerald-500'
         : inProgress
-        ? 'border-[#0da2e7] animate-pulse'
+        ? 'border-[#0066FF] animate-pulse'
         : 'border-white/20 hover:border-white/40'
     }`}
     animate={done ? checkboxSpring : { scale: 1 }}
@@ -224,7 +224,7 @@ const Roadmap = () => {
         transition={{ duration: 0.5 }}
       >
         <motion.div variants={floatVariants} animate="animate">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-[#0da2e7]/20 border border-purple-500/20 flex items-center justify-center mb-5">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-[#0066FF]/20 border border-purple-500/20 flex items-center justify-center mb-5">
             <Icon name="route" size={40} className="text-[#64748B]" />
           </div>
         </motion.div>
@@ -265,7 +265,7 @@ const Roadmap = () => {
           className="absolute inset-0 opacity-90"
           style={{
             background:
-              'linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(13,162,231,0.15) 50%, rgba(34,211,238,0.10) 100%)',
+              'linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(0,102,255,0.15) 50%, rgba(34,211,238,0.10) 100%)',
             backgroundSize: '200% 200%',
             animation: 'gradient-shift 6s ease infinite',
           }}
@@ -308,7 +308,7 @@ const Roadmap = () => {
               <motion.div
                 className="h-full rounded-full relative"
                 style={{
-                  background: 'linear-gradient(90deg, #8B5CF6, #0da2e7, #22D3EE)',
+                  background: 'linear-gradient(90deg, #7C3AED, #0066FF, #22D3EE)',
                   backgroundSize: '200% 100%',
                   animation: 'gradient-shift 4s ease infinite',
                 }}
@@ -427,7 +427,7 @@ const Roadmap = () => {
                           className="w-full h-full"
                           style={{
                             background:
-                              'linear-gradient(to bottom, rgba(139,92,246,0.4), rgba(13,162,231,0.15), transparent)',
+                              'linear-gradient(to bottom, rgba(124,58,237,0.4), rgba(0,102,255,0.15), transparent)',
                           }}
                         />
                       </motion.div>
@@ -454,8 +454,8 @@ const Roadmap = () => {
                                     done
                                       ? 'bg-emerald-400'
                                       : inProgress
-                                      ? 'bg-[#0da2e7]'
-                                      : 'bg-[#1E293B]'
+                                      ? 'bg-[#0066FF]'
+                                      : 'bg-[#111827]'
                                   }`}
                                   initial={{ scale: 0 }}
                                   whileInView={{ scale: 1 }}
@@ -493,7 +493,7 @@ const Roadmap = () => {
                                         href={r.link || r.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 text-xs text-[#0da2e7] bg-[#0da2e7]/5 px-2.5 py-1 rounded-lg border border-transparent transition-colors duration-300 hover:text-[#22D3EE] hover:bg-[#0da2e7]/10 hover:border-[#0da2e7]/20"
+                                        className="inline-flex items-center gap-1 text-xs text-[#0066FF] bg-[#0066FF]/5 px-2.5 py-1 rounded-lg border border-transparent transition-colors duration-300 hover:text-[#22D3EE] hover:bg-[#0066FF]/10 hover:border-[#0066FF]/20"
                                         whileHover={{ x: 4 }}
                                         transition={{
                                           type: 'spring',

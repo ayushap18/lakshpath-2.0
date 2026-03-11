@@ -24,7 +24,7 @@ const Button = ({
 
   const variants = {
     primary: 'bg-accent text-white',
-    secondary: 'bg-[#1E293B] text-white border border-white/[0.08]',
+    secondary: 'bg-[#111827] text-white border border-white/[0.08]',
     ghost: 'bg-transparent text-secondary hover:text-white hover:bg-white/5',
     danger: 'bg-error/10 text-error border border-error/20',
   };
@@ -37,9 +37,9 @@ const Button = ({
 
   const hoverShadows: Record<string, string> = {
     primary:
-      '0 10px 36px rgba(13,162,231,0.4), 0 0 60px rgba(13,162,231,0.15), inset 0 1px 0 rgba(255,255,255,0.15)',
+      '0 10px 36px rgba(0,102,255,0.4), 0 0 60px rgba(0,102,255,0.15), inset 0 1px 0 rgba(255,255,255,0.15)',
     secondary:
-      '0 6px 24px rgba(13,162,231,0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
+      '0 6px 24px rgba(0,102,255,0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
     ghost: 'none',
     danger:
       '0 6px 24px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.04)',
@@ -47,7 +47,7 @@ const Button = ({
 
   const restShadows: Record<string, string> = {
     primary:
-      '0 4px 18px rgba(13,162,231,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
+      '0 4px 18px rgba(0,102,255,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
     secondary:
       '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)',
     ghost: 'none',

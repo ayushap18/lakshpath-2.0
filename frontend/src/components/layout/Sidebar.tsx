@@ -116,8 +116,8 @@ const Sidebar = () => {
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{
-                background: 'linear-gradient(135deg, #0da2e7, #22D3EE)',
-                boxShadow: '0 0 20px rgba(13,162,231,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
+                background: 'linear-gradient(135deg, #0066FF, #22D3EE)',
+                boxShadow: '0 0 20px rgba(0,102,255,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
               }}
             >
               <Icon name="conversion_path" size={18} className="text-white" />
@@ -163,8 +163,8 @@ const Sidebar = () => {
             <div
               className="rounded-xl p-3"
               style={{
-                background: 'linear-gradient(135deg, rgba(13,162,231,0.08), rgba(139,92,246,0.05))',
-                border: '1px solid rgba(13,162,231,0.1)',
+                background: 'linear-gradient(135deg, rgba(0,102,255,0.08), rgba(124,58,237,0.05))',
+                border: '1px solid rgba(0,102,255,0.1)',
               }}
             >
               <div className="flex items-center justify-between mb-2">
@@ -177,7 +177,7 @@ const Sidebar = () => {
               <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
-                  style={{ background: 'linear-gradient(90deg, #0da2e7, #8B5CF6)' }}
+                  style={{ background: 'linear-gradient(90deg, #0066FF, #7C3AED)' }}
                   initial={{ width: 0 }}
                   animate={{ width: `${streakData?.xpProgress || 0}%` }}
                   transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
@@ -247,7 +247,7 @@ const Sidebar = () => {
                           : 'text-secondary hover:text-white'
                         }`}
                       style={isActive ? {
-                        background: 'linear-gradient(135deg, rgba(13,162,231,0.12), rgba(13,162,231,0.04))',
+                        background: 'linear-gradient(135deg, rgba(0,102,255,0.12), rgba(0,102,255,0.04))',
                         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
                       } : undefined}
                     >
@@ -257,8 +257,8 @@ const Sidebar = () => {
                           layoutId="sidebar-active-bar"
                           className="absolute left-0 top-[20%] bottom-[20%] w-[3px] rounded-r-full"
                           style={{
-                            background: 'linear-gradient(180deg, #0da2e7, #22D3EE)',
-                            boxShadow: '0 0 8px rgba(13,162,231,0.5)',
+                            background: 'linear-gradient(180deg, #0066FF, #22D3EE)',
+                            boxShadow: '0 0 8px rgba(0,102,255,0.5)',
                           }}
                           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         />
@@ -327,7 +327,7 @@ const Sidebar = () => {
                           <div
                             className="px-3 py-1.5 rounded-lg text-xs font-medium text-white"
                             style={{
-                              background: 'linear-gradient(135deg, #1E293B, #0F172A)',
+                              background: 'linear-gradient(135deg, #111827, #0F172A)',
                               border: '1px solid rgba(255,255,255,0.08)',
                               boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
                             }}
@@ -353,7 +353,7 @@ const Sidebar = () => {
             onClick={() => navigate('/pricing')}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full px-3 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/20 transition-shadow"
+            className="w-full px-3 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white hover:shadow-lg hover:shadow-[#0066FF]/20 transition-shadow"
           >
             Upgrade to Pro
           </motion.button>
@@ -366,7 +366,7 @@ const Sidebar = () => {
             className="w-full flex justify-center py-2"
             title="Upgrade to Pro"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0066FF] to-[#7C3AED] flex items-center justify-center">
               <Icon name="star" size={16} className="text-white" />
             </div>
           </motion.button>
@@ -415,7 +415,7 @@ const Sidebar = () => {
                 <div
                   className="px-3 py-1.5 rounded-lg text-xs font-medium text-white"
                   style={{
-                    background: 'linear-gradient(135deg, #1E293B, #0F172A)',
+                    background: 'linear-gradient(135deg, #111827, #0F172A)',
                     border: '1px solid rgba(255,255,255,0.08)',
                     boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
                   }}
@@ -435,7 +435,7 @@ const Sidebar = () => {
         >
           <div className="relative flex-shrink-0">
             <Avatar name={userName} size="sm" />
-            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success border-2 border-[#0A0F1C]" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success border-2 border-[#030712]" />
           </div>
           <AnimatePresence>
             {!collapsed && (

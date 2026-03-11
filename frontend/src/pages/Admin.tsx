@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { adminAPI } from '../services/api';
 import Icon from '../components/ui/Icon';
+import Skeleton, { SkeletonStatCard } from '../components/ui/Skeleton';
+import Badge from '../components/ui/Badge';
+import { staggerItem } from '../lib/animations';
 
 type Tab = 'overview' | 'users' | 'revenue' | 'usage';
 
@@ -131,8 +134,15 @@ export default function Admin() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      <div className="space-y-6">
+        <div>
+          <Skeleton variant="text" width={200} height={28} />
+          <Skeleton variant="text" width={320} height={16} className="mt-2" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => <SkeletonStatCard key={i} />)}
+        </div>
+        <Skeleton variant="rectangular" height={300} className="rounded-2xl" />
       </div>
     );
   }
@@ -147,21 +157,31 @@ export default function Admin() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-        <p className="text-white/50 text-sm mt-1">Manage users, billing, and platform analytics</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0066FF] to-[#7C3AED] flex items-center justify-center">
+              <Icon name="admin_panel_settings" className="text-white text-xl" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white tracking-tight">Admin Dashboard</h1>
+              <p className="text-white/50 text-sm">Manage users, billing, and platform analytics</p>
+            </div>
+          </div>
+        </div>
+        <Badge variant="gradient" size="sm" dot>Admin</Badge>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-white/10 pb-0">
+      <div className="flex gap-1 p-1 rounded-xl border border-white/[0.06]" style={{ background: 'rgba(17,24,39,0.5)' }}>
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all border-b-2 -mb-px ${
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
               tab === t.id
-                ? 'text-indigo-400 border-indigo-400'
-                : 'text-white/50 border-transparent hover:text-white/70'
+                ? 'text-white bg-white/[0.08] shadow-sm'
+                : 'text-white/50 hover:text-white/70 hover:bg-white/[0.03]'
             }`}
           >
             <Icon name={t.icon} className="text-lg" />
@@ -174,22 +194,29 @@ export default function Admin() {
       {tab === 'overview' && stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Total Users', value: stats.totalUsers, icon: 'people', color: 'from-blue-500 to-cyan-500' },
-            { label: 'Pro Subscribers', value: stats.proUsers, icon: 'workspace_premium', color: 'from-indigo-500 to-purple-500' },
-            { label: 'Monthly Revenue', value: `₹${stats.mrr.toLocaleString()}`, icon: 'currency_rupee', color: 'from-emerald-500 to-teal-500' },
-            { label: 'Conversion Rate', value: `${stats.conversionRate}%`, icon: 'trending_up', color: 'from-amber-500 to-orange-500' },
-          ].map((card) => (
+            { label: 'Total Users', value: stats.totalUsers, icon: 'people', color: '#0066FF', bgColor: 'rgba(0,102,255,0.08)', trend: '+12%' },
+            { label: 'Pro Subscribers', value: stats.proUsers, icon: 'workspace_premium', color: '#7C3AED', bgColor: 'rgba(124,58,237,0.08)', trend: '+8%' },
+            { label: 'Monthly Revenue', value: `₹${stats.mrr.toLocaleString()}`, icon: 'currency_rupee', color: '#10B981', bgColor: 'rgba(16,185,129,0.08)', trend: '+15%' },
+            { label: 'Conversion Rate', value: `${stats.conversionRate}%`, icon: 'trending_up', color: '#F59E0B', bgColor: 'rgba(245,158,11,0.08)', trend: '+3%' },
+          ].map((card, i) => (
             <motion.div
               key={card.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white/5 rounded-xl p-5 border border-white/10"
+              variants={staggerItem}
+              initial="hidden"
+              animate="visible"
+              custom={i}
+              className="rounded-2xl p-5 border border-white/[0.06] relative overflow-hidden group hover:border-white/[0.1] transition-all"
+              style={{ background: 'linear-gradient(135deg, rgba(17,24,39,0.6), rgba(15,23,42,0.4))' }}
             >
-              <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center mb-3`}>
-                <Icon name={card.icon} className="text-white text-xl" />
+              <div className="absolute -top-12 -right-12 w-24 h-24 rounded-full opacity-[0.04] pointer-events-none" style={{ background: `radial-gradient(circle, ${card.color}, transparent 70%)` }} />
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: card.bgColor, border: `1px solid ${card.color}20` }}>
+                  <Icon name={card.icon} className="text-xl" style={{ color: card.color }} />
+                </div>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ color: '#10B981', background: 'rgba(16,185,129,0.08)' }}>{card.trend}</span>
               </div>
-              <p className="text-white/50 text-sm">{card.label}</p>
-              <p className="text-2xl font-bold text-white mt-1">{card.value}</p>
+              <p className="text-white/50 text-sm font-medium">{card.label}</p>
+              <p className="text-2xl font-extrabold text-white mt-1 tracking-tight">{card.value}</p>
             </motion.div>
           ))}
         </div>
@@ -199,14 +226,17 @@ export default function Admin() {
       {tab === 'users' && (
         <div className="space-y-4">
           <div className="flex gap-3">
-            <input
-              value={userSearch}
-              onChange={(e) => { setUserSearch(e.target.value); setUserPage(1); }}
-              placeholder="Search by name or email..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-500"
-            />
+            <div className="relative flex-1">
+              <Icon name="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+              <input
+                value={userSearch}
+                onChange={(e) => { setUserSearch(e.target.value); setUserPage(1); }}
+                placeholder="Search by name or email..."
+                className="w-full bg-white/[0.04] border border-white/[0.06] rounded-xl pl-10 pr-4 py-2.5 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#0066FF]/50 focus:ring-1 focus:ring-[#0066FF]/20 transition-all"
+              />
+            </div>
           </div>
-          <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+          <div className="rounded-2xl border border-white/[0.06] overflow-hidden" style={{ background: 'rgba(17,24,39,0.4)' }}>
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-white/50">
@@ -227,7 +257,7 @@ export default function Admin() {
                     </td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                        u.plan === 'PRO' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-white/10 text-white/50'
+                        u.plan === 'PRO' ? 'bg-[#0066FF]/15 text-[#60a5fa]' : 'bg-white/10 text-white/50'
                       }`}>
                         {u.plan}
                       </span>
@@ -240,7 +270,7 @@ export default function Admin() {
                     <td className="px-4 py-3">
                       <button
                         onClick={() => { setGiftModal(u); setGiftSuccess(''); }}
-                        className="px-3 py-1 text-xs rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium hover:opacity-90 transition-opacity"
+                        className="px-3 py-1 text-xs rounded-lg bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white font-medium hover:opacity-90 transition-opacity"
                       >
                         Gift Pro
                       </button>
@@ -278,8 +308,8 @@ export default function Admin() {
         <div className="space-y-6">
           {/* Monthly Revenue Bars */}
           {Object.keys(monthlyRevenue).length > 0 && (
-            <div className="bg-white/5 rounded-xl p-5 border border-white/10">
-              <h3 className="text-white font-medium mb-4">Monthly Revenue (Last 6 Months)</h3>
+            <div className="rounded-2xl p-5 border border-white/[0.06]" style={{ background: 'rgba(17,24,39,0.4)' }}>
+              <h3 className="text-white font-semibold mb-4">Monthly Revenue (Last 6 Months)</h3>
               <div className="flex items-end gap-3 h-40">
                 {Object.entries(monthlyRevenue)
                   .sort(([a], [b]) => a.localeCompare(b))
@@ -290,7 +320,7 @@ export default function Admin() {
                       <div key={month} className="flex-1 flex flex-col items-center gap-1">
                         <span className="text-xs text-white/60">₹{revenue.toLocaleString()}</span>
                         <div
-                          className="w-full bg-gradient-to-t from-indigo-500 to-purple-500 rounded-t-md"
+                          className="w-full bg-gradient-to-t from-[#0066FF] to-[#7C3AED] rounded-t-md"
                           style={{ height: `${Math.max(height, 4)}%` }}
                         />
                         <span className="text-xs text-white/40">{month.slice(5)}</span>
@@ -301,10 +331,10 @@ export default function Admin() {
             </div>
           )}
           {/* Payments Table */}
-          <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+          <div className="rounded-2xl border border-white/[0.06] overflow-hidden" style={{ background: 'rgba(17,24,39,0.4)' }}>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 text-white/50">
+                <tr className="border-b border-white/[0.06] text-white/50">
                   <th className="text-left px-4 py-3 font-medium">User</th>
                   <th className="text-left px-4 py-3 font-medium">Amount</th>
                   <th className="text-left px-4 py-3 font-medium">Status</th>
@@ -342,8 +372,8 @@ export default function Admin() {
 
       {/* Usage Tab */}
       {tab === 'usage' && (
-        <div className="bg-white/5 rounded-xl p-5 border border-white/10">
-          <h3 className="text-white font-medium mb-4">Feature Usage (Last 30 Days)</h3>
+        <div className="rounded-2xl p-5 border border-white/[0.06]" style={{ background: 'rgba(17,24,39,0.4)' }}>
+          <h3 className="text-white font-semibold mb-4">Feature Usage (Last 30 Days)</h3>
           {usageData.length > 0 ? (
             <div className="space-y-3">
               {usageData
@@ -358,7 +388,7 @@ export default function Admin() {
                       </span>
                       <div className="flex-1 h-6 bg-white/5 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                          className="h-full bg-gradient-to-r from-[#0066FF] to-[#7C3AED] rounded-full"
                           style={{ width: `${width}%` }}
                         />
                       </div>
@@ -379,12 +409,12 @@ export default function Admin() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#1a1f36] border border-white/10 rounded-2xl p-6 w-full max-w-md mx-4"
+            className="bg-[#111827] border border-white/[0.08] rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-bold text-white mb-1">Gift Pro Subscription</h3>
             <p className="text-white/50 text-sm mb-5">
-              Gift Pro to <span className="text-indigo-400 font-medium">{giftModal.name || giftModal.email}</span>
+              Gift Pro to <span className="text-[#60a5fa] font-medium">{giftModal.name || giftModal.email}</span>
             </p>
 
             {giftSuccess ? (
@@ -404,7 +434,7 @@ export default function Admin() {
                       max={999}
                       value={giftDuration}
                       onChange={(e) => setGiftDuration(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#0066FF]"
                     />
                   </div>
                   <div>
@@ -416,7 +446,7 @@ export default function Admin() {
                           onClick={() => setGiftUnit(u)}
                           className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${
                             giftUnit === u
-                              ? 'bg-indigo-500 text-white'
+                              ? 'bg-[#0066FF] text-white'
                               : 'bg-white/5 text-white/50 hover:bg-white/10'
                           }`}
                         >
@@ -449,7 +479,7 @@ export default function Admin() {
                   <button
                     onClick={handleGiftPro}
                     disabled={giftLoading}
-                    className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                    className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-[#0066FF] to-[#7C3AED] text-white text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
                   >
                     {giftLoading ? 'Gifting...' : `Gift ${giftDuration} ${giftUnit}`}
                   </button>

@@ -13,8 +13,8 @@ const item = {
 };
 
 const HIGHLIGHTS = [
-  { icon: 'quiz', title: '8 Smart Questions', desc: 'Focused on your tech skills, DSA, system design & career goals', color: '#0da2e7', bgColor: 'rgba(13,162,231,0.08)' },
-  { icon: 'auto_awesome', title: 'AI-Powered Analysis', desc: 'Gemini AI maps your skills to the best tech career paths', color: '#8B5CF6', bgColor: 'rgba(139,92,246,0.08)' },
+  { icon: 'quiz', title: '8 Smart Questions', desc: 'Focused on your tech skills, DSA, system design & career goals', color: '#0066FF', bgColor: 'rgba(0,102,255,0.08)' },
+  { icon: 'auto_awesome', title: 'AI-Powered Analysis', desc: 'Gemini AI maps your skills to the best tech career paths', color: '#7C3AED', bgColor: 'rgba(124,58,237,0.08)' },
   { icon: 'person_search', title: 'Tech Role Matching', desc: 'Get matched to SDE, ML Engineer, DevOps & more based on your profile', color: '#10B981', bgColor: 'rgba(16,185,129,0.08)' },
   { icon: 'timer', title: '3 Minutes', desc: 'Quick and focused — designed for engineering students', color: '#F59E0B', bgColor: 'rgba(245,158,11,0.08)' },
 ];
@@ -33,13 +33,13 @@ const QuizIntro = () => {
       {/* Background orbs */}
       <motion.div
         className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-[0.06]"
-        style={{ background: 'radial-gradient(circle, #0da2e7, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, #0066FF, transparent 70%)' }}
         animate={{ scale: [1, 1.2, 1], x: [0, 30, 0], y: [0, -20, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full opacity-[0.04]"
-        style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }}
         animate={{ scale: [1, 1.15, 1], x: [0, -20, 0], y: [0, 15, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
@@ -64,8 +64,8 @@ const QuizIntro = () => {
           <motion.div
             className="w-16 h-16 rounded-2xl flex items-center justify-center relative"
             style={{
-              background: 'linear-gradient(135deg, #0da2e7, #8B5CF6)',
-              boxShadow: '0 8px 32px rgba(13,162,231,0.35)',
+              background: 'linear-gradient(135deg, #0066FF, #7C3AED)',
+              boxShadow: '0 8px 32px rgba(0,102,255,0.35)',
             }}
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
@@ -74,7 +74,7 @@ const QuizIntro = () => {
             {/* Pulsing ring */}
             <motion.div
               className="absolute inset-0 rounded-2xl"
-              style={{ border: '2px solid rgba(13,162,231,0.3)' }}
+              style={{ border: '2px solid rgba(0,102,255,0.3)' }}
               animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
               transition={{ duration: 2.5, repeat: Infinity }}
             />
@@ -100,11 +100,11 @@ const QuizIntro = () => {
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center"
                   style={{
-                    background: 'linear-gradient(145deg, rgba(30,41,59,0.6), rgba(15,23,42,0.4))',
-                    border: '1px solid rgba(13,162,231,0.15)',
+                    background: 'linear-gradient(145deg, rgba(17,24,39,0.6), rgba(15,23,42,0.4))',
+                    border: '1px solid rgba(0,102,255,0.15)',
                   }}
                 >
-                  <Icon name={step.icon} size={20} style={{ color: '#0da2e7' }} />
+                  <Icon name={step.icon} size={20} style={{ color: '#0066FF' }} />
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] text-accent font-bold uppercase tracking-wider">{step.num}</p>
@@ -112,7 +112,7 @@ const QuizIntro = () => {
                 </div>
               </div>
               {i < STEPS.length - 1 && (
-                <div className="w-8 h-px" style={{ background: 'linear-gradient(90deg, rgba(13,162,231,0.3), rgba(139,92,246,0.15))' }} />
+                <div className="w-8 h-px" style={{ background: 'linear-gradient(90deg, rgba(0,102,255,0.3), rgba(124,58,237,0.15))' }} />
               )}
             </div>
           ))}
@@ -126,7 +126,7 @@ const QuizIntro = () => {
               variants={item}
               className="rounded-2xl p-5 text-left relative overflow-hidden group cursor-default"
               style={{
-                background: 'linear-gradient(145deg, rgba(30,41,59,0.5), rgba(15,23,42,0.3))',
+                background: 'linear-gradient(145deg, rgba(17,24,39,0.5), rgba(15,23,42,0.3))',
                 border: '1px solid rgba(255,255,255,0.05)',
               }}
               whileHover={{
