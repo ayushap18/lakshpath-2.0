@@ -1,4 +1,3 @@
-import prisma from '../lib/prisma';
 import { geminiService } from './geminiService';
 import { AppError } from '../middleware/errorHandler';
 
@@ -159,15 +158,7 @@ class NSQFPathwayService {
     profile: NSQFProfile
   ): Promise<VocationalPathway> {
     try {
-      const user = await prisma.user.findUnique({
-        where: { id: userId }
-      });
-
-      if (!user) {
-        throw new AppError('User not found', 404);
-      }
-
-      // Use AI to generate personalized NSQF pathway
+      // Use AI to generate personalized NSQF pathway (no DB lookup needed)
       const result = await geminiService.generateNSQFPathway({
         userId,
         profile,
@@ -190,15 +181,6 @@ class NSQFPathwayService {
     targetSector: string
   ): Promise<EmployabilityPrediction> {
     try {
-      const user = await prisma.user.findUnique({
-        where: { id: userId }
-      });
-
-      if (!user) {
-        throw new AppError('User not found', 404);
-      }
-
-      // Use AI to predict employability
       const result = await geminiService.predictNSQFEmployability({
         userId,
         profile,

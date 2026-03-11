@@ -89,22 +89,30 @@ const callGemini = async (prompt: string, options?: GeminiCallOptions, retries =
       lastError = error;
       
       // Check if it's a rate limit error (429)
-      const isRateLimit = error?.status === 429 || error?.statusCode === 429 || 
+      const isRateLimit = error?.status === 429 || error?.statusCode === 429 ||
                          error?.message?.includes('429') || error?.message?.includes('quota');
-      
+
       if (isRateLimit && attempt < retries) {
-        // Wait with exponential backoff: 1s, 2s, 4s
-        const waitTime = Math.pow(2, attempt) * 1000;
+        // Try to parse retryDelay from error details (Gemini returns it in errorDetails)
+        let waitTime = Math.pow(2, attempt) * 2000; // default: 2s, 4s
+        try {
+          const retryMatch = error?.message?.match(/"retryDelay":"(\d+)s"/);
+          if (retryMatch) waitTime = parseInt(retryMatch[1], 10) * 1000;
+        } catch { /* ignore */ }
         console.log(`[Gemini] Rate limit hit, retrying in ${waitTime}ms (attempt ${attempt + 1}/${retries})`);
         await new Promise(resolve => setTimeout(resolve, waitTime));
         continue;
       }
-      
+
+      if (isRateLimit) {
+        throw new AppError('AI service is temporarily at capacity. Please try again in a minute.', 429, error);
+      }
+
       // If not rate limit or out of retries, throw error
       break;
     }
   }
-  
+
   // If we get here, all retries failed
   if (lastError instanceof AppError) throw lastError;
   throw new AppError('Gemini API error', 502, lastError);
