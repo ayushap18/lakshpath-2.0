@@ -92,20 +92,17 @@ const callGemini = async (prompt: string, options?: GeminiCallOptions, retries =
       const isRateLimit = error?.status === 429 || error?.statusCode === 429 ||
                          error?.message?.includes('429') || error?.message?.includes('quota');
 
-      if (isRateLimit && attempt < retries) {
-        // Try to parse retryDelay from error details (Gemini returns it in errorDetails)
-        let waitTime = Math.pow(2, attempt) * 2000; // default: 2s, 4s
-        try {
-          const retryMatch = error?.message?.match(/"retryDelay":"(\d+)s"/);
-          if (retryMatch) waitTime = parseInt(retryMatch[1], 10) * 1000;
-        } catch { /* ignore */ }
+      if (isRateLimit) {
+        // Daily quota exhausted — no point retrying, fail fast
+        const isDailyQuota = error?.message?.includes('PerDay') || error?.message?.includes('per_day');
+        if (isDailyQuota || attempt >= retries) {
+          throw new AppError('AI service quota reached. Please try again later.', 429, error);
+        }
+        // Per-minute quota — wait briefly then retry (cap at 8s to stay within Cloud Run timeout)
+        const waitTime = Math.min(Math.pow(2, attempt) * 1500, 8000);
         console.log(`[Gemini] Rate limit hit, retrying in ${waitTime}ms (attempt ${attempt + 1}/${retries})`);
         await new Promise(resolve => setTimeout(resolve, waitTime));
         continue;
-      }
-
-      if (isRateLimit) {
-        throw new AppError('AI service is temporarily at capacity. Please try again in a minute.', 429, error);
       }
 
       // If not rate limit or out of retries, throw error

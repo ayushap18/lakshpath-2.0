@@ -158,18 +158,84 @@ class NSQFPathwayService {
     profile: NSQFProfile
   ): Promise<VocationalPathway> {
     try {
-      // Use AI to generate personalized NSQF pathway (no DB lookup needed)
       const result = await geminiService.generateNSQFPathway({
         userId,
         profile,
         vocationalSectors: VOCATIONAL_SECTORS
       });
-
       return result.parsed;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating vocational pathway:', error);
-      throw new AppError('Failed to generate vocational pathway', 500);
+      // Return a static fallback pathway based on the profile inputs
+      return this.buildFallbackPathway(profile);
     }
+  }
+
+  private buildFallbackPathway(profile: NSQFProfile): VocationalPathway {
+    const levelDiff = profile.targetNSQFLevel - profile.currentNSQFLevel;
+    const primaryInterest = profile.interests[0] || 'IT/ITeS';
+    const sector = Object.values(VOCATIONAL_SECTORS).find(s =>
+      s.toLowerCase().includes(primaryInterest.toLowerCase().split(' ')[0].toLowerCase())
+    ) || 'IT/ITeS';
+
+    const stages: PathwayStage[] = [];
+    for (let i = 0; i < Math.min(levelDiff, 4); i++) {
+      const lvl: NSQFLevel = (profile.currentNSQFLevel + i + 1) as NSQFLevel;
+      stages.push({
+        stageNumber: i + 1,
+        nsqfLevel: lvl,
+        title: `Level ${lvl} — ${sector}`,
+        courses: [{
+          courseId: `course-${lvl}-${i}`,
+          title: `${sector} Foundation — Level ${lvl}`,
+          description: `NSQF Level ${lvl} certified programme in ${sector}`,
+          nsqfLevel: lvl,
+          sector,
+          skills: ['Communication', 'Digital Literacy', 'Domain Knowledge'],
+          duration: '3 months',
+          certifyingBody: 'NSDC / NCVT',
+          employabilityScore: 70 + i * 5,
+          avgSalaryRange: `₹${(15 + i * 5)},000 - ₹${(25 + i * 10)},000/month`,
+          courseProvider: 'Skill India Digital',
+          mode: profile.learningMode,
+          cost: profile.budget === 'free' ? '₹0 (Govt funded)' : '₹5,000 - ₹15,000',
+          language: profile.preferredLanguage,
+          prerequisites: i === 0 ? [] : [`Level ${lvl - 1} certificate`]
+        }],
+        duration: `${3 + i} months`,
+        outcomes: [`NSQF Level ${lvl} certificate`, 'Job-ready skills'],
+        jobRoles: ['Entry-level practitioner', 'Skilled technician']
+      });
+    }
+
+    return {
+      pathwayId: `fallback-${Date.now()}`,
+      title: `${sector} Career Pathway`,
+      description: `A structured ${levelDiff}-level pathway from NSQF Level ${profile.currentNSQFLevel} to Level ${profile.targetNSQFLevel} in the ${sector} sector. Complete each stage to unlock higher-paying roles.`,
+      sector,
+      startLevel: profile.currentNSQFLevel,
+      targetLevel: profile.targetNSQFLevel,
+      totalDuration: `${levelDiff * 4} months`,
+      stages,
+      employmentOpportunities: [
+        `Entry: ${sector} Trainee / Helper`,
+        `Mid: ${sector} Associate / Technician`,
+        `Senior: ${sector} Specialist / Team Lead`
+      ],
+      salaryProgression: {
+        entry: '₹10,000 - ₹18,000/month',
+        midLevel: '₹20,000 - ₹40,000/month',
+        senior: '₹45,000 - ₹80,000/month'
+      },
+      requiredInvestment: profile.budget === 'free' ? 'Free (Govt funded via PMKVY)' : '₹15,000 - ₹50,000 total',
+      certifications: ['NSQF Certificate', 'NSDC Certificate', 'Skill India Digital Badge'],
+      governmentSchemes: [
+        'Pradhan Mantri Kaushal Vikas Yojana (PMKVY)',
+        'National Apprenticeship Promotion Scheme (NAPS)',
+        'DDU-GKY (Rural Youth)',
+        'Jan Shikshan Sansthan'
+      ]
+    };
   }
 
   /**

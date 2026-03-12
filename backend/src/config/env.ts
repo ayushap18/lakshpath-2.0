@@ -7,7 +7,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().default(5000),
   GEMINI_API_KEY: z.string({ required_error: 'GEMINI_API_KEY is required' }).min(1),
-  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash-lite'),
   GOOGLE_CLIENT_ID: z.string({ required_error: 'GOOGLE_CLIENT_ID is required' }).min(1),
   DATABASE_URL: z.string().default('postgresql://localhost:5432/lakshpath'),
   CLIENT_ORIGIN: z.string().optional(),
