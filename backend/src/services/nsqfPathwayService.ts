@@ -173,10 +173,29 @@ class NSQFPathwayService {
 
   private buildFallbackPathway(profile: NSQFProfile): VocationalPathway {
     const levelDiff = profile.targetNSQFLevel - profile.currentNSQFLevel;
-    const primaryInterest = profile.interests[0] || 'IT/ITeS';
-    const sector = Object.values(VOCATIONAL_SECTORS).find(s =>
-      s.toLowerCase().includes(primaryInterest.toLowerCase().split(' ')[0].toLowerCase())
-    ) || 'IT/ITeS';
+    const primaryInterest = (profile.interests[0] || 'IT/ITeS').toLowerCase();
+
+    // Map frontend interest labels → canonical VOCATIONAL_SECTORS values
+    const INTEREST_MAP: Record<string, string> = {
+      'it': 'IT/ITeS', 'software': 'IT/ITeS', 'tech': 'IT/ITeS',
+      'health': 'Healthcare', 'medical': 'Healthcare',
+      'manufactur': 'Electronics & Hardware', 'electron': 'Electronics & Hardware',
+      'construct': 'Construction',
+      'agricultur': 'Agriculture', 'farm': 'Agriculture',
+      'tourism': 'Tourism & Hospitality', 'hotel': 'Tourism & Hospitality', 'hospital': 'Tourism & Hospitality',
+      'retail': 'Retail',
+      'beauty': 'Beauty & Wellness', 'wellness': 'Beauty & Wellness',
+      'auto': 'Automotive', 'vehicle': 'Automotive',
+      'banking': 'Banking & Finance', 'finance': 'Banking & Finance',
+      'telecom': 'Telecom', 'logis': 'Logistics',
+      'media': 'Media & Entertainment', 'entertain': 'Media & Entertainment',
+      'textile': 'Textile & Handloom', 'leather': 'Leather',
+      'food': 'Food Processing',
+    };
+
+    const sector = Object.entries(INTEREST_MAP).find(([key]) =>
+      primaryInterest.includes(key)
+    )?.[1] || 'IT/ITeS';
 
     const stages: PathwayStage[] = [];
     for (let i = 0; i < Math.min(levelDiff, 4); i++) {
