@@ -6,8 +6,10 @@ dotenv.config();
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().default(5000),
-  GEMINI_API_KEY: z.string({ required_error: 'GEMINI_API_KEY is required' }).min(1),
-  GEMINI_MODEL: z.string().default('gemini-2.0-flash-lite'),
+  GEMINI_API_KEY: z.string().optional(), // unused on Cloud Run (Vertex AI uses ADC); kept for local dev
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
+  GCP_PROJECT_ID: z.string().default('gen-lang-client-0843895857'),
+  GCP_REGION: z.string().default('us-central1'), // Vertex AI Gemini is available in us-central1
   GOOGLE_CLIENT_ID: z.string({ required_error: 'GOOGLE_CLIENT_ID is required' }).min(1),
   DATABASE_URL: z.string().default('postgresql://localhost:5432/lakshpath'),
   CLIENT_ORIGIN: z.string().optional(),

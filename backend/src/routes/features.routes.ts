@@ -3,24 +3,24 @@ import { authenticate, attachUserIfPresent } from '@middleware/authenticate';
 import { requirePlan } from '@middleware/requirePlan';
 import { usageLimit } from '@middleware/usageLimit';
 import prisma from '@lib/prisma';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { VertexAI } from '@google-cloud/vertexai';
 import env from '@config/env';
 
 const router = Router();
 
-// Use the shared env config for consistent Gemini initialization
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: env.GEMINI_MODEL });
+const vertexAI = new VertexAI({ project: env.GCP_PROJECT_ID, location: env.GCP_REGION });
 
 // Shared Gemini helper - tries real AI, returns null on failure
 async function callGeminiJSON(prompt: string, temperature = 0.7): Promise<any | null> {
   try {
+    const model = vertexAI.getGenerativeModel({
+      model: env.GEMINI_MODEL,
+      generationConfig: { responseMimeType: 'application/json', temperature },
+    });
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: 'application/json', temperature }
     });
-
-    const text = result.response.text();
+    const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
     return JSON.parse(text.replace(/^```json/gm, '').replace(/```$/gm, '').trim());
   } catch (err: any) {
     console.warn('[Gemini] AI call failed, using demo data:', err.message?.slice(0, 120));

@@ -3,20 +3,22 @@
  * assessment answers, GitHub repos, and produces a unified ProfileAnalysis.
  */
 import prisma from '@lib/prisma';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { VertexAI } from '@google-cloud/vertexai';
 import env from '@config/env';
 
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: env.GEMINI_MODEL });
+const vertexAI = new VertexAI({ project: env.GCP_PROJECT_ID, location: env.GCP_REGION });
 
 // ─── Helpers ──────────────────────────────────────────────
 async function callAI(prompt: string): Promise<any | null> {
   try {
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    const model = vertexAI.getGenerativeModel({
+      model: env.GEMINI_MODEL,
       generationConfig: { responseMimeType: 'application/json', temperature: 0.6 },
     });
-    const raw = result.response.text();
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    });
+    const raw = result.response.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
     return JSON.parse(raw.replace(/^```json/gm, '').replace(/```$/gm, '').trim());
   } catch (err) {
     console.error('[AnalysisEngine] AI call failed, using heuristic:', (err as Error).message);

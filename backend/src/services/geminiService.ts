@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, type GenerateContentRequest } from '@google/generative-ai';
+import { VertexAI } from '@google-cloud/vertexai';
 
 import env from '@config/env';
 import {
@@ -38,8 +38,10 @@ export interface GeminiResult<T> {
   parsed: T;
 }
 
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-const reasoningModel = genAI.getGenerativeModel({ model: env.GEMINI_MODEL });
+// Vertex AI Gemini — uses GCP service account (ADC).
+// Cloud Run's default compute SA has roles/aiplatform.user.
+// Billing is charged to the GCP billing account (uses your $20 credits).
+const vertexAI = new VertexAI({ project: env.GCP_PROJECT_ID, location: env.GCP_REGION });
 
 type GeminiCallOptions = {
   responseMimeType?: string;
@@ -60,31 +62,24 @@ const parseJson = <T>(rawText: string): T => {
 
 const callGemini = async (prompt: string, options?: GeminiCallOptions, retries = 2) => {
   let lastError: any;
-  
+
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const request: GenerateContentRequest = {
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: prompt }],
-          },
-        ],
-      };
+      const model = vertexAI.getGenerativeModel({
+        model: env.GEMINI_MODEL,
+        generationConfig: {
+          ...(options?.responseMimeType ? { responseMimeType: options.responseMimeType } : {}),
+          ...(options?.temperature !== undefined ? { temperature: options.temperature } : {}),
+        },
+      });
 
-      if (options && (options.responseMimeType || options.temperature !== undefined)) {
-        request.generationConfig = {
-          ...(options.responseMimeType ? { responseMimeType: options.responseMimeType } : {}),
-          ...(options.temperature !== undefined ? { temperature: options.temperature } : {}),
-        };
-      }
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      });
 
-      const result = await reasoningModel.generateContent(request);
-      const response = result.response;
-      if (!response) {
-        throw new AppError('Empty response from Gemini', 502);
-      }
-      return response.text();
+      const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new AppError('Empty response from Gemini', 502);
+      return text;
     } catch (error: any) {
       lastError = error;
       
